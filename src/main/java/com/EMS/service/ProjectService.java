@@ -1,17 +1,24 @@
 package com.EMS.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.EMS.model.ProjectModel;
+import com.EMS.model.UserModel;
 
 public interface ProjectService {
 
-	//method for saving
+	//method declaration for saving new project record 
 	void save_project_record(ProjectModel projectmodel);
 
     List<String> getProjectsList();
 
+
 	Long getProjectId(String projectName);
+
+    //method declaration for getting user details for project creation
+	ArrayList<UserModel> getproject_owner();
+
 	
 }
 

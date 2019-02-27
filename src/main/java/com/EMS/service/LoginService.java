@@ -7,9 +7,8 @@ import com.EMS.model.UserModel;
 
 public interface LoginService {
 		
-		//For getting details of all departments
-		public ArrayList<DepartmentModel> viewDepartments();
 
 		//abstract method declaration for user login authentication
 		public UserModel login_authentication(UserModel user);
+
 }
