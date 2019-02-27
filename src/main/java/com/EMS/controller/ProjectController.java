@@ -13,22 +13,16 @@ import com.EMS.model.ProjectModel;
 import com.EMS.service.ProjectService;
 
 @RestController
-@RequestMapping("/admin/project")
+@RequestMapping("")
 public class ProjectController {
 	
 	@Autowired
 	private ProjectService projectservice;
 	
+	
+	
 	//api for creating new project
-	
-	@GetMapping("/new")
-	public ProjectModel get_project_creation_page() {
-		ProjectModel model=new ProjectModel();
-		
-		return model;
-	}
-	
-	@PostMapping("/saveproject")
+	@PostMapping("/admin/project/saveproject")
 	public void save_newproject(@RequestBody ProjectModel projectmodel) {
 		
 	
@@ -36,5 +30,7 @@ public class ProjectController {
 		System.out.println("project"+projectmodel.toString());
 		projectservice.save_project_record(projectmodel);
 	}
+	
+	
 
 }
