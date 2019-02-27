@@ -1,8 +1,16 @@
 package com.EMS.controller;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,11 +22,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.EMS.model.Timetrack;
+import com.EMS.service.ProjectService;
 import com.EMS.service.TimetrackService;
+
+import javassist.expr.NewArray;
 
 @RestController
 @RequestMapping(value={"/timetrack"})
@@ -26,8 +38,41 @@ public class TimetrackController {
 	
 	@Autowired
 	TimetrackService timetrackService;
+	@Autowired
+	ProjectService projectService;
 	
 	
+	  @GetMapping(value="/findByDate")
+	 public List<Timetrack> getByDate(@RequestParam(value="start", required = false) String currentDate) {	 
+		  System.out.println("Date: "+currentDate);
+	  List<Timetrack> tracklist = null;
+//		  timetrackService.getByDate(currentDate);
+	  return tracklist;
+	 }
+	 
+	 
+	 @GetMapping(value = "/getProjectName")
+	 public List getprojectnameList(){
+		 List<String> projectNameList = projectService.getProjectsList(); 
+		return projectNameList;
+		 
+	 }
+	 
+	 @PostMapping(value="/create",headers="Accept=application/json")
+	 public ResponseEntity<Void> createTimrtrackRecord(@RequestBody Timetrack timetrack, UriComponentsBuilder ucBuilder){
+	     HttpHeaders headers = new HttpHeaders();
+	     headers.setLocation(ucBuilder.path("/timetrack/get").buildAndExpand(timetrack.getId()).toUri());
+	     return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
+	 }
+	
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
 	@GetMapping(value = "find/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Timetrack> getRecordById(@PathVariable("id") long id) {
         System.out.println("Fetching Record with id " + id);
@@ -45,16 +90,16 @@ public class TimetrackController {
 	  return tracklist;
 	
 	 }
+	
 	 
-	 
-	 @PostMapping(value="/create",headers="Accept=application/json")
-	 public ResponseEntity<Void> createNewRecord(@RequestBody Timetrack timetrack, UriComponentsBuilder ucBuilder){
-	     System.out.println("Creating entry "+timetrack.getId());
-	     timetrackService.createNewRecord(timetrack);
-	     HttpHeaders headers = new HttpHeaders();
-	     headers.setLocation(ucBuilder.path("/timetrack/get").buildAndExpand(timetrack.getId()).toUri());
-	     return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
-	 }
+//	 @PostMapping(value="/create",headers="Accept=application/json")
+//	 public ResponseEntity<Void> createNewRecord(@RequestBody Timetrack timetrack, UriComponentsBuilder ucBuilder){
+//	     System.out.println("Creating entry "+timetrack.getId());
+//	     timetrackService.createNewRecord(timetrack);
+//	     HttpHeaders headers = new HttpHeaders();
+//	     headers.setLocation(ucBuilder.path("/timetrack/get").buildAndExpand(timetrack.getId()).toUri());
+//	     return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
+//	 }
 	 
 	 
 	 
