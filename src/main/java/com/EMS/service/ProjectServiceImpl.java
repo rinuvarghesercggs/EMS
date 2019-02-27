@@ -28,4 +28,10 @@ public class ProjectServiceImpl implements ProjectService{
 		return nameList;
 	}
 
+	@Override
+	public Long getProjectId(String projectName) {
+		Long pid = project_repositary.getProjectId(projectName);
+		return pid;
+	}
+
 }

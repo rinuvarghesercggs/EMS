@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.EMS.model.Alloc;
+import com.EMS.model.DepartmentModel;
+import com.EMS.model.UserModel;
+import com.EMS.repository.DepartmentRepository;
 import com.EMS.repository.ProjectRepositary;
 import com.EMS.repository.ResourceAllocationRepository;
 
@@ -19,6 +22,9 @@ public class ResourceAllocationServiceImpl implements ResourceAllocationService{
 	
 	@Autowired
 	ProjectRepositary projectRepository;
+	
+	@Autowired
+	DepartmentRepository departmentRepository;
 	
 	@Override
 	 public void save(Alloc resourceAllocationModel) {
@@ -56,8 +62,20 @@ public class ResourceAllocationServiceImpl implements ResourceAllocationService{
 
 	
 	@Override
-	public List<Alloc> getAllocationList(String projectName) {
-//		List<Alloc> projList = projectRepository.getProjectLists(projectName);
-		return null;
+	public List<Alloc> getAllocationList(Long projectId) {
+		List<Alloc> projList = resourceAllocationRepository.getProjectLists(projectId);
+		return projList;
+	}
+
+	@Override
+	public List<DepartmentModel> getDepartmentList() {
+		List<DepartmentModel> nameList = departmentRepository.findAll();
+		return nameList;
+	}
+
+	@Override
+	public List<UserModel> getUserList() {
+        List<UserModel> userList = null;
+		return userList;
 	}
 }

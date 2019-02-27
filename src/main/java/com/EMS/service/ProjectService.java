@@ -10,4 +10,8 @@ public interface ProjectService {
 	void save_project_record(ProjectModel projectmodel);
 
     List<String> getProjectsList();
+
+	Long getProjectId(String projectName);
+	
 }
+
