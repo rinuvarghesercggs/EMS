@@ -1,5 +1,6 @@
 package com.EMS.model;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -36,14 +37,14 @@ public class UserModel {
 	private String firstName,lastName,userName,password,email;
 	private int contact;
 	
-	@ManyToMany(targetEntity=TaskModel.class)
-	private Set taskModel;
+	@ManyToMany
+	private List<TaskModel> taskModel;
 	
-	public Set getTaskModel() {
+	public List getTaskModel() {
 		return taskModel;
 	}
 
-	public void setTaskModel(Set taskModel) {
+	public void setTaskModel(List taskModel) {
 		taskModel = taskModel;
 	}
 
@@ -52,7 +53,7 @@ public class UserModel {
 	}
 	
 	public UserModel(long id,String firstName, String lastName, String userName,
-			String password, String email, int contact,Set taskModel ) {
+			String password, String email, int contact,List taskModel ) {
 		super();
 		this.id = id;
 		this.firstName = firstName;
