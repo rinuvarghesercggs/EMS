@@ -9,36 +9,14 @@ import org.springframework.stereotype.Service;
 import com.EMS.model.DepartmentModel;
 import com.EMS.model.UserModel;
 import com.EMS.repository.DepartmentRepository;
-import com.EMS.repository.LoginRepositary;
+import com.EMS.repository.UserRepositary;
 
 @Service
 public class LoginServiceImpl implements LoginService {
 
 	@Autowired
-	LoginRepositary login_repositary;
+	UserRepositary login_repositary;
 	
-	@Autowired
-	DepartmentRepository departmentrepositary;
-	
-	// Implementation for getting all available departments
-	
-	@Override
-	public ArrayList<DepartmentModel> viewDepartments() {
-		
-		ArrayList<DepartmentModel> departmentlist=null;										//Initializing the department list
-		try {
-				departmentlist=(ArrayList<DepartmentModel>) departmentrepositary.findAll();  //storing department in list
-				
-				return departmentlist;
-				
-		}catch(Exception e){
-			
-			System.out.println("Exception : "+e);	
-			return departmentlist;
-			
-		}
-		
-	}
 
 	// Implementation for authenticating user with role
 	
@@ -47,6 +25,7 @@ public class LoginServiceImpl implements LoginService {
 		
 		UserModel checkuser=null;															//Initializing usermodel for returning
 		try {
+			
 			checkuser=login_repositary.getUserdetails(user.getUserName(),user.getPassword());//calling sql query by passing parameters
 			return checkuser;
 		}catch(Exception e) {
@@ -55,5 +34,6 @@ public class LoginServiceImpl implements LoginService {
 		}
 		
 	}
+
 
 }
