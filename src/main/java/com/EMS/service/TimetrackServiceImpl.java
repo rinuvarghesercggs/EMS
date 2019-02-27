@@ -1,5 +1,7 @@
 package com.EMS.service;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,11 @@ public class TimetrackServiceImpl implements TimetrackService {
 	
 	public void deleteRecordById(long id) {
 		timetrackRepository.deleteById(id);
+	}
+	
+	public List<Timetrack>getByDate(Date currentDate){
+		return (List<Timetrack>) timetrackRepository.getByDate(currentDate);
+				
 	}
 
 }

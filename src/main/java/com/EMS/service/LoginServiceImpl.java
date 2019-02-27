@@ -25,7 +25,6 @@ public class LoginServiceImpl implements LoginService {
 		
 		UserModel checkuser=null;															//Initializing usermodel for returning
 		try {
-			
 			checkuser=login_repositary.getUserdetails(user.getUserName(),user.getPassword());//calling sql query by passing parameters
 			return checkuser;
 		}catch(Exception e) {
