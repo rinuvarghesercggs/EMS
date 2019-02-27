@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.EMS.model.ProjectModel;
-import com.EMS.service.ProjectServiceInterface;
+import com.EMS.service.ProjectService;
 
 @RestController
 @RequestMapping("/admin/project")
 public class ProjectController {
 	
 	@Autowired
-	private ProjectServiceInterface projectservice;
+	private ProjectService projectservice;
 	
 	//api for creating new project
 	

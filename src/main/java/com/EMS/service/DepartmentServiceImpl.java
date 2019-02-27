@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
 
 import com.EMS.model.DepartmentModel;
 import com.EMS.repository.DepartmentRepository;
-import com.EMS.service.DepartmentServiceInterface;
+import com.EMS.service.DepartmentService;
 
 @Service
-public class DepartmentServiceImple implements DepartmentServiceInterface {
+public class DepartmentServiceImpl implements DepartmentService {
 
 	
 	@Autowired

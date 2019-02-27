@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.EMS.model.DepartmentModel;
-import com.EMS.service.DepartmentServiceInterface;
+import com.EMS.service.DepartmentService;
 
 
 @RestController
@@ -27,7 +27,7 @@ import com.EMS.service.DepartmentServiceInterface;
 public class DepartmentController {
 
 	@Autowired
-	private DepartmentServiceInterface department_service;
+	private DepartmentService department_service;
 
 	
 //	@RequestMapping(method=RequestMethod.GET,value="/newDepartment")

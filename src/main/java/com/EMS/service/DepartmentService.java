@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import com.EMS.model.DepartmentModel;
 
-public interface DepartmentServiceInterface {
+public interface DepartmentService {
 
 	// For creating new  department
 	public void newDepartment(DepartmentModel department);
