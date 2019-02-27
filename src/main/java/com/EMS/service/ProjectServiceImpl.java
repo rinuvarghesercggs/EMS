@@ -7,7 +7,7 @@ import com.EMS.model.ProjectModel;
 import com.EMS.repository.ProjectRepositary;
 
 @Service
-public class ProjectServiceImpl implements ProjectServiceInterface{
+public class ProjectServiceImpl implements ProjectService{
 
 	@Autowired
 	ProjectRepositary project_repositary;
