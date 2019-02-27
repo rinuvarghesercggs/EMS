@@ -1,6 +1,6 @@
-package com.timetrack.ti.service;
+package com.EMS.service;
 
-import com.timetrack.ti.model.ProjectModel;
+import com.EMS.model.ProjectModel;
 
 public interface ProjectServiceInterface {
 

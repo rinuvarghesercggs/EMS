@@ -1,4 +1,4 @@
-package com.timetrack.ti.model;
+package com.EMS.model;
 
 
 import java.util.List;

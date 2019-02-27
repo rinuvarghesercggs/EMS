@@ -1,4 +1,4 @@
-package com.timetrack.ti.controller;
+package com.EMS.controller;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.timetrack.ti.model.DepartmentModel;
-import com.timetrack.ti.service.DepartmentServiceInterface;
+import com.EMS.model.DepartmentModel;
+import com.EMS.service.DepartmentServiceInterface;
 
 
 @RestController

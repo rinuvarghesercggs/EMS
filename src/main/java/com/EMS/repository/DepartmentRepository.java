@@ -1,11 +1,10 @@
-package com.timetrack.ti.repository;
+package com.EMS.repository;
 
 
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-
-import com.timetrack.ti.model.DepartmentModel;
+import com.EMS.model.DepartmentModel;
 
 public interface DepartmentRepository extends JpaRepository<DepartmentModel, Long> {
 

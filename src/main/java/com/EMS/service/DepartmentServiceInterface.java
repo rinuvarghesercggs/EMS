@@ -1,8 +1,8 @@
-package com.timetrack.ti.service;
+package com.EMS.service;
 
 import java.util.ArrayList;
 
-import com.timetrack.ti.model.DepartmentModel;
+import com.EMS.model.DepartmentModel;
 
 public interface DepartmentServiceInterface {
 

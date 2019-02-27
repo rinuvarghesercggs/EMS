@@ -1,4 +1,4 @@
-package com.timetrack.ti.controller;
+package com.EMS.controller;
 
 import java.text.SimpleDateFormat;
 
@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.timetrack.ti.model.ProjectModel;
-import com.timetrack.ti.service.ProjectServiceInterface;
+import com.EMS.model.ProjectModel;
+import com.EMS.service.ProjectServiceInterface;
 
 @RestController
 @RequestMapping("/admin/project")

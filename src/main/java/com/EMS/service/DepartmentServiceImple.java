@@ -1,4 +1,4 @@
-package com.timetrack.ti.service;
+package com.EMS.service;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -6,9 +6,9 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.timetrack.ti.model.DepartmentModel;
-import com.timetrack.ti.repository.DepartmentRepository;
-import com.timetrack.ti.service.DepartmentServiceInterface;
+import com.EMS.model.DepartmentModel;
+import com.EMS.repository.DepartmentRepository;
+import com.EMS.service.DepartmentServiceInterface;
 
 @Service
 public class DepartmentServiceImple implements DepartmentServiceInterface {

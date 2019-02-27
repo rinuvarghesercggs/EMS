@@ -1,10 +1,10 @@
-package com.timetrack.ti.service;
+package com.EMS.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.timetrack.ti.model.ProjectModel;
-import com.timetrack.ti.repository.ProjectRepositary;
+import com.EMS.model.ProjectModel;
+import com.EMS.repository.ProjectRepositary;
 
 @Service
 public class ProjectServiceImpl implements ProjectServiceInterface{
