@@ -1,5 +1,7 @@
 package com.EMS.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,5 +22,10 @@ public class ProjectServiceImpl implements ProjectService{
 		
 	}
 
-	
+	@Override
+	public List<String> getProjectsList() {
+		List<String> nameList = project_repositary.getProjectName();
+		return nameList;
+	}
+
 }

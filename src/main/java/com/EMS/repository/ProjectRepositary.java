@@ -1,11 +1,15 @@
 package com.EMS.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.Query;
 
 import com.EMS.model.ProjectModel;
 
-@Repository
 public interface ProjectRepositary extends JpaRepository<ProjectModel, Long> {
+
+	@Query("SELECT s.project_name FROM ProjectModel s")
+	List<String> getProjectName();
 
 }

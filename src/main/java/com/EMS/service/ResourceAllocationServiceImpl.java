@@ -1,0 +1,63 @@
+package com.EMS.service;
+
+import java.util.List;
+import javax.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.EMS.model.Alloc;
+import com.EMS.repository.ProjectRepositary;
+import com.EMS.repository.ResourceAllocationRepository;
+
+
+@Service
+@Transactional
+public class ResourceAllocationServiceImpl implements ResourceAllocationService{
+
+	@Autowired 
+	ResourceAllocationRepository resourceAllocationRepository;
+	
+	@Autowired
+	ProjectRepositary projectRepository;
+	
+	@Override
+	 public void save(Alloc resourceAllocationModel) {
+		resourceAllocationRepository.save(resourceAllocationModel);		
+	}
+	
+	@Override
+	public List<Alloc> getList() {
+		List<Alloc> list = resourceAllocationRepository.findAll();
+		return list;
+	}
+
+	@Override
+	public Alloc findDataBy(Long id) {
+		return resourceAllocationRepository.getOne(id);
+	}
+
+	@Override
+	public void remove(Long id) {
+		 resourceAllocationRepository.deleteById(id);
+	}
+
+	@Override
+	public Alloc updateData(Alloc currentAlloc) {
+		return resourceAllocationRepository.save(currentAlloc);
+		
+	}
+
+	@Override
+	public Alloc updatePartially(Alloc allocs, Long id) {
+		Alloc alloc = resourceAllocationRepository.getOne(id);
+//		alloc.setName(allocs.getName());
+		return resourceAllocationRepository.save(alloc);
+	}
+
+	
+	@Override
+	public List<Alloc> getAllocationList(String projectName) {
+//		List<Alloc> projList = projectRepository.getProjectLists(projectName);
+		return null;
+	}
+}
