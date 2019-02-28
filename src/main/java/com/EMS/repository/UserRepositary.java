@@ -11,8 +11,8 @@ import com.EMS.model.UserModel;
 public interface UserRepositary extends JpaRepository<UserModel, Long>{
 	
 	
-	@Query("SELECT u FROM UserModel u WHERE u.userName=?1 AND u.password=?2") //Query for checking username and password are matching or not
-	UserModel getUserdetails(String userName, String password);
+	@Query("SELECT u.userName FROM UserModel u WHERE u.userName=?1 AND u.password=?2") //Query for checking username and password are matching or not
+	String getUserdetails(String userName, String password);
 
 	@Query("SELECT u.id,u.firstName,u.lastName FROM UserModel u WHERE u.roleId=3")//for getting user details with role as owner by providing roleid
 	ArrayList<UserModel> getProjectOwners();
