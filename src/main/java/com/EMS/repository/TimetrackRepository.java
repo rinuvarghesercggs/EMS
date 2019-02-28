@@ -12,7 +12,7 @@ import com.EMS.model.Timetrack;
 public interface TimetrackRepository extends JpaRepository<Timetrack, Long> {
 	
 	
-	
+	@Query("SELECT k.date FROM Timetrack k WHERE  k.date = ?1")
 	List<Timetrack> getByDate(Date currentDate);
 
 }

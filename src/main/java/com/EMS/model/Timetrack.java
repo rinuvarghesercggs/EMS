@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
@@ -26,6 +27,7 @@ public class Timetrack {
 	private String description;
     
     @Column(name="date")
+    @JsonFormat(pattern="dd/MM/yyyy")
    	private Date date;
     
     @Column(name="hours")

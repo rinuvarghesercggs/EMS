@@ -1,10 +1,15 @@
 package com.EMS.controller;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.validation.Valid;
 
@@ -12,6 +17,7 @@ import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
+import org.springframework.format.datetime.DateFormatter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -29,6 +35,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.EMS.model.Timetrack;
 import com.EMS.service.ProjectService;
+import com.EMS.service.TaskService;
 import com.EMS.service.TimetrackService;
 
 import javassist.expr.NewArray;
@@ -41,13 +48,31 @@ public class TimetrackController {
 	TimetrackService timetrackService;
 	@Autowired
 	ProjectService projectService;
+	@Autowired
+	TaskService taskService;
 	
 	
-	  @GetMapping(value="/getTaskdetails")
-	 public List<Timetrack> getByDate(@RequestParam(value="start", required = false) String currentDate) {	 
-		  System.out.println("Date: "+currentDate);
-	  List<Timetrack> tracklist = null;
-//		  timetrackService.getByDate(currentDate);
+	  @PostMapping(value="/getTaskdetails" )
+	 public List<Timetrack> getByDate(@RequestBody JSONObject requestdata) {	 
+		  String dateString =requestdata.get("taskDate").toString();					
+		  String userName =requestdata.get("uname").toString();
+		  System.out.println("Date : "+dateString);
+		  System.out.println("User Name : "+userName);
+		    Date currentDate = null;
+		    List<Timetrack> tracklist =null;
+			try {
+				DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy"); 
+				Date datenew = (Date)formatter.parse(dateString);
+				System.out.println("Converted"+datenew);
+				 tracklist = timetrackService.getByDate(currentDate);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}  
+			
+			
+
+			
+	  System.out.println("Size"+tracklist.size());
 	  return tracklist;
 	 }
 	 
@@ -55,21 +80,22 @@ public class TimetrackController {
 	 @GetMapping(value = "/getprojectTaskDatas")
 	 public JSONObject getprojectnameList(){
 		 List<String> projectTitleList = projectService.getProjectsList();
-		 List<String> taskTypesList = projectService.getProjectsList();
-
+		 List<String> taskTypesList = taskService.getTaskList();
+		  JSONObject returnData = new JSONObject();
 		  JSONObject projectTaskDatas = new JSONObject();
-		  projectTaskDatas.put("projectTitle", projectTitleList);
-		  projectTaskDatas.put("taskTypes", taskTypesList);
-			
-		
-//		 for(ThirdPartyIncidentreportTopTile thirdPartyIncidentreportTopTile : thirdPartyIncidentreportTopTileList ) {
-//             JSONObject jsonTopTileObj = new JSONObject();
-//             jsonTopTileObj.put("incident_type", (thirdPartyIncidentreportTopTile.getInc_type()!=null)?thirdPartyIncidentreportTopTile.getInc_type():null);
-//             jsonTopTileObj.put("incident_count", (thirdPartyIncidentreportTopTile.getRec_count()!=null)?thirdPartyIncidentreportTopTile.getRec_count():null);
-//             jsonDataArry.put(jsonTopTileObj);
-//         }
-		return projectTaskDatas;
-		 
+ 
+	      try {
+	    	  if (!projectTitleList.isEmpty() && !taskTypesList.isEmpty()) {
+			  projectTaskDatas.put("projectTitle", projectTitleList);
+			  projectTaskDatas.put("taskTypes", taskTypesList);
+			  returnData.put("status", "success");
+			  returnData.put("data", projectTaskDatas);
+	    	  }
+	        } catch (Exception e) {
+	        	returnData.put("status", "Failure");
+	        	returnData.put("data", projectTaskDatas);
+	        }	
+		return returnData;	 
 	 }
 	 
 	 
@@ -92,11 +118,13 @@ public class TimetrackController {
     public ResponseEntity<Timetrack> getRecordById(@PathVariable("id") long id) {
         System.out.println("Fetching Record with id " + id);
         Timetrack timetrack = timetrackService.findById(id);
+        timetrack.setDate(new Date());
+        Timetrack timetracknew=timetrackService.update(timetrack);
         System.out.println("Timetrack : "+timetrack);
         if (timetrack == null) {
             return new ResponseEntity<Timetrack>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<Timetrack>(timetrack, HttpStatus.OK);
+        return new ResponseEntity<Timetrack>(timetracknew, HttpStatus.OK);
     }
 	
 	
