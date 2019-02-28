@@ -73,7 +73,7 @@ public class ResourceAllocationServiceImpl implements ResourceAllocationService{
 
 	@Override
 	public List<DepartmentModel> getDepartmentList() {
-		List<DepartmentModel> nameList = departmentRepository.findAll();
+		List<DepartmentModel> nameList = departmentRepository.findDeptName();
 		return nameList;
 	}
 
