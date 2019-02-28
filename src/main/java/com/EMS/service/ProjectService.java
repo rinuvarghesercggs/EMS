@@ -1,6 +1,5 @@
 package com.EMS.service;
 
-<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,14 +24,3 @@ public interface ProjectService {
 	
 }
 
-=======
-import com.EMS.model.ProjectModel;
-
-public interface ProjectService {
-
-	//method for saving
-	void save_project_record(ProjectModel projectmodel);
-
-	
-}
->>>>>>> branch 'PMS_DEV' of https://github.com/Haritha-Ti/EMS.git

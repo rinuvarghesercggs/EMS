@@ -13,10 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.EMS.model.ProjectModel;
-<<<<<<< HEAD
 import com.EMS.model.UserModel;
-=======
->>>>>>> branch 'PMS_DEV' of https://github.com/Haritha-Ti/EMS.git
 import com.EMS.service.ProjectService;
 
 @RestController
@@ -24,11 +21,8 @@ public class ProjectController {
 	
 	@Autowired
 	private ProjectService projectservice;
-<<<<<<< HEAD
 	
 	
-=======
->>>>>>> branch 'PMS_DEV' of https://github.com/Haritha-Ti/EMS.git
 	
 	//api for creating new project
 	
