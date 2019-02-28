@@ -40,13 +40,20 @@ public class UserModel {
 	@ManyToMany
 	private List<TaskModel> taskModel;
 	
+//	@ManyToMany
+//	private List<Alloc> alloc;
+	
 	public List getTaskModel() {
 		return taskModel;
 	}
 
-	public void setTaskModel(List taskModel) {
-		taskModel = taskModel;
-	}
+//	public List<Alloc> getAlloc() {
+//		return alloc;
+//	}
+//
+//	public void setAlloc(List<Alloc> alloc) {
+//		this.alloc = alloc;
+//	}
 
 	public UserModel() {
 		

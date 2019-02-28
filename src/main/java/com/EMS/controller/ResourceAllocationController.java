@@ -1,7 +1,10 @@
 package com.EMS.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -64,33 +67,79 @@ public class ResourceAllocationController {
 	
 	
 	@GetMapping(value = "/getresourceList/{projectId}")
-	public String getAllocationLists(@PathVariable("projectId") Long projectId) {
+	public JSONObject getAllocationLists(@PathVariable("projectId") Long projectId) {
 		List<Alloc> alloc = resourceAllocation.getAllocationList(projectId);
 //		 List<Alloc> alloc = resourceAllocation.getList();
-		for(Alloc item : alloc) {
-           			
-		}
+		String response = null;
+		JSONObject jsonData = new JSONObject();
+		JSONObject jsonDataRes = new JSONObject();
+		List<JSONObject> jsonArray = new ArrayList<>();
+		
+
+//		LOG.info("Inside  getThirdPartyIncidentReportMainTable In ReportController");
+        try {
+        	
+        	for(Alloc item : alloc) {
+               	JSONObject jsonObject = new JSONObject();
+               	jsonObject.put("id", item.getId());
+               	jsonObject.put("projectTitle", item.getProjectModel().getProject_name());
+               	jsonObject.put("name", item.getUserModel().getFirstName());
+               	jsonObject.put("allocatedVal", item.getAllocatedPerce());
+               	jsonObject.put("allocatedFree", item.getFreeAllocation());
+               	jsonArray.add(jsonObject);
+    		}
+        	
+        	jsonData.put("resourceList", jsonArray);
+        	jsonDataRes.put("status", "success");
+        	
+        } catch (Exception e) {
+            jsonDataRes.put("status", "Failure");
+//            LOG.error("Exception getThirdPartyIncidentReportGraph " + e.getLocalizedMessage());
+        }
+        jsonDataRes.put("data", jsonData);
+        return jsonDataRes;
 		
 		
-		return null;
+		
 
 	}
 	
 
 	// To update resource allocation data
 	
-	@PutMapping(value = "/update")
-	public ResponseEntity<Alloc> updateData(@RequestBody Alloc newAlloc) {
-		Long id = newAlloc.getId();
+	@PutMapping(value = "/editAllocation")
+	public JSONObject updateData(@RequestBody JSONObject requestdata) {
+		
+		JSONObject jsonDataRes = new JSONObject();
 		try {
-			Alloc oldAlloc = resourceAllocation.findDataBy(id);
-			if (oldAlloc == null)
-				return new ResponseEntity<Alloc>(HttpStatus.NOT_FOUND);
-		} catch (Exception e) {
-			System.out.println(e);
+			Long id = (Long) requestdata.get("id");
+			Double allocatedVal = (Double) requestdata.get("allocatedVal");
+			Double allocatedFree = (Double) requestdata.get("allocatedFree");
+			
+			System.out.println("id"+id);
+			Alloc alloc = resourceAllocation.findDataBy(id);
+			alloc.setAllocatedPerce(allocatedVal);
+			alloc.setFreeAllocation(allocatedFree);
+			resourceAllocation.updateData(alloc);
+			
+		}catch (Exception e) {
+	      jsonDataRes.put("status", "Failure");
 		}
-		Alloc alloc = resourceAllocation.updateData(newAlloc);
-		return new ResponseEntity<Alloc>(alloc, HttpStatus.OK);
+		
+		
+//		Long id = newAlloc.getId();
+//		try {
+//			Alloc oldAlloc = resourceAllocation.findDataBy(id);
+//			if (oldAlloc == null) {
+////				return new ResponseEntity<JSONObject>(HttpStatus.NOT_FOUND);
+//			}
+//		} catch (Exception e) {
+//            jsonDataRes.put("status", "Failure");
+//		}
+//		Alloc alloc = resourceAllocation.updateData(newAlloc);
+        jsonDataRes.put("status", "success");
+
+		return jsonDataRes;
 	}
 
 }
