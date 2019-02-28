@@ -49,7 +49,8 @@ public class ProjectController {
 		
 		JSONObject responsedata=new JSONObject();
 		ArrayList<UserModel> users_owner=projectservice.getproject_owner();	//Method invocation for getting users  with role as owner
-			
+		
+		
 		return responsedata;
 	}
 
