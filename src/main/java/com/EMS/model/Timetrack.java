@@ -27,7 +27,6 @@ public class Timetrack {
 	private String description;
     
     @Column(name="date")
-    @JsonFormat(pattern="dd/MM/yyyy")
    	private Date date;
     
     @Column(name="hours")
