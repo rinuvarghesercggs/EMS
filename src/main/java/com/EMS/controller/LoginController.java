@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.EMS.model.DepartmentModel;
 import com.EMS.model.UserModel;
 import com.EMS.service.LoginService;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 
 
 @RestController
@@ -29,8 +30,9 @@ public class LoginController {
 		@ResponseBody
 		public String adminLogin(@RequestBody UserModel user) {
 			
-			UserModel usercheck=login_service.login_authentication(user);	//Invoking user authentication method 
 			
+				
+			UserModel usercheck=login_service.login_authentication(user.getUserName(),user.getPassword());	//Invoking user authentication method 
 			if(usercheck==null)
 				return "Invalid User";
 			else

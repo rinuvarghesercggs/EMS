@@ -28,11 +28,18 @@ public class ProjectController {
 	
 	@PostMapping("/saveproject")
 	public void save_newproject(@RequestBody ProjectModel projectmodel) {
-		
+	
 		projectservice.save_project_record(projectmodel);	//Method invocation for creating new project record
 		
 	}
 	
+	
+	
+	@GetMapping("/project")
+	public ArrayList<ProjectModel> getproject(){
+		ArrayList<ProjectModel> project=projectservice.getProjects();
+		return project;
+	}
 	
 	//Api for getting project owner details from user table
 	

@@ -59,6 +59,12 @@ public class ProjectServiceImpl implements ProjectService{
 		
 	}
 
+	@Override
+	public ArrayList<ProjectModel> getProjects() {
+		ArrayList<ProjectModel> project=(ArrayList<ProjectModel>) project_repositary.findAll();
+		return project;
+	}
+
 
 
 }

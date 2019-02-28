@@ -1,10 +1,13 @@
 package com.EMS.model;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -20,6 +23,17 @@ public class DepartmentModel {
 
 	public long getId() {
 		return id;
+	}
+
+	@ManyToMany
+	private List<ProjectModel> project;
+	
+	public List<ProjectModel> getProject() {
+		return project;
+	}
+
+	public void setProject(List<ProjectModel> project) {
+		this.project = project;
 	}
 
 	public void setId(long id) {

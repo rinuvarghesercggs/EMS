@@ -19,6 +19,8 @@ public interface ProjectService {
     //method declaration for getting user details for project creation
 	ArrayList<UserModel> getproject_owner();
 
+	ArrayList<ProjectModel> getProjects();
+
 	
 }
 

@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -27,8 +28,9 @@ public class ProjectModel {
 	private int estimated_hours;
 	private Date start_date,end_date;
 	
-	
-	private ProjectResources resourceid;
+	@ManyToMany
+	private List<DepartmentModel> department_id;
+	private int resource_count;
 	
 	public ProjectModel() {
 		
@@ -38,12 +40,13 @@ public class ProjectModel {
 	}
 
 	public ProjectModel(long id, String project_name, String project_owner, String project_details,
-			String contract_type, int estimated_hours, Date start_date, Date end_date) {
+			String contract_type, int estimated_hours, Date start_date, Date end_date,int resource_count) {
 		super();
 		this.id = id;
 		this.project_name = project_name;
 		this.project_owner = project_owner;
 		this.project_details = project_details;
+		this.resource_count=resource_count;
 		this.contract_type = contract_type;
 		this.estimated_hours = estimated_hours;
 		this.start_date = start_date;
@@ -79,11 +82,18 @@ public class ProjectModel {
 	public void setEstimated_hours(int estimated_hours) {
 		this.estimated_hours = estimated_hours;
 	}
-	public ProjectResources getResourceid() {
-		return resourceid;
+	
+	public List<DepartmentModel> getDepartment_id() {
+		return department_id;
 	}
-	public void setResourceid(ProjectResources resourceid) {
-		this.resourceid = resourceid;
+	public void setDepartment_id(List<DepartmentModel> department_id) {
+		this.department_id = department_id;
+	}
+	public int getResource_count() {
+		return resource_count;
+	}
+	public void setResource_count(int resource_count) {
+		this.resource_count = resource_count;
 	}
 	public void setId(long id) {
 		this.id = id;
