@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.stereotype.Service;
 
+import com.EMS.model.ContractModel;
 import com.EMS.model.ProjectModel;
 import com.EMS.model.Resources;
 import com.EMS.model.UserModel;
+import com.EMS.repository.ContractRepositary;
 import com.EMS.repository.ProjectRepository;
 import com.EMS.repository.ResourceRepository;
 import com.EMS.repository.UserRepositary;
@@ -25,22 +28,33 @@ public class ProjectServiceImpl implements ProjectService{
 	@Autowired
 	ResourceRepository resource_repository;
 	
+	@Autowired
+	ContractRepositary contract_repository;
+	
 	@Override
-	public void save_project_record(ProjectModel projectmodel) {		
+	public ArrayList<Long> save_project_record(ProjectModel projectmodel) {		
 		
-		
-		System.out.println("resour "+projectmodel.getResources().get(0).getResouce_count());
-		System.out.println("resour depart "+projectmodel.getResources().get(0).getDepartment());
-		
-		Resources resource=new Resources();
-		
-		resource.setResouce_count(projectmodel.getResources().get(0).getResouce_count());
-		resource.setDepartment(projectmodel.getResources().get(0).getDepartment());
-		resource_repository.save(resource);
-		
-		
-		ProjectModel model=project_repositary.save(projectmodel);		//Saving project record by using repositary instance
-		
+	
+			ArrayList<Long> index=new ArrayList<>();
+			
+		try {
+			ProjectModel model=null;
+				int length=projectmodel.getResources().size();
+				model=project_repositary.save(projectmodel);
+				
+				for(int i=0;i<length;i++) {
+				
+				Resources resour=resource_repository.save(projectmodel.getResources().get(i));
+				index.add(resour.getId());
+				}
+						//Saving project record by using repositary instance
+			
+			return index;
+			
+		}catch(Exception e) {
+			System.out.println("Exception : "+e);
+			return index;
+		}
 		
 		
 	}
@@ -76,12 +90,19 @@ public class ProjectServiceImpl implements ProjectService{
 		
 	}
 
+//	@Override
+//	public ArrayList<ProjectModel> getProjects() {
+//		ArrayList<ProjectModel> project=(ArrayList<ProjectModel>) project_repositary.findAll();
+//		return project;
+//	}
+
 	@Override
-	public ArrayList<ProjectModel> getProjects() {
-		ArrayList<ProjectModel> project=(ArrayList<ProjectModel>) project_repositary.findAll();
-		return project;
+	public ArrayList<ContractModel> getcontract_type() {
+		ArrayList<ContractModel> contract=(ArrayList<ContractModel>) contract_repository.findAll();
+		return contract;
 	}
 
+	
 
 
 }

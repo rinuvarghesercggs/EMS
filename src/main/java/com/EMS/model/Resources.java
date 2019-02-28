@@ -20,8 +20,16 @@ public class Resources {
 	private long id;
 	private String department;
 	private int resouce_count;
+	private long project;
 	
-	
+	public long getProject() {
+		return project;
+	}
+
+	public void setProject(long project) {
+		this.project = project;
+	}
+
 	public Resources() {
 		
 	}
