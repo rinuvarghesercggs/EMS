@@ -20,13 +20,16 @@ public class LoginServiceImpl implements LoginService {
 	
 	
 
-	// Implementation for authenticating user with role
+//	 Implementation for authenticating user with role
 	
 	@Override
 	public String login_authentication(String userName, String password) {
-		String checkuser=null;															//Initializing usermodel for returning
+		
+//		Initializing usermodel for returning		
+		String checkuser=null;															
 		try {
-			checkuser=login_repositary.getUserdetails(userName,password);//calling sql query by passing parameters
+//			calling sql query by passing parameters			
+			checkuser=login_repositary.getUserdetails(userName,password);
 			return checkuser;
 		}catch(Exception e) {
 			System.out.println("Exception : "+e);

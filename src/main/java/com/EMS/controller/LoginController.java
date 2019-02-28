@@ -26,28 +26,34 @@ public class LoginController {
 	LoginService login_service;
 	
 	
-	// api call for admin login 
+// 		api call for admin login 
 	
 		@PostMapping(value="/getLoginCredentials")
 		@ResponseBody
 		public JSONObject adminLogin(@RequestBody JSONObject requestdata) {
 			
 				JSONObject response=new JSONObject();
-		
-				String username=requestdata.get("username").toString();					//getting string value from json request
+				
+//				getting string value from json request
+				String username=requestdata.get("username").toString();					
 				String password=requestdata.get("password").toString();
 			
 				try {
-					
-					String usercheck=login_service.login_authentication(username,password);	//Invoking user authentication method 
+//					Invoking user authentication method 					
+					String usercheck=login_service.login_authentication(username,password);	
 					if(usercheck==null) 
-						response.put("status", "Failed");									//Setting status on json object	
+//						Setting status on json object							
+						response.put("status", "Failed");									
 					else
-						response.put("status", "success");									//Setting status on json object
-						response.put("data", usercheck);									//Setting data on json object
+//						Setting status on json object						
+						response.put("status", "success");	
+					
+//						Setting data on json object
+						response.put("data", usercheck);									
 				}catch(Exception e) {
 					System.out.println("Exception : "+e);
-					response.put("status", "Failed");										//Setting status on json object	
+//					Setting status on json object
+					response.put("status", "Failed");											
 				}
 			return response;
 		}

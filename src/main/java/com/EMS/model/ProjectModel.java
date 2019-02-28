@@ -15,6 +15,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
 @Entity
 @Table(name="Project")
 public class ProjectModel {
@@ -22,15 +25,16 @@ public class ProjectModel {
 	@Id
 	@Column(name="id")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Cascade(CascadeType.ALL)
 	private long id;
 	
 	private String project_name,project_owner,project_details,contract_type;
 	private int estimated_hours;
 	private Date start_date,end_date;
 	
-	@ManyToMany
-	private List<DepartmentModel> department_id;
-	private int resource_count;
+	@OneToMany(targetEntity=Resources.class)
+	private List<Resources> resources;
+	
 	
 	public ProjectModel() {
 		
@@ -39,14 +43,19 @@ public class ProjectModel {
 		return id;
 	}
 
+	public List<Resources> getResources() {
+		return resources;
+	}
+	public void setResources(List<Resources> resources) {
+		this.resources = resources;
+	}
 	public ProjectModel(long id, String project_name, String project_owner, String project_details,
-			String contract_type, int estimated_hours, Date start_date, Date end_date,int resource_count) {
+			String contract_type, int estimated_hours, Date start_date, Date end_date) {
 		super();
 		this.id = id;
 		this.project_name = project_name;
 		this.project_owner = project_owner;
 		this.project_details = project_details;
-		this.resource_count=resource_count;
 		this.contract_type = contract_type;
 		this.estimated_hours = estimated_hours;
 		this.start_date = start_date;
@@ -83,18 +92,7 @@ public class ProjectModel {
 		this.estimated_hours = estimated_hours;
 	}
 	
-	public List<DepartmentModel> getDepartment_id() {
-		return department_id;
-	}
-	public void setDepartment_id(List<DepartmentModel> department_id) {
-		this.department_id = department_id;
-	}
-	public int getResource_count() {
-		return resource_count;
-	}
-	public void setResource_count(int resource_count) {
-		this.resource_count = resource_count;
-	}
+	
 	public void setId(long id) {
 		this.id = id;
 	}

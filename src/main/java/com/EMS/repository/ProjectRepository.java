@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import com.EMS.model.Alloc;
 import com.EMS.model.ProjectModel;
 
-public interface ProjectRepositary extends JpaRepository<ProjectModel, Long> {
+public interface ProjectRepository extends JpaRepository<ProjectModel, Long> {
 
 	@Query("SELECT s.project_name FROM ProjectModel s")
 	List<String> getProjectName();

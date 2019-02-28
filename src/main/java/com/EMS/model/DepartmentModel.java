@@ -25,17 +25,6 @@ public class DepartmentModel {
 		return id;
 	}
 
-	@ManyToMany
-	private List<ProjectModel> project;
-	
-	public List<ProjectModel> getProject() {
-		return project;
-	}
-
-	public void setProject(List<ProjectModel> project) {
-		this.project = project;
-	}
-
 	public void setId(long id) {
 		this.id = id;
 	}

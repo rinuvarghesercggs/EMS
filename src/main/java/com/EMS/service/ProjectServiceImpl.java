@@ -7,23 +7,40 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.EMS.model.ProjectModel;
+import com.EMS.model.Resources;
 import com.EMS.model.UserModel;
-import com.EMS.repository.ProjectRepositary;
+import com.EMS.repository.ProjectRepository;
+import com.EMS.repository.ResourceRepository;
 import com.EMS.repository.UserRepositary;
 
 @Service
 public class ProjectServiceImpl implements ProjectService{
 
 	@Autowired
-	ProjectRepositary project_repositary;
+	ProjectRepository project_repositary;
 	
 	@Autowired
 	UserRepositary user_repositary;
 	
+	@Autowired
+	ResourceRepository resource_repository;
+	
 	@Override
 	public void save_project_record(ProjectModel projectmodel) {		
 		
+		
+		System.out.println("resour "+projectmodel.getResources().get(0).getResouce_count());
+		System.out.println("resour depart "+projectmodel.getResources().get(0).getDepartment());
+		
+		Resources resource=new Resources();
+		
+		resource.setResouce_count(projectmodel.getResources().get(0).getResouce_count());
+		resource.setDepartment(projectmodel.getResources().get(0).getDepartment());
+		resource_repository.save(resource);
+		
+		
 		ProjectModel model=project_repositary.save(projectmodel);		//Saving project record by using repositary instance
+		
 		
 		
 	}

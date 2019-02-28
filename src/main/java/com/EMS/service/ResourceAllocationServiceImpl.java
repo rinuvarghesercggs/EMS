@@ -9,7 +9,7 @@ import com.EMS.model.Alloc;
 import com.EMS.model.DepartmentModel;
 import com.EMS.model.UserModel;
 import com.EMS.repository.DepartmentRepository;
-import com.EMS.repository.ProjectRepositary;
+import com.EMS.repository.ProjectRepository;
 import com.EMS.repository.ResourceAllocationRepository;
 import com.EMS.repository.UserRepositary;
 
@@ -22,7 +22,7 @@ public class ResourceAllocationServiceImpl implements ResourceAllocationService{
 	ResourceAllocationRepository resourceAllocationRepository;
 	
 	@Autowired
-	ProjectRepositary projectRepository;
+	ProjectRepository projectRepository;
 	
 	@Autowired
 	DepartmentRepository departmentRepository;
