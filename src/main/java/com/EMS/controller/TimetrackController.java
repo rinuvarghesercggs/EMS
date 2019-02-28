@@ -69,9 +69,7 @@ public class TimetrackController {
 				e.printStackTrace();
 			}  
 			
-			
-
-			
+						
 	  System.out.println("Size"+tracklist.size());
 	  return tracklist;
 	 }
