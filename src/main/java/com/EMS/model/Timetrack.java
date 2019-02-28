@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -30,10 +30,9 @@ public class Timetrack {
     
     @Column(name="hours")
    	private Integer hours;
-    @OneToOne
+    
+    @ManyToOne
     private TaskModel task;
-    @OneToOne
-    private ProjectModel projectModel;
      
      
 	public long getId() {
@@ -68,21 +67,13 @@ public class Timetrack {
 		this.hours = hours;
 	}
 
-	public Timetrack(long id, String description, Date date, Integer hours) {
-		super();
-		this.id = id;
-		this.description = description;
-		this.date = date;
-		this.hours = hours;
+	public TaskModel getTask() {
+		return task;
 	}
 
-	public Timetrack() {
-		super();
+	public void setTask(TaskModel task) {
+		this.task = task;
 	}
 	
-	
-
-	
-
 
 }

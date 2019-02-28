@@ -17,8 +17,10 @@ public class TimetrackServiceImpl implements TimetrackService {
 	TimetrackRepository timetrackRepository;
 	
 	public List<Timetrack> getAllRecord() {
-		return (List<Timetrack>) timetrackRepository.findAll();
+		List<Timetrack> newList= timetrackRepository.findAll();
+		return newList;
 	}
+	
 	
 	public void createNewRecord(Timetrack timetrack) {
 		timetrackRepository.save(timetrack);

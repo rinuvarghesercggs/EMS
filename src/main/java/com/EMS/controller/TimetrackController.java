@@ -42,7 +42,7 @@ public class TimetrackController {
 	ProjectService projectService;
 	
 	
-	  @GetMapping(value="/findByDate")
+	  @GetMapping(value="/getTaskdetails")
 	 public List<Timetrack> getByDate(@RequestParam(value="start", required = false) String currentDate) {	 
 		  System.out.println("Date: "+currentDate);
 	  List<Timetrack> tracklist = null;
@@ -51,9 +51,15 @@ public class TimetrackController {
 	 }
 	 
 	 
-	 @GetMapping(value = "/getProjectName")
+	 @GetMapping(value = "/getprojectTaskDatas")
 	 public List getprojectnameList(){
-		 List<String> projectNameList = projectService.getProjectsList(); 
+		 List<String> projectNameList = projectService.getProjectsList();
+//		 for(ThirdPartyIncidentreportTopTile thirdPartyIncidentreportTopTile : thirdPartyIncidentreportTopTileList ) {
+//             JSONObject jsonTopTileObj = new JSONObject();
+//             jsonTopTileObj.put("incident_type", (thirdPartyIncidentreportTopTile.getInc_type()!=null)?thirdPartyIncidentreportTopTile.getInc_type():null);
+//             jsonTopTileObj.put("incident_count", (thirdPartyIncidentreportTopTile.getRec_count()!=null)?thirdPartyIncidentreportTopTile.getRec_count():null);
+//             jsonDataArry.put(jsonTopTileObj);
+//         }
 		return projectNameList;
 		 
 	 }
@@ -77,6 +83,7 @@ public class TimetrackController {
     public ResponseEntity<Timetrack> getRecordById(@PathVariable("id") long id) {
         System.out.println("Fetching Record with id " + id);
         Timetrack timetrack = timetrackService.findById(id);
+        System.out.println("Timetrack : "+timetrack);
         if (timetrack == null) {
             return new ResponseEntity<Timetrack>(HttpStatus.NOT_FOUND);
         }
@@ -84,13 +91,13 @@ public class TimetrackController {
     }
 	
 	
-	 @GetMapping(value="/get", headers="Accept=application/json")
+	 @GetMapping(value="/get")
 	 public List<Timetrack> getAllTimetrackRecords() {	 
 	  List<Timetrack> tracklist= timetrackService.getAllRecord();
 	  return tracklist;
 	
 	 }
-	
+//	
 	 
 //	 @PostMapping(value="/create",headers="Accept=application/json")
 //	 public ResponseEntity<Void> createNewRecord(@RequestBody Timetrack timetrack, UriComponentsBuilder ucBuilder){
@@ -103,27 +110,27 @@ public class TimetrackController {
 	 
 	 
 	 
-	 @PutMapping(value="/update", headers="Accept=application/json")
-		public ResponseEntity<String> updateRecord(@RequestBody Timetrack timetrack)
-		{
-			System.out.println("Updating");
-		Timetrack timetrackOld = timetrackService.findById(timetrack.getId());
-		if (timetrackOld ==null) {
-			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
-		}
-		timetrackService.update(timetrack);
-		return new ResponseEntity<String>(HttpStatus.OK);
-		}
-	 
-	 
-	 @DeleteMapping(value="delete/{id}", headers ="Accept=application/json")
-		public ResponseEntity<Timetrack> deleteUser(@PathVariable("id") long id){
-			Timetrack timetrack = timetrackService.findById(id);
-			if (timetrack == null) {
-				return new ResponseEntity<Timetrack>(HttpStatus.NOT_FOUND);
-			}
-			timetrackService.deleteRecordById(id);
-			return new ResponseEntity<Timetrack>(HttpStatus.NO_CONTENT);
-		}
+//	 @PutMapping(value="/update", headers="Accept=application/json")
+//		public ResponseEntity<String> updateRecord(@RequestBody Timetrack timetrack)
+//		{
+//			System.out.println("Updating");
+//		Timetrack timetrackOld = timetrackService.findById(timetrack.getId());
+//		if (timetrackOld ==null) {
+//			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+//		}
+//		timetrackService.update(timetrack);
+//		return new ResponseEntity<String>(HttpStatus.OK);
+//		}
+//	 
+//	 
+//	 @DeleteMapping(value="delete/{id}", headers ="Accept=application/json")
+//		public ResponseEntity<Timetrack> deleteUser(@PathVariable("id") long id){
+//			Timetrack timetrack = timetrackService.findById(id);
+//			if (timetrack == null) {
+//				return new ResponseEntity<Timetrack>(HttpStatus.NOT_FOUND);
+//			}
+//			timetrackService.deleteRecordById(id);
+//			return new ResponseEntity<Timetrack>(HttpStatus.NO_CONTENT);
+//		}
 
 }
