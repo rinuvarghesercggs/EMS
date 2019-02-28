@@ -22,9 +22,6 @@ public class Alloc {
 
 	@ManyToOne
 	private ProjectModel projectModel;
-	
-	@ManyToOne
-	private DepartmentModel departmentModel;
 
 	@ManyToMany
 	private List<UserModel> userModel;
@@ -46,14 +43,6 @@ public class Alloc {
 	}
 	public void setProjectModel(ProjectModel projectModel) {
 		this.projectModel = projectModel;
-	}
-	
-	
-	public DepartmentModel getDepartmentModel() {
-		return departmentModel;
-	}
-	public void setDepartmentModel(DepartmentModel departmentModel) {
-		this.departmentModel = departmentModel;
 	}
 	
 	

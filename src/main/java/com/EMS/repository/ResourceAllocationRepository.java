@@ -9,9 +9,8 @@ import com.EMS.model.Alloc;
 
 public interface ResourceAllocationRepository extends JpaRepository<Alloc, Long> {
 
-//	@Query("SELECT s FROM Alloc s WHERE s.ProjectModel.id = ?1")
-	@Query("SELECT s FROM Alloc s ")
 
+	@Query("SELECT s FROM Alloc s WHERE s.projectModel.id = ?1")
 	List<Alloc> getProjectLists(Long projectId);
 
 	

@@ -32,58 +32,9 @@ public class ResourceAllocationController {
 	@Autowired
 	ProjectService projectService;
 
-	@PostMapping(value = "/add")
-	public void getString(@RequestBody Alloc resourceAllocationModel) {
-		resourceAllocation.save(resourceAllocationModel);
-
-	}
-
-	@GetMapping(value = "/findData")
-	public List<Alloc> getDetails() {
-		List<Alloc> list = resourceAllocation.getList();
-		return list;
-	}
-
-	@GetMapping(value = "/getData/{id}")
-	public ResponseEntity<Alloc> getData(@PathVariable("id") Long id) {
-		Alloc alloc = resourceAllocation.findDataBy(id);
-		return new ResponseEntity<Alloc>(alloc, HttpStatus.OK);
-
-	}
-
-	@DeleteMapping(value = "/deleteData/{id}")
-	public ResponseEntity<Alloc> deleteData(@PathVariable("id") Long id) {
-		resourceAllocation.remove(id);
-		return new ResponseEntity<Alloc>(HttpStatus.OK);
-
-	}
-
-//	 @PutMapping(value = "/update", headers="Accept=application/json")
-//	 public ResponseEntity<String> updateData(@RequestBody Alloc currentAlloc ){
-//		 Alloc alloc = resourceAllocation.findDataBy(currentAlloc.getId());
-//		 if(alloc == null) {
-//			 return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
-//		 }
-//		 resourceAllocation.updateData(currentAlloc);
-//		return new ResponseEntity<String>(HttpStatus.OK);
-//		 
-//	 }
-//	 
-	@PatchMapping(value = "/partialUpdate/{id}")
-	public ResponseEntity<Alloc> partialupdate(@RequestBody Alloc alloc, @PathVariable("id") Long id) {
-		Alloc allocs = resourceAllocation.findDataBy(id);
-		if (allocs == null) {
-			return new ResponseEntity<Alloc>(HttpStatus.NOT_FOUND);
-		}
-		Alloc alloc1 = resourceAllocation.updatePartially(alloc, id);
-		return new ResponseEntity<Alloc>(alloc1, HttpStatus.OK);
-	}
-	
-	
-	
 	
 
-	// To get department name list
+	// To get user name list
 
 	@GetMapping(value = "/getUsers")
 	public List getUsernameList() {
@@ -92,6 +43,7 @@ public class ResourceAllocationController {
 
 	}
 
+	
 	// To get department name list
 
 	@GetMapping(value = "/getDepartment")
@@ -100,19 +52,36 @@ public class ResourceAllocationController {
 		return departmentList;
 
 	}
+	
 
 	// To get the allocation list based on project name
 
-	@GetMapping(value = "/allocationList/{projectId}")
+	@GetMapping(value = "/getresourceList/{projectId}")
 	public List<Alloc> getAllocationLists(@PathVariable("projectId") Long projectId) {
-//		 Long projectId = projectService.getProjectId(projectName);
 		List<Alloc> alloc = resourceAllocation.getAllocationList(projectId);
 //		 List<Alloc> alloc = resourceAllocation.getList();
+		
 		return alloc;
 
 	}
+	
+	
+//	@GetMapping(value = "/getresourceList/{projectId}")
+//	public String getAllocationLists(@PathVariable("projectId") Long projectId) {
+//		List<Alloc> alloc = resourceAllocation.getAllocationList(projectId);
+////		 List<Alloc> alloc = resourceAllocation.getList();
+//		for(Alloc item : alloc) {
+//			
+//		}
+//		
+//		
+//		return null;
+//
+//	}
+//	
 
 	// To update resource allocation data
+	
 	@PutMapping(value = "/update")
 	public ResponseEntity<Alloc> updateData(@RequestBody Alloc newAlloc) {
 		Long id = newAlloc.getId();

@@ -11,6 +11,7 @@ import com.EMS.model.UserModel;
 import com.EMS.repository.DepartmentRepository;
 import com.EMS.repository.ProjectRepositary;
 import com.EMS.repository.ResourceAllocationRepository;
+import com.EMS.repository.UserRepositary;
 
 
 @Service
@@ -25,6 +26,9 @@ public class ResourceAllocationServiceImpl implements ResourceAllocationService{
 	
 	@Autowired
 	DepartmentRepository departmentRepository;
+	
+	@Autowired
+	UserRepositary userRepository;
 	
 	@Override
 	 public void save(Alloc resourceAllocationModel) {
@@ -75,7 +79,7 @@ public class ResourceAllocationServiceImpl implements ResourceAllocationService{
 
 	@Override
 	public List<UserModel> getUserList() {
-        List<UserModel> userList = null;
+        List<UserModel> userList = userRepository.getUser();
 		return userList;
 	}
 }
