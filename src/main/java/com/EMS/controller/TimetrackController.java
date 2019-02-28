@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
@@ -52,17 +53,25 @@ public class TimetrackController {
 	 
 	 
 	 @GetMapping(value = "/getprojectTaskDatas")
-	 public List getprojectnameList(){
-		 List<String> projectNameList = projectService.getProjectsList();
+	 public JSONObject getprojectnameList(){
+		 List<String> projectTitleList = projectService.getProjectsList();
+		 List<String> taskTypesList = projectService.getProjectsList();
+
+		  JSONObject projectTaskDatas = new JSONObject();
+		  projectTaskDatas.put("projectTitle", projectTitleList);
+		  projectTaskDatas.put("taskTypes", taskTypesList);
+			
+		
 //		 for(ThirdPartyIncidentreportTopTile thirdPartyIncidentreportTopTile : thirdPartyIncidentreportTopTileList ) {
 //             JSONObject jsonTopTileObj = new JSONObject();
 //             jsonTopTileObj.put("incident_type", (thirdPartyIncidentreportTopTile.getInc_type()!=null)?thirdPartyIncidentreportTopTile.getInc_type():null);
 //             jsonTopTileObj.put("incident_count", (thirdPartyIncidentreportTopTile.getRec_count()!=null)?thirdPartyIncidentreportTopTile.getRec_count():null);
 //             jsonDataArry.put(jsonTopTileObj);
 //         }
-		return projectNameList;
+		return projectTaskDatas;
 		 
 	 }
+	 
 	 
 	 @PostMapping(value="/create",headers="Accept=application/json")
 	 public ResponseEntity<Void> createTimrtrackRecord(@RequestBody Timetrack timetrack, UriComponentsBuilder ucBuilder){
