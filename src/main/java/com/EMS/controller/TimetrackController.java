@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.EMS.dto.taskDetails;
+import com.EMS.dto.Taskdetails;
 import com.EMS.model.Timetrack;
 import com.EMS.service.ProjectService;
 import com.EMS.service.TaskService;
@@ -54,11 +54,10 @@ public class TimetrackController {
 	TaskService taskService;
 
 	@PostMapping(value = "/getTaskdetails")
-	public List<Timetrack> getByDate(@RequestBody taskDetails requestdata) {
-		System.out.println("Date : " + requestdata.getTaskDate());
-		System.out.println("Uname : " + requestdata.getUname());
-//		List<Timetrack> tracklist = timetrackService.getByDate(requestdata.getTaskDate());
-		return timetrackService.getByDate(requestdata.getTaskDate());
+	public List<Timetrack> getByDate(@RequestBody Taskdetails requestdata) {
+		List<Timetrack> tracklist =null;
+		 tracklist = timetrackService.getByDate(requestdata.getTaskDate());
+		return tracklist;
 	}
 
 	@GetMapping(value = "/getprojectTaskDatas")

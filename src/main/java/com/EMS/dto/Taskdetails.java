@@ -4,7 +4,7 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-public class taskDetails {
+public class Taskdetails {
 	
 	private String uname;
 	private Date taskDate;
