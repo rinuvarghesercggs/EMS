@@ -42,7 +42,7 @@ public class LoginController {
 				try {
 //					Invoking user authentication method 					
 					UserModel usercheck=login_service.login_authentication(username,password);	
-					System.out.println("id : "+usercheck.getId()+" user : "+usercheck.getUserName()+" role : "+usercheck.getRoleId());
+					
 					if(usercheck==null) 
 //						Setting status on json object							
 						response.put("status", "Failed");									

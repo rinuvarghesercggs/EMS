@@ -8,10 +8,12 @@ import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.stereotype.Service;
 
 import com.EMS.model.ContractModel;
+import com.EMS.model.DepartmentModel;
 import com.EMS.model.ProjectModel;
 import com.EMS.model.Resources;
 import com.EMS.model.UserModel;
 import com.EMS.repository.ContractRepositary;
+import com.EMS.repository.DepartmentRepository;
 import com.EMS.repository.ProjectRepository;
 import com.EMS.repository.ResourceRepository;
 import com.EMS.repository.UserRepositary;
@@ -30,6 +32,9 @@ public class ProjectServiceImpl implements ProjectService{
 	
 	@Autowired
 	ContractRepositary contract_repository;
+	
+	@Autowired
+	DepartmentRepository department_repositary;
 	
 	@Override
 	public ProjectModel save_project_record(ProjectModel projectmodel) {		
@@ -61,11 +66,11 @@ public class ProjectServiceImpl implements ProjectService{
 		return user_owner;
 	}
 
-	@Override
-	public ArrayList<ProjectModel> getProjects() {
-		ArrayList<ProjectModel> project=(ArrayList<ProjectModel>) project_repositary.findAll();
-		return project;
-	}
+//	@Override
+//	public ArrayList<ProjectModel> getProjects() {
+//		ArrayList<ProjectModel> project=(ArrayList<ProjectModel>) project_repositary.findAll();
+//		return project;
+//	}
 
 	@Override
 	public ArrayList<ContractModel> getcontract_type() {
@@ -82,6 +87,12 @@ public class ProjectServiceImpl implements ProjectService{
 			return contract;
 		}
 		
+	}
+
+	@Override
+	public List<DepartmentModel> getdepartment() {
+		List<DepartmentModel> department=department_repositary.findAll();
+		return department;
 	}
 
 	

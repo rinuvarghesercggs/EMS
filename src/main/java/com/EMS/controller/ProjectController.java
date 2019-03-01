@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.EMS.model.ContractModel;
+import com.EMS.model.DepartmentModel;
 import com.EMS.model.ProjectModel;
 import com.EMS.model.Resources;
 import com.EMS.model.UserModel;
@@ -59,7 +61,8 @@ public class ProjectController {
 				ProjectModel projectmodel=projectservice.save_project_record(project);
 				
 //				method invocation for storing resouces of project created
-				String resource=requestdata.get("resources").toString();
+				Resources resource=(Resources)requestdata.get("resources");
+				System.out.println("resource"+resource.getDepartment());
 				
 				responsedata.put("status", "success");
 		}catch(Exception e) {
@@ -71,12 +74,12 @@ public class ProjectController {
 	
 	
 	
-	@GetMapping("/project")
-	public ArrayList<ProjectModel> getproject(){
-		ArrayList<ProjectModel> project=projectservice.getProjects();
-		return project;
-	}
-	
+//	@GetMapping("/project")
+//	public ArrayList<ProjectModel> getproject(){
+//		ArrayList<ProjectModel> project=projectservice.getProjects();
+//		return project;
+//	}
+//	
 	
 	
 	//Api for getting project owner details from user table
@@ -91,6 +94,7 @@ public class ProjectController {
 //		Json array for storing filtered data from two tables
 		ArrayList<JSONObject> userarray=new ArrayList<JSONObject>();
 		JSONArray contract_array=new JSONArray();
+		JSONArray department_array=new JSONArray();
 		
 //		json object for storing records array
 		JSONObject array=new JSONObject();
@@ -130,10 +134,10 @@ public class ProjectController {
 				if(users_owner.isEmpty())
 					array.put("user_owner", userarray);
 				else {
-					System.out.println("1.2");
+					
 //					Looping for storing data on json array				
 					for(String user : users_owner) {
-						System.out.println("1.2");	
+						
 //					json object for storing single record
 						JSONObject object=new JSONObject();
 						
@@ -149,7 +153,34 @@ public class ProjectController {
 
 					
 				}
+				
+//				Method invocation for getting users  with role as owner				
+				List<DepartmentModel> department=projectservice.getdepartment();				
 			
+				if(department.isEmpty())
+					array.put("department_resource", department_array);
+				else {
+					
+//					Looping for storing data on json array				
+					for(DepartmentModel dept : department) {
+						
+//					json object for storing single record
+						JSONObject object=new JSONObject();
+						
+//						adding records to json object
+						object.put("id", dept.getId());
+						object.put("department", dept.getDepartment_name());
+						
+//						adding records object to json array
+						department_array.add(object);			
+					}
+					
+//					storing records array to json object
+					array.put("department_resource", department_array);
+
+					
+				}
+				
 //				storing data on response object
 				responsedata.put("status", "success");
 				responsedata.put("data", array);
