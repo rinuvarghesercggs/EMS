@@ -20,47 +20,111 @@ import org.hibernate.annotations.ForeignKey;
 import com.fasterxml.jackson.annotation.JacksonInject;
 
 @Entity
-@Table(name="User")
+@Table(name = "User")
 public class UserModel {
 
 	@Id
-	@Column(name="id")
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name = "id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	
 
 	@ManyToOne
 	private DepartmentModel departmentId;
-	
+
 	@ManyToOne
 	private RoleModel roleId;
-	private String firstName,lastName,userName,password,email;
+	private String firstName, lastName, userName, password, email;
 	private int contact;
-	
-	@ManyToMany
-	private List<TaskModel> taskModel;
-	
-//	@ManyToMany
-//	private List<Alloc> alloc;
-	
-	public List getTaskModel() {
+
+	@ManyToOne
+	private TaskModel taskModel;
+
+	public TaskModel getTaskModel() {
 		return taskModel;
 	}
 
-//	public List<Alloc> getAlloc() {
-//		return alloc;
-//	}
-//
-//	public void setAlloc(List<Alloc> alloc) {
-//		this.alloc = alloc;
-//	}
+	public void setTaskModel(TaskModel taskModel) {
+		this.taskModel = taskModel;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public DepartmentModel getDepartmentId() {
+		return departmentId;
+	}
+
+	public void setDepartmentId(DepartmentModel departmentId) {
+		this.departmentId = departmentId;
+	}
+
+	public RoleModel getRoleId() {
+		return roleId;
+	}
+
+	public void setRoleId(RoleModel roleId) {
+		this.roleId = roleId;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public int getContact() {
+		return contact;
+	}
+
+	public void setContact(int contact) {
+		this.contact = contact;
+	}
 
 	public UserModel() {
-		
+
 	}
-	
-	public UserModel(long id,String firstName, String lastName, String userName,
-			String password, String email, int contact,List taskModel ) {
+
+	public UserModel(long id, String firstName, String lastName, String userName, String password, String email,
+			int contact, TaskModel taskModel) {
 		super();
 		this.id = id;
 		this.firstName = firstName;
@@ -69,67 +133,7 @@ public class UserModel {
 		this.password = password;
 		this.email = email;
 		this.contact = contact;
-		this.taskModel=taskModel;
+		this.taskModel = taskModel;
 	}
-	
-	public long getId() {
-		return id;
-	}
-	public void setId(long id) {
-		this.id = id;
-	}
-	
-	public DepartmentModel getDepartmentId() {
-		return departmentId;
-	}
-	public void setDepartmentId(DepartmentModel departmentId) {
-		this.departmentId = departmentId;
-	}
-	
 
-	public RoleModel getRoleId() {
-		return roleId;
-	}
-	public void setRoleId(RoleModel roleId) {
-		this.roleId = roleId;
-	}
-	public String getFirstName() {
-		return firstName;
-	}
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-	public String getLastName() {
-		return lastName;
-	}
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-	public String getUserName() {
-		return userName;
-	}
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	public String getEmail() {
-		return email;
-	}
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	public int getContact() {
-		return contact;
-	}
-	public void setContact(int contact) {
-		this.contact = contact;
-	}
-	
-	
-	
 }

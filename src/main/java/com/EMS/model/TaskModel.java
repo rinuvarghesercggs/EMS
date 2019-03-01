@@ -25,8 +25,8 @@ public class TaskModel {
 	@ManyToOne
 	private ProjectModel projectId;
 
-	@ManyToMany(targetEntity = UserModel.class)
-	private List userId;
+	@ManyToOne
+	private UserModel userId;
 
 	private String taskName;
 
@@ -46,11 +46,11 @@ public class TaskModel {
 		this.projectId = projectId;
 	}
 
-	public List getUserId() {
+	public UserModel getUserId() {
 		return userId;
 	}
 
-	public void setUserId(List userId) {
+	public void setUserId(UserModel userId) {
 		this.userId = userId;
 	}
 
@@ -62,7 +62,7 @@ public class TaskModel {
 		this.taskName = taskName;
 	}
 
-	public TaskModel(long id, String taskName, List userId) {
+	public TaskModel(long id, String taskName, UserModel userId) {
 		super();
 		this.userId =userId;
 		this.id = id;
