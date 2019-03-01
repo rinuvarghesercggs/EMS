@@ -12,5 +12,9 @@ public interface TaskRepository extends JpaRepository<TaskModel, Long> {
 	
 	@Query("SELECT t.taskName FROM TaskModel t")
 	List<String> getTaskName();
+	
+	
+	@Query("SELECT t.taskName FROM TaskModel t WHERE t.userId=?1")
+	List<String> getTaskByUser(Long id);
 
 }

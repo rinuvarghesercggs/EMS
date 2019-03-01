@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.EMS.dto.Taskdetails;
+import com.EMS.model.TaskModel;
 import com.EMS.model.Timetrack;
 import com.EMS.service.ProjectService;
 import com.EMS.service.TaskService;
@@ -54,11 +55,20 @@ public class TimetrackController {
 	TaskService taskService;
 
 	@PostMapping(value = "/getTaskdetails")
-	public List<Timetrack> getByDate(@RequestBody Taskdetails requestdata) {
-		List<Timetrack> tracklist =null;
-		 tracklist = timetrackService.getByDate(requestdata.getTaskDate(),requestdata.getuId());
+	public Taskdetails getByDate(@RequestBody Taskdetails requestdata) {
+		Taskdetails tracklist =null;
+		
+		
+		JSONObject newObject =null;
+		
+		
+		tracklist = timetrackService.getByDate(requestdata.getTaskDate(),requestdata.getuId());
+		
 		return tracklist;
 	}
+	
+	
+	
 
 	@GetMapping(value = "/getprojectTaskDatas")
 	public JSONObject getprojectnameList() {

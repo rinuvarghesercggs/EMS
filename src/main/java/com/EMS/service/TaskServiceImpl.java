@@ -19,6 +19,12 @@ public class TaskServiceImpl implements TaskService {
 		List<String> taskList = taskRepository.getTaskName();
 		return taskList;
 	}
+	
+	@Override
+	public List<String> getTaskByUserId(Long id) {
+		List<String> taskByUser= taskRepository.getTaskByUser(id);
+		return taskByUser;
+	}
 
 
 }

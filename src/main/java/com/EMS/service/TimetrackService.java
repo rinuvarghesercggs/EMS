@@ -3,6 +3,10 @@ package com.EMS.service;
 import java.util.Date;
 import java.util.List;
 
+import org.json.simple.JSONObject;
+
+import com.EMS.dto.Taskdetails;
+import com.EMS.model.TaskModel;
 import com.EMS.model.Timetrack;
 
 public interface TimetrackService {
@@ -14,6 +18,7 @@ public interface TimetrackService {
 	public void deleteRecordById(long id);
 	
 	
-	public List<Timetrack> getByDate(Date currentDate,Long uId);
+	public Taskdetails getByDate(Date currentDate,Long uId);
+	public JSONObject getByDatenew(Date currentDate,Long uId);
 
 }

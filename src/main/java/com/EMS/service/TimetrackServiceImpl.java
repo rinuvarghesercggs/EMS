@@ -4,9 +4,12 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.EMS.dto.Taskdetails;
+import com.EMS.model.TaskModel;
 import com.EMS.model.Timetrack;
 import com.EMS.repository.TimetrackRepository;
 
@@ -38,8 +41,15 @@ public class TimetrackServiceImpl implements TimetrackService {
 		timetrackRepository.deleteById(id);
 	}
 	
-	public List<Timetrack>getByDate(Date currentDate,Long uId){
-		return (List<Timetrack>) timetrackRepository.getByDate(currentDate,uId);
+	
+	
+	public Taskdetails getByDate(Date currentDate,Long uId){
+		return  timetrackRepository.getByDate(currentDate,uId);
+				
+	}
+	
+	public JSONObject getByDatenew(Date currentDate,Long uId){
+		return  timetrackRepository.getByDatenew(currentDate,uId);
 				
 	}
 
