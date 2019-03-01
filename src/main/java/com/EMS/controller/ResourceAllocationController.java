@@ -3,6 +3,8 @@ package com.EMS.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.websocket.server.PathParam;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,12 +42,22 @@ public class ResourceAllocationController {
 			List<UserModel> userList = resourceAllocation.getUserList();
 			List<DepartmentModel> departmentList = resourceAllocation.getDepartmentList();
 
-			if (!(userList).isEmpty() && userList.size() > 0 && !(departmentList).isEmpty()
-					&& departmentList.size() > 0) {
+			if (userList.isEmpty() && userList.size() <=0 && departmentList.isEmpty()
+					&& departmentList.size() <= 0) {
+				jsonDataRes.put("status", "Failure");
+			}
+			if(!(userList).isEmpty() && userList.size() > 0) {
 				jsonData.put("userList", userList);
 				jsonData.put("departmentList", departmentList);
-				jsonDataRes.put("status", "Success");
+
 			}
+		    if(!(departmentList).isEmpty()	&& departmentList.size() > 0) {
+				jsonData.put("departmentList", departmentList);
+				jsonData.put("userList", userList);
+
+			}
+				jsonDataRes.put("status", "Success");
+			
 		} catch (Exception e) {
 			jsonDataRes.put("status", "Failure");
 		}
@@ -54,38 +66,38 @@ public class ResourceAllocationController {
 
 	}
 
-	// To get the allocation list based on project name
-
-	@GetMapping(value = "/getresourceList/{projectId}")
-	public JSONObject getAllocationLists(@PathVariable("projectId") Long projectId) {
-		List<Alloc> alloc = resourceAllocation.getAllocationList(projectId);
-		String response = null;
-		JSONObject jsonData = new JSONObject();
-		JSONObject jsonDataRes = new JSONObject();
-		List<JSONObject> jsonArray = new ArrayList<>();
-
-		try {
-			if (!(alloc.isEmpty() && alloc.size() > 0)) {
-				for (Alloc item : alloc) {
-					JSONObject jsonObject = new JSONObject();
-					jsonObject.put("id", item.getId());
-					jsonObject.put("projectTitle", item.getProjectModel().getProject_name());
-					jsonObject.put("name", item.getUserModel().getFirstName());
-					jsonObject.put("allocatedVal", item.getAllocatedPerce());
-					jsonObject.put("allocatedFree", item.getFreeAllocation());
-					jsonArray.add(jsonObject);
-				}
-
-				jsonData.put("resourceList", jsonArray);
-				jsonDataRes.put("status", "Success");
-			}
-		} catch (Exception e) {
-			jsonDataRes.put("status", "Failure");
-		}
-		jsonDataRes.put("data", jsonData);
-		return jsonDataRes;
-
-	}
+//	// To get the allocation list based on project name
+//
+//	@GetMapping(value = "/getresourceList/{projectId}")
+//	public JSONObject getAllocationLists(@PathVariable("projectId") Long projectId) {
+//		List<Alloc> alloc = resourceAllocation.getAllocationList(projectId);
+//		String response = null;
+//		JSONObject jsonData = new JSONObject();
+//		JSONObject jsonDataRes = new JSONObject();
+//		List<JSONObject> jsonArray = new ArrayList<>();
+//
+//		try {
+//			if (!(alloc.isEmpty() && alloc.size() > 0)) {
+//				for (Alloc item : alloc) {
+//					JSONObject jsonObject = new JSONObject();
+//					jsonObject.put("id", item.getId());
+//					jsonObject.put("projectTitle", item.getProjectModel().getProject_name());
+//					jsonObject.put("name", item.getUserModel().getFirstName());
+//					jsonObject.put("allocatedVal", item.getAllocatedPerce());
+//					jsonObject.put("allocatedFree", item.getFreeAllocation());
+//					jsonArray.add(jsonObject);
+//				}
+//
+//				jsonData.put("resourceList", jsonArray);
+//				jsonDataRes.put("status", "Success");
+//			}
+//		} catch (Exception e) {
+//			jsonDataRes.put("status", "Failure");
+//		}
+//		jsonDataRes.put("data", jsonData);
+//		return jsonDataRes;
+//
+//	}
 
 	// To update resource allocation data
 
@@ -161,5 +173,50 @@ public class ResourceAllocationController {
 //		return jsonDataRes;
 //
 //	}
+	
+	
+	
+	
+	// To get the allocation list 
+
+		@GetMapping(value = "/getresourceList")
+		public JSONObject getAllocationLists() {
+			List<Alloc> alloc = resourceAllocation.getAllocationLists();
+			List<UserModel> userList = resourceAllocation.getUserList();
+			List<DepartmentModel> departmentList = resourceAllocation.getDepartmentList();
+
+			String response = null;
+			JSONObject jsonData = new JSONObject();
+			JSONObject jsonDataRes = new JSONObject();
+			List<JSONObject> jsonArray = new ArrayList<>();
+
+			try {
+				if (!(alloc.isEmpty() && alloc.size() > 0)) {
+					for (Alloc item : alloc) {
+						JSONObject jsonObject = new JSONObject();
+						jsonObject.put("id", item.getId());
+						jsonObject.put("projectTitle", item.getProjectModel().getProject_name());
+						jsonObject.put("name", item.getUserModel().getFirstName());
+						jsonObject.put("allocatedVal", item.getAllocatedPerce());
+						jsonObject.put("allocatedFree", item.getFreeAllocation());
+						jsonArray.add(jsonObject);
+					}
+
+					jsonData.put("resourceList", jsonArray);
+				}
+				
+				jsonData.put("userList", userList);
+				jsonData.put("departmentList", departmentList);
+				jsonDataRes.put("status", "Success");
+
+				
+			} catch (Exception e) {
+				jsonDataRes.put("status", "Failure");
+			}
+			jsonDataRes.put("data", jsonData);
+			return jsonDataRes;
+
+		}
+
 
 }

@@ -82,4 +82,12 @@ public class ResourceAllocationServiceImpl implements ResourceAllocationService{
         List<UserModel> userList = userRepository.getUser();
 		return userList;
 	}
+
+	@Override
+	public List<Alloc> getAllocationLists() {
+		List<Alloc> allocList = resourceAllocationRepository.findAll();
+		return allocList;
+	}
+
+	
 }

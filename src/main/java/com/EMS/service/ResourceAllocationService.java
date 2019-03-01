@@ -18,6 +18,7 @@ public interface ResourceAllocationService {
 	public List<Alloc> getAllocationList(Long projectId);
 	public List<DepartmentModel> getDepartmentList();
 	public List<UserModel> getUserList();
+	public List<Alloc> getAllocationLists();
 	
 
 }
