@@ -31,33 +31,33 @@ public class ProjectServiceImpl implements ProjectService{
 	@Autowired
 	ContractRepositary contract_repository;
 	
-	@Override
-	public ArrayList<Long> save_project_record(ProjectModel projectmodel) {		
-		
-	
-			ArrayList<Long> index=new ArrayList<>();
-			
-		try {
-			ProjectModel model=null;
-				int length=projectmodel.getResources().size();
-				model=project_repositary.save(projectmodel);
-				
-				for(int i=0;i<length;i++) {
-				
-				Resources resour=resource_repository.save(projectmodel.getResources().get(i));
-				index.add(resour.getId());
-				}
-						//Saving project record by using repositary instance
-			
-			return index;
-			
-		}catch(Exception e) {
-			System.out.println("Exception : "+e);
-			return index;
-		}
-		
-		
-	}
+//	@Override
+//	public ArrayList<Long> save_project_record(ProjectModel projectmodel) {		
+//		
+//	
+//			ArrayList<Long> index=new ArrayList<>();
+//			
+//		try {
+//			ProjectModel model=null;
+//				int length=projectmodel.getResources().size();
+//				model=project_repositary.save(projectmodel);
+//				
+//				for(int i=0;i<length;i++) {
+//				
+//				Resources resour=resource_repository.save(projectmodel.getResources().get(i));
+//				index.add(resour.getId());
+//				}
+//						//Saving project record by using repositary instance
+//			
+//			return index;
+//			
+//		}catch(Exception e) {
+//			System.out.println("Exception : "+e);
+//			return index;
+//		}
+//		
+//		
+//	}
 
 	@Override
 	public List<String> getProjectsList() {
@@ -75,19 +75,11 @@ public class ProjectServiceImpl implements ProjectService{
 	
 
 	@Override
-	public ArrayList<UserModel> getproject_owner() {
+	public List<String> getproject_owner() {
+		List<String> user_owner=new ArrayList<String>();
+		user_owner=user_repositary.getProjectOwners();
 		
-		ArrayList<UserModel> user_owner=null;		//initilizing the usermodel array
-		
-		try {
-			user_owner=user_repositary.getProjectOwners();	//invoking the query through repositary instance
-			return user_owner;
-		}catch(Exception e) {
-			System.out.println("Exception : "+e);
-			return user_owner;
-		}
-		
-		
+		return user_owner;
 	}
 
 //	@Override
@@ -98,8 +90,19 @@ public class ProjectServiceImpl implements ProjectService{
 
 	@Override
 	public ArrayList<ContractModel> getcontract_type() {
-		ArrayList<ContractModel> contract=(ArrayList<ContractModel>) contract_repository.findAll();
-		return contract;
+		
+	
+		ArrayList<ContractModel> contract=null;
+		try {
+//			getting contract type records 
+			contract=(ArrayList<ContractModel>) contract_repository.findAll();
+			
+			return contract;
+		}catch(Exception e) {
+			System.out.println("contract 1 Exception : "+e);
+			return contract;
+		}
+		
 	}
 
 	

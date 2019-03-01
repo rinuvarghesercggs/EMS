@@ -11,15 +11,15 @@ import com.EMS.model.UserModel;
 public interface ProjectService {
 
 	//method declaration for saving new project record 
-	ArrayList<Long> save_project_record(ProjectModel projectmodel);
+	//ArrayList<Long> save_project_record(ProjectModel projectmodel);
 
     List<String> getProjectsList();
 
 
 	Long getProjectId(String projectName);
 
-    //method declaration for getting user details for project creation
-	ArrayList<UserModel> getproject_owner();
+//	method declaration for getting user details for project creation
+	List<String> getproject_owner();
 
 //	ArrayList<ProjectModel> getProjects();
 	

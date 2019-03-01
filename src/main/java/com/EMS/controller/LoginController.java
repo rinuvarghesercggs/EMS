@@ -40,8 +40,8 @@ public class LoginController {
 			
 				try {
 //					Invoking user authentication method 					
-					String usercheck=login_service.login_authentication(username,password);	
-					if(usercheck==null) 
+					long usercheck=login_service.login_authentication(username,password);	
+					if(usercheck==0) 
 //						Setting status on json object							
 						response.put("status", "Failed");									
 					else
