@@ -30,6 +30,7 @@ public class LoginServiceImpl implements LoginService {
 		try {
 //			calling sql query by passing parameters			
 			checkuserid=login_repositary.getUserdetails(userName,password);
+			System.out.print("user : "+checkuserid.getId());
 			return checkuserid;
 		}catch(Exception e) {
 			System.out.println("Exception : "+e);

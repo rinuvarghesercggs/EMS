@@ -61,8 +61,10 @@ public class ProjectController {
 				ProjectModel projectmodel=projectservice.save_project_record(project);
 				
 //				method invocation for storing resouces of project created
-				Resources resource=(Resources)requestdata.get("resources");
-				System.out.println("resource"+resource.getDepartment());
+				String resource=requestdata.get("resources").toString();
+				
+				 
+				System.out.println("resource"+resource);
 				
 				responsedata.put("status", "success");
 		}catch(Exception e) {

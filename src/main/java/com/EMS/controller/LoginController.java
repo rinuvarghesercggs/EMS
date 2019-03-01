@@ -42,7 +42,7 @@ public class LoginController {
 				try {
 //					Invoking user authentication method 					
 					UserModel usercheck=login_service.login_authentication(username,password);	
-					
+					System.out.print("user :"+usercheck.getId());
 					if(usercheck==null) 
 //						Setting status on json object							
 						response.put("status", "Failed");									
@@ -52,7 +52,7 @@ public class LoginController {
 						
 						data.put("username", usercheck.getUserName());
 						data.put("id", usercheck.getId());
-						data.put("role", usercheck.getRoleId());
+						data.put("role", usercheck.getRoleId().getId());
 					}
 //						Setting data on json object
 						response.put("data", data);									
