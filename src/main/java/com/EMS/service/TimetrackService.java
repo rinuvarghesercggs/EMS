@@ -14,6 +14,6 @@ public interface TimetrackService {
 	public void deleteRecordById(long id);
 	
 	
-	public List<Timetrack> getByDate(Date currentDate);
+	public List<Timetrack> getByDate(Date currentDate,Long uId);
 
 }

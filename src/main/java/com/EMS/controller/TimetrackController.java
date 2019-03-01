@@ -56,7 +56,7 @@ public class TimetrackController {
 	@PostMapping(value = "/getTaskdetails")
 	public List<Timetrack> getByDate(@RequestBody Taskdetails requestdata) {
 		List<Timetrack> tracklist =null;
-		 tracklist = timetrackService.getByDate(requestdata.getTaskDate());
+		 tracklist = timetrackService.getByDate(requestdata.getTaskDate(),requestdata.getuId());
 		return tracklist;
 	}
 

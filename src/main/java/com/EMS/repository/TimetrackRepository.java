@@ -13,6 +13,6 @@ public interface TimetrackRepository extends JpaRepository<Timetrack, Long> {
 	
 	
 	@Query("SELECT k FROM Timetrack k WHERE k.date=?1")
-	List<Timetrack> getByDate(Date currentDate);
+	List<Timetrack> getByDate(Date currentDate,Long uId);
 
 }

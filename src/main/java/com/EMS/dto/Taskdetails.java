@@ -6,13 +6,14 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class Taskdetails {
 	
-	private String uname;
+	private Long uId;
 	private Date taskDate;
-	public String getUname() {
-		return uname;
+	
+	public Long getuId() {
+		return uId;
 	}
-	public void setUname(String uname) {
-		this.uname = uname;
+	public void setuId(Long uId) {
+		this.uId = uId;
 	}
 	public Date getTaskDate() {
 		return taskDate;

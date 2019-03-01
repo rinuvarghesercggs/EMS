@@ -1,6 +1,5 @@
 package com.EMS.model;
 
-
 import java.util.List;
 import java.util.Set;
 
@@ -15,24 +14,22 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="Task")
+@Table(name = "Task")
 public class TaskModel {
-	
+
 	@Id
-	@Column(name="id")
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name = "id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	
+
 	@ManyToOne
 	private ProjectModel projectId;
-	
-	@ManyToMany(targetEntity=UserModel.class)
-	private Set userId;
-	
+
+	@ManyToMany(targetEntity = UserModel.class)
+	private List userId;
+
 	private String taskName;
-	
-	
-	
+
 	public long getId() {
 		return id;
 	}
@@ -49,11 +46,11 @@ public class TaskModel {
 		this.projectId = projectId;
 	}
 
-	public Set getUserId() {
+	public List getUserId() {
 		return userId;
 	}
 
-	public void setUserId(Set userId) {
+	public void setUserId(List userId) {
 		this.userId = userId;
 	}
 
@@ -65,16 +62,15 @@ public class TaskModel {
 		this.taskName = taskName;
 	}
 
-	public TaskModel(long id,String taskName,Set userId) {
+	public TaskModel(long id, String taskName, List userId) {
 		super();
-		this.userId=userId;
+		this.userId =userId;
 		this.id = id;
 		this.taskName = taskName;
 	}
-	
+
 	public TaskModel() {
 
 	}
-	
-	
+
 }

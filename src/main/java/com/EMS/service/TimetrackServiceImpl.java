@@ -38,8 +38,8 @@ public class TimetrackServiceImpl implements TimetrackService {
 		timetrackRepository.deleteById(id);
 	}
 	
-	public List<Timetrack>getByDate(Date currentDate){
-		return (List<Timetrack>) timetrackRepository.getByDate(currentDate);
+	public List<Timetrack>getByDate(Date currentDate,Long uId){
+		return (List<Timetrack>) timetrackRepository.getByDate(currentDate,uId);
 				
 	}
 

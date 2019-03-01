@@ -33,7 +33,7 @@ public class Timetrack {
    	private Integer hours;
     
     @ManyToOne
-    private TaskModel task;
+    private UserModel user;
      
      
 	public long getId() {
@@ -68,13 +68,14 @@ public class Timetrack {
 		this.hours = hours;
 	}
 
-	public TaskModel getTask() {
-		return task;
+	public UserModel getUser() {
+		return user;
 	}
 
-	public void setTask(TaskModel task) {
-		this.task = task;
+	public void setUser(UserModel user) {
+		this.user = user;
 	}
-	
+
+
 
 }
