@@ -36,24 +36,22 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.EMS.dto.Taskdetails;
 import com.EMS.model.Alloc;
+import com.EMS.model.ProjectModel;
 import com.EMS.model.TaskModel;
-import com.EMS.model.Timetrack;
 import com.EMS.service.ProjectService;
 import com.EMS.service.TaskService;
-import com.EMS.service.TimetrackService;
 
 import javassist.expr.NewArray;
 
 @RestController
 @RequestMapping(value = { "/timetrack" })
-public class TimetrackController {
+public class TasktrackController {
 
-	@Autowired
-	TimetrackService timetrackService;
 	@Autowired
 	ProjectService projectService;
 	@Autowired
 	TaskService taskService;
+	
 
 	@PostMapping(value = "/getTaskdetails")
 	public JSONObject getByDate(@RequestBody Taskdetails requestdata) {
@@ -62,9 +60,8 @@ public class TimetrackController {
 		JSONObject jsonData = new JSONObject();
 		JSONObject jsonDataRes = new JSONObject();
 		List<JSONObject> jsonArray = new ArrayList<>();
-
 		try {
-			if (!(tracklist.isEmpty() && tracklist.size() > 0)) {
+			if (!tracklist.isEmpty() && tracklist.size() > 0) {
 				for (TaskModel item : tracklist) {
 					JSONObject jsonObject = new JSONObject();
 					jsonObject.put("project", item.getProjectId().getProject_name());
@@ -75,6 +72,8 @@ public class TimetrackController {
 				}
 				jsonData.put("taskDetails", jsonArray);
 				jsonDataRes.put("status", "Success");
+			} else {
+				jsonDataRes.put("status", "Date Not Found");
 			}
 		} catch (Exception e) {
 			jsonDataRes.put("status", "Failure");
@@ -85,6 +84,7 @@ public class TimetrackController {
 		return jsonDataRes;
 	}
 
+	
 	@GetMapping(value = "/getprojectTaskDatas")
 	public JSONObject getprojectnameList() {
 		List<String> projectTitleList = projectService.getProjectsList();
@@ -108,57 +108,65 @@ public class TimetrackController {
 	}
 
 	
-	@PostMapping(value = "/addTask", headers = "Accept=application/json")
-	public ResponseEntity<Void> createTimrtrackRecord(@RequestBody Timetrack timetrack,
-			UriComponentsBuilder ucBuilder) {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setLocation(ucBuilder.path("/timetrack/get").buildAndExpand(timetrack.getId()).toUri());
-		return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
+	@PutMapping(value = "/addTask", headers = "Accept=application/json")
+	public List<JSONObject> updateData(@RequestBody List<JSONObject> taskData) {
+
+		JSONObject jsonDataRes = new JSONObject();
+
+//		try {
+			for(JSONObject item :taskData) {
+			String project = item.get("project").toString();
+			String taskType = item.get("taskType").toString();
+			String taskSummary = item.get("taskSummary").toString();
+			String hours = item.get("hours").toString();
+			String date = item.get("date").toString();
+			Long projectId = projectService.getProjectId(project);
+			ProjectModel proj =projectService.findById(projectId);
+			
+			
+//			TaskModel taskModel=taskService.get
+			
+			
+			TaskModel task = new TaskModel();
+			task.setHours(Integer.parseInt(hours));
+			task.setDescription(taskSummary);
+			task.setProjectId(proj);
+//			task.setDate(Date.parse(date);
+			}
+			jsonDataRes.put("status", "success");
+//			}
+//		} catch (Exception e) {
+//			jsonDataRes.put("status", "Failure");
+//		}
+
+		return taskData;
 	}
+
+
 
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	@GetMapping(value = "find/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Timetrack> getRecordById(@PathVariable("id") long id) {
-		System.out.println("Fetching Record with id " + id);
-		Timetrack timetrack = timetrackService.findById(id);
-		timetrack.setDate(new Date());
-		Timetrack timetracknew = timetrackService.update(timetrack);
-		System.out.println("Timetrack : " + timetrack);
-		if (timetrack == null) {
-			return new ResponseEntity<Timetrack>(HttpStatus.NOT_FOUND);
-		}
-		return new ResponseEntity<Timetrack>(timetracknew, HttpStatus.OK);
-	}
 
-	@GetMapping(value = "/get")
-	public List<Timetrack> getAllTimetrackRecords() {
-		List<Timetrack> tracklist = timetrackService.getAllRecord();
-		return tracklist;
-
-	}
+//	@GetMapping(value = "find/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+//	public ResponseEntity<Timetrack> getRecordById(@PathVariable("id") long id) {
+//		System.out.println("Fetching Record with id " + id);
+//		Timetrack timetrack = timetrackService.findById(id);
+//		timetrack.setDate(new Date());
+//		Timetrack timetracknew = timetrackService.update(timetrack);
+//		System.out.println("Timetrack : " + timetrack);
+//		if (timetrack == null) {
+//			return new ResponseEntity<Timetrack>(HttpStatus.NOT_FOUND);
+//		}
+//		return new ResponseEntity<Timetrack>(timetracknew, HttpStatus.OK);
+//	}
+//
+//	@GetMapping(value = "/get")
+//	public List<Timetrack> getAllTimetrackRecords() {
+//		List<Timetrack> tracklist = timetrackService.getAllRecord();
+//		return tracklist;
+//
+//	}
 //	
 
 //	 @PostMapping(value="/create",headers="Accept=application/json")

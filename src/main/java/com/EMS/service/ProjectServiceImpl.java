@@ -2,6 +2,7 @@ package com.EMS.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
@@ -19,27 +20,33 @@ import com.EMS.repository.ResourceRepository;
 import com.EMS.repository.UserRepositary;
 
 @Service
-public class ProjectServiceImpl implements ProjectService{
+public class ProjectServiceImpl implements ProjectService {
 
 	@Autowired
 	ProjectRepository project_repositary;
-	
+
 	@Autowired
 	UserRepositary user_repositary;
-	
+
 	@Autowired
 	ResourceRepository resource_repository;
-	
+
 	@Autowired
 	ContractRepositary contract_repository;
-	
+
 	@Autowired
 	DepartmentRepository department_repositary;
-	
+
 	@Override
-	public ProjectModel save_project_record(ProjectModel projectmodel) {		
-				
-				ProjectModel model=project_repositary.save(projectmodel);
+	public ProjectModel save_project_record(ProjectModel projectmodel) {
+
+		ProjectModel model = project_repositary.save(projectmodel);
+		return model;
+	}
+
+	@Override
+	public ProjectModel findById(Long id) {
+		ProjectModel model = project_repositary.getOne(id);
 		return model;
 	}
 
@@ -49,20 +56,17 @@ public class ProjectServiceImpl implements ProjectService{
 		return nameList;
 	}
 
-
 	@Override
 	public Long getProjectId(String projectName) {
 		Long pid = project_repositary.getProjectId(projectName);
 		return pid;
 	}
 
-	
-
 	@Override
 	public List<String> getproject_owner() {
-		List<String> user_owner=new ArrayList<String>();
-		user_owner=user_repositary.getProjectOwners();
-		
+		List<String> user_owner = new ArrayList<String>();
+		user_owner = user_repositary.getProjectOwners();
+
 		return user_owner;
 	}
 
@@ -74,28 +78,24 @@ public class ProjectServiceImpl implements ProjectService{
 
 	@Override
 	public ArrayList<ContractModel> getcontract_type() {
-		
-	
-		ArrayList<ContractModel> contract=null;
+
+		ArrayList<ContractModel> contract = null;
 		try {
 //			getting contract type records 
-			contract=(ArrayList<ContractModel>) contract_repository.findAll();
-			
+			contract = (ArrayList<ContractModel>) contract_repository.findAll();
+
 			return contract;
-		}catch(Exception e) {
-			System.out.println("contract 1 Exception : "+e);
+		} catch (Exception e) {
+			System.out.println("contract 1 Exception : " + e);
 			return contract;
 		}
-		
+
 	}
 
 	@Override
 	public List<DepartmentModel> getdepartment() {
-		List<DepartmentModel> department=department_repositary.findAll();
+		List<DepartmentModel> department = department_repositary.findAll();
 		return department;
 	}
-
-	
-
 
 }

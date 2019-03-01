@@ -16,6 +16,8 @@ public interface ProjectService {
 		ProjectModel save_project_record(ProjectModel project);
 
 		List<String> getProjectsList();
+		
+		ProjectModel findById(Long id);
 
 
 		Long getProjectId(String projectName);
@@ -30,6 +32,7 @@ public interface ProjectService {
 
 //		Method invocation for getting department details
 		List<DepartmentModel> getdepartment();
+
 
 
 
