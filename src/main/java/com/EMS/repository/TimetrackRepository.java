@@ -15,11 +15,9 @@ import com.EMS.model.Timetrack;
 public interface TimetrackRepository extends JpaRepository<Timetrack, Long> {
 	
 	
-	@Query("SELECT p.project_name,t.taskName FROM TaskModel t JOIN ProjectModel p  on p.id = t.projectId ")
-	Taskdetails getByDate(Date currentDate,Long uId);
 	
 	
-	@Query("SELECT p.project_name,t.taskName FROM TaskModel t JOIN ProjectModel p  on p.id = t.projectId WHERE t.userId = ?2")
-	JSONObject getByDatenew(Date currentDate,Long uId);
+	@Query("SELECT t FROM Timetrack t WHERE t.date =?1 ")
+	List<Timetrack>getByDate(Date currentDate);
 
 }

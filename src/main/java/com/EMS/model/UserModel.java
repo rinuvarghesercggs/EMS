@@ -36,16 +36,6 @@ public class UserModel {
 	private String firstName, lastName, userName, password, email;
 	private int contact;
 
-	@ManyToOne
-	private TaskModel taskModel;
-
-	public TaskModel getTaskModel() {
-		return taskModel;
-	}
-
-	public void setTaskModel(TaskModel taskModel) {
-		this.taskModel = taskModel;
-	}
 
 	public long getId() {
 		return id;
@@ -124,7 +114,7 @@ public class UserModel {
 	}
 
 	public UserModel(long id, String firstName, String lastName, String userName, String password, String email,
-			int contact, TaskModel taskModel) {
+			int contact) {
 		super();
 		this.id = id;
 		this.firstName = firstName;
@@ -133,7 +123,6 @@ public class UserModel {
 		this.password = password;
 		this.email = email;
 		this.contact = contact;
-		this.taskModel = taskModel;
 	}
 
 }

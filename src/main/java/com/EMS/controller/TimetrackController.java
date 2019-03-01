@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.EMS.dto.Taskdetails;
+import com.EMS.model.Alloc;
 import com.EMS.model.TaskModel;
 import com.EMS.model.Timetrack;
 import com.EMS.service.ProjectService;
@@ -55,20 +56,34 @@ public class TimetrackController {
 	TaskService taskService;
 
 	@PostMapping(value = "/getTaskdetails")
-	public Taskdetails getByDate(@RequestBody Taskdetails requestdata) {
-		Taskdetails tracklist =null;
-		
-		
-		JSONObject newObject =null;
-		
-		
-		tracklist = timetrackService.getByDate(requestdata.getTaskDate(),requestdata.getuId());
-		
-		return tracklist;
+	public JSONObject getByDate(@RequestBody Taskdetails requestdata) {
+		List<TaskModel> tracklist = null;
+		tracklist = taskService.getByDate(requestdata.getTaskDate(), requestdata.getuId());
+		JSONObject jsonData = new JSONObject();
+		JSONObject jsonDataRes = new JSONObject();
+		List<JSONObject> jsonArray = new ArrayList<>();
+
+		try {
+			if (!(tracklist.isEmpty() && tracklist.size() > 0)) {
+				for (TaskModel item : tracklist) {
+					JSONObject jsonObject = new JSONObject();
+					jsonObject.put("project", item.getProjectId().getProject_name());
+					jsonObject.put("taskType", item.getTaskName());
+					jsonObject.put("taskSummary", item.getDescription());
+					jsonObject.put("hours", item.getHours());
+					jsonArray.add(jsonObject);
+				}
+				jsonData.put("taskDetails", jsonArray);
+				jsonDataRes.put("status", "Success");
+			}
+		} catch (Exception e) {
+			jsonDataRes.put("status", "Failure");
+			jsonData.put("taskDetails", jsonArray);
+		}
+		jsonDataRes.put("data", jsonData);
+
+		return jsonDataRes;
 	}
-	
-	
-	
 
 	@GetMapping(value = "/getprojectTaskDatas")
 	public JSONObject getprojectnameList() {
@@ -91,9 +106,9 @@ public class TimetrackController {
 		}
 		return returnData;
 	}
-	
 
-	@PostMapping(value = "/create", headers = "Accept=application/json")
+	
+	@PostMapping(value = "/addTask", headers = "Accept=application/json")
 	public ResponseEntity<Void> createTimrtrackRecord(@RequestBody Timetrack timetrack,
 			UriComponentsBuilder ucBuilder) {
 		HttpHeaders headers = new HttpHeaders();
@@ -101,6 +116,14 @@ public class TimetrackController {
 		return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	

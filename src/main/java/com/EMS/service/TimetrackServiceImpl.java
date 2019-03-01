@@ -43,14 +43,9 @@ public class TimetrackServiceImpl implements TimetrackService {
 	
 	
 	
-	public Taskdetails getByDate(Date currentDate,Long uId){
-		return  timetrackRepository.getByDate(currentDate,uId);
-				
-	}
-	
-	public JSONObject getByDatenew(Date currentDate,Long uId){
-		return  timetrackRepository.getByDatenew(currentDate,uId);
-				
-	}
+//	public List<TaskModel> getByDate(Date currentDate){
+//		return  timetrackRepository.getByDate(currentDate);
+//				
+//	}
 
 }

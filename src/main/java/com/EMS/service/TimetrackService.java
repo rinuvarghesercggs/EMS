@@ -18,7 +18,6 @@ public interface TimetrackService {
 	public void deleteRecordById(long id);
 	
 	
-	public Taskdetails getByDate(Date currentDate,Long uId);
-	public JSONObject getByDatenew(Date currentDate,Long uId);
+//	public List<Timetrack>  getByDate(Date currentDate,Long uId);
 
 }

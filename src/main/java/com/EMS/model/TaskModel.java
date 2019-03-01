@@ -1,5 +1,6 @@
 package com.EMS.model;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -21,6 +22,15 @@ public class TaskModel {
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
+
+	@Column(name = "description")
+	private String description;
+
+	@Column(name = "date")
+	private Date date;
+
+	@Column(name = "hours")
+	private Integer hours;
 
 	@ManyToOne
 	private ProjectModel projectId;
@@ -62,15 +72,31 @@ public class TaskModel {
 		this.taskName = taskName;
 	}
 
-	public TaskModel(long id, String taskName, UserModel userId) {
-		super();
-		this.userId =userId;
-		this.id = id;
-		this.taskName = taskName;
+	public String getDescription() {
+		return description;
 	}
 
-	public TaskModel() {
-
+	public void setDescription(String description) {
+		this.description = description;
 	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	public Integer getHours() {
+		return hours;
+	}
+
+	public void setHours(Integer hours) {
+		this.hours = hours;
+	}
+	
+	
+
 
 }

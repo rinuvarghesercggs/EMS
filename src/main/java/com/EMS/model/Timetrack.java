@@ -33,7 +33,18 @@ public class Timetrack {
     @Column(name="hours")
    	private Integer hours;
     
+    @ManyToOne
+	private TaskModel taskModel;
+    
      
+	public TaskModel getTaskModel() {
+		return taskModel;
+	}
+
+	public void setTaskModel(TaskModel taskModel) {
+		this.taskModel = taskModel;
+	}
+
 	public long getId() {
 		return id;
 	}
