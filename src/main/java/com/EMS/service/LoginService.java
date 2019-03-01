@@ -10,7 +10,7 @@ public interface LoginService {
 	
 
 //		abstract method declaration for user login authentication
-	long login_authentication(String userName, String password);
+	UserModel login_authentication(String userName, String password);
 	
 
 }

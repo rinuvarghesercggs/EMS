@@ -32,9 +32,9 @@ public class ProjectModel {
 	private int estimated_hours;
 	private Date start_date,end_date;
 	
-	@OneToMany(targetEntity=Resources.class)
-	private List<Resources> resources;
-	
+//	@OneToMany(targetEntity=Resources.class)
+//	private List<Resources> resources;
+//	
 	
 	public ProjectModel() {
 		
@@ -43,12 +43,12 @@ public class ProjectModel {
 		return id;
 	}
 
-	public List<Resources> getResources() {
-		return resources;
-	}
-	public void setResources(List<Resources> resources) {
-		this.resources = resources;
-	}
+//	public List<Resources> getResources() {
+//		return resources;
+//	}
+//	public void setResources(List<Resources> resources) {
+//		this.resources = resources;
+//	}
 	public ProjectModel(long id, String project_name, String project_owner, String project_details,
 			String contract_type, int estimated_hours, Date start_date, Date end_date) {
 		super();

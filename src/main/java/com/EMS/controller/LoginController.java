@@ -33,6 +33,7 @@ public class LoginController {
 		public JSONObject adminLogin(@RequestBody JSONObject requestdata) {
 			
 				JSONObject response=new JSONObject();
+				JSONObject data=new JSONObject();
 				
 //				getting string value from json request
 				String username=requestdata.get("username").toString();					
@@ -40,16 +41,21 @@ public class LoginController {
 			
 				try {
 //					Invoking user authentication method 					
-					long usercheck=login_service.login_authentication(username,password);	
-					if(usercheck==0) 
+					UserModel usercheck=login_service.login_authentication(username,password);	
+					System.out.println("id : "+usercheck.getId()+" user : "+usercheck.getUserName()+" role : "+usercheck.getRoleId());
+					if(usercheck==null) 
 //						Setting status on json object							
 						response.put("status", "Failed");									
-					else
+					else {
 //						Setting status on json object						
-						response.put("status", "success");	
-					
+						response.put("status", "success");
+						
+						data.put("username", usercheck.getUserName());
+						data.put("id", usercheck.getId());
+						data.put("role", usercheck.getRoleId());
+					}
 //						Setting data on json object
-						response.put("data", usercheck);									
+						response.put("data", data);									
 				}catch(Exception e) {
 					System.out.println("Exception : "+e);
 //					Setting status on json object

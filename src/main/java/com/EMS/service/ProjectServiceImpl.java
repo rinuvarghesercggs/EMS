@@ -31,33 +31,12 @@ public class ProjectServiceImpl implements ProjectService{
 	@Autowired
 	ContractRepositary contract_repository;
 	
-//	@Override
-//	public ArrayList<Long> save_project_record(ProjectModel projectmodel) {		
-//		
-//	
-//			ArrayList<Long> index=new ArrayList<>();
-//			
-//		try {
-//			ProjectModel model=null;
-//				int length=projectmodel.getResources().size();
-//				model=project_repositary.save(projectmodel);
-//				
-//				for(int i=0;i<length;i++) {
-//				
-//				Resources resour=resource_repository.save(projectmodel.getResources().get(i));
-//				index.add(resour.getId());
-//				}
-//						//Saving project record by using repositary instance
-//			
-//			return index;
-//			
-//		}catch(Exception e) {
-//			System.out.println("Exception : "+e);
-//			return index;
-//		}
-//		
-//		
-//	}
+	@Override
+	public ProjectModel save_project_record(ProjectModel projectmodel) {		
+				
+				ProjectModel model=project_repositary.save(projectmodel);
+		return model;
+	}
 
 	@Override
 	public List<String> getProjectsList() {
@@ -82,11 +61,11 @@ public class ProjectServiceImpl implements ProjectService{
 		return user_owner;
 	}
 
-//	@Override
-//	public ArrayList<ProjectModel> getProjects() {
-//		ArrayList<ProjectModel> project=(ArrayList<ProjectModel>) project_repositary.findAll();
-//		return project;
-//	}
+	@Override
+	public ArrayList<ProjectModel> getProjects() {
+		ArrayList<ProjectModel> project=(ArrayList<ProjectModel>) project_repositary.findAll();
+		return project;
+	}
 
 	@Override
 	public ArrayList<ContractModel> getcontract_type() {

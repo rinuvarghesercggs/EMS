@@ -1,7 +1,9 @@
 package com.EMS.controller;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -31,22 +33,50 @@ public class ProjectController {
 	
 	//api for creating new project
 	
-//	@PostMapping("/admin/project/saveproject")
-//	public void save_newproject(@RequestBody ProjectModel projectmodel) {
-//
-////		Method invocation for creating new project record
-//		ArrayList<Long> resouceindex=projectservice.save_project_record(projectmodel);	
-//		
-//	}
+	@PostMapping("/addProject")
+	public JSONObject save_newproject(@RequestBody JSONObject requestdata) {
+		
+		JSONObject responsedata=new JSONObject();
+		try {
+			
+				ProjectModel project=new ProjectModel();
+				project.setProject_details(requestdata.get("project_details").toString());
+				project.setProject_name(requestdata.get("project_name").toString());
+				project.setProject_owner(requestdata.get("project_owner").toString());
+				project.setContract_type(requestdata.get("contract_type").toString());
+				project.setEstimated_hours(Integer.parseInt(requestdata.get("estimated_hours").toString()));
+				String startdate=requestdata.get("start_date").toString();
+				String enddate=requestdata.get("end_date").toString();
+				
+				DateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
+				Date date1 = formatter.parse(startdate);
+				Date date2 = formatter.parse(enddate);
+				
+				project.setStart_date(date1);
+				project.setEnd_date(date2);
+				
+//				Method invocation for creating new project record
+				ProjectModel projectmodel=projectservice.save_project_record(project);
+				
+//				method invocation for storing resouces of project created
+				String resource=requestdata.get("resources").toString();
+				
+				responsedata.put("status", "success");
+		}catch(Exception e) {
+			System.out.println("Exception : "+e);
+			responsedata.put("status", "Failed");
+		}
+		return responsedata;
+	}
 	
 	
 	
-//	@GetMapping("/project")
-//	public ArrayList<ProjectModel> getproject(){
-//		ArrayList<ProjectModel> project=projectservice.getProjects();
-//		return project;
-//	}
-//	
+	@GetMapping("/project")
+	public ArrayList<ProjectModel> getproject(){
+		ArrayList<ProjectModel> project=projectservice.getProjects();
+		return project;
+	}
+	
 	
 	
 	//Api for getting project owner details from user table
