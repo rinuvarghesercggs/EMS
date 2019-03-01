@@ -52,7 +52,7 @@ public class LoginController {
 						
 						data.put("username", usercheck.getUserName());
 						data.put("id", usercheck.getId());
-						data.put("role", usercheck.getRoleId().getId());
+						data.put("role", usercheck.getRoleId().getroleName());
 					}
 //						Setting data on json object
 						response.put("data", data);									

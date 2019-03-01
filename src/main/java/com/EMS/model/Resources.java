@@ -19,7 +19,7 @@ public class Resources {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private long id;
 	private String department;
-	private int resouce_count;
+	private int resourceCount;
 	private long project;
 	
 	public long getProject() {
@@ -45,20 +45,20 @@ public class Resources {
 	public String getDepartment() {
 		return department;
 	}
-	public Resources(long id,String department, int resouce_count) {
+	public Resources(long id,String department, int resourceCount) {
 		super();
 		this.department = department;
 		this.id=id;
-		this.resouce_count = resouce_count;
+		this.resourceCount = resourceCount;
 	}
 	public void setDepartment(String department) {
 		this.department = department;
 	}
-	public int getResouce_count() {
-		return resouce_count;
+	public int getresourceCount() {
+		return resourceCount;
 	}
-	public void setResouce_count(int resouce_count) {
-		this.resouce_count = resouce_count;
+	public void setresourceCount(int resourceCount) {
+		this.resourceCount = resourceCount;
 	}
 	
 	

@@ -62,9 +62,16 @@ public class ProjectController {
 				
 //				method invocation for storing resouces of project created
 				String resource=requestdata.get("resources").toString();
+//				System.out.println("1");
+//				JSONParser parser = new JSONParser();
+//				JSONArray json = (JSONArray) parser.parse(resource);
+//
+//				System.out.println("1");
+//				ArrayList<Resources> resourcelist=new ArrayList<Resources>();
+//				System.out.println("1");
+						
+					
 				
-				 
-				System.out.println("resource"+resource);
 				
 				responsedata.put("status", "success");
 		}catch(Exception e) {
