@@ -1,5 +1,6 @@
 package com.EMS.controller;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -8,12 +9,18 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.apache.tomcat.util.json.JSONParser;
+import org.json.JSONException;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -23,6 +30,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.config.Task;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,6 +48,11 @@ import com.EMS.model.ProjectModel;
 import com.EMS.model.TaskModel;
 import com.EMS.service.ProjectService;
 import com.EMS.service.TaskService;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javassist.expr.NewArray;
 
@@ -90,7 +103,6 @@ public class TasktrackController {
 	public JSONObject getprojectnameList() {
 		List<Object[]>projectTitleList = projectService.getNameId();
 		List<Object[]> taskTypesList = taskService.getTaskList();
-//		List<Object[]> getNameId =projectService.getNameId();
 		JSONObject returnData = new JSONObject();
 		JSONObject projectTaskDatas = new JSONObject();
 		List<JSONObject> projectIdTitleList = new ArrayList<>();
@@ -98,8 +110,6 @@ public class TasktrackController {
 
 		try {
 			if (!projectTitleList.isEmpty() && !taskTypesList.isEmpty() && projectTitleList.size() > 0 && taskTypesList.size() > 0) {
-//				projectTaskDatas.put("projectTitle", projectTitleList);
-//				projectTaskDatas.put("taskTypes", taskTypesList);
 				
 				for (Object[] itemNew : projectTitleList) {
 					JSONObject jsonObjectNew = new JSONObject();
@@ -127,39 +137,61 @@ public class TasktrackController {
 
 	
 	@PostMapping(value = "/addTask", headers = "Accept=application/json")
-	public JSONObject updateData(@RequestBody JSONObject taskData) {
-		JSONObject jsonDataRes = new JSONObject();
-		List<JSONObject> listObject = (List<JSONObject>) taskData.get("addTask");
-		jsonDataRes.put("data", listObject);
-
+	public JSONObject updateData(@RequestBody JSONObject taskData) throws JSONException, ParseException{
+		JSONObject jsonDataRes = new JSONObject();  
+		
+		String resource=taskData.get("addTask").toString();
+		org.json.JSONArray jsonArray = new org.json.JSONArray(resource);
+		
+		int count = jsonArray.length(); 
+		for(int i=0 ; i< count; i++){  
+			
+			org.json.JSONObject jsonObject = jsonArray.getJSONObject(i); 
+			TaskModel newTask=new TaskModel();
+			newTask.setTaskName(jsonObject.getString("taskType"));
+			newTask.setDescription(jsonObject.getString("taskSummary"));
+			newTask.setHours(jsonObject.getInt("hours"));
+			Long projectId = projectService.getProjectId(jsonObject.getString("project"));
+			ProjectModel proj = projectService.findById(projectId);
+			newTask.setproject(proj);
+			String dateNew= jsonObject.getString("date");
+			Date date1=new SimpleDateFormat("yyyy-MM-dd").parse(dateNew);  
+			newTask.setDate(date1);
+			
+			taskService.saveTaskDetails(newTask);
+		}
+		
+//		JSONArray jew = taskData.getJSONArray("addTask");
+//		String usedId = taskData.get("uId").toString();
+//		System.out.println("Done with data");
 //		try {
-//			for(JSONObject item :taskData) {
-//			String project = item.get("project").toString();
-//			String taskType = item.get("taskType").toString();
-//			String taskSummary = item.get("taskSummary").toString();
-//			String hours = item.get("hours").toString();
-//			String date = item.get("date").toString();
-//			
-//			Long projectId = projectService.getProjectId(project);
-//			ProjectModel proj =projectService.findById(projectId);			
-//			
-//			TaskModel taskNew = new TaskModel();
-//			taskNew.setHours(Integer.parseInt(hours));
-//			taskNew.setDescription(taskSummary);
-//			taskNew.setTaskName(taskType);
-//			taskNew.setProjectId(proj);
-//			taskService.saveTaskDetails(taskNew);
-////			task.setDate(Date.parse(date);
+//			for (JSONObject item : jsonList) {
+//				String project = (String) item.get("project");
+//				System.out.println("Project Name"+project);
+//				String taskType = (String) item.get("taskType");
+//				String taskSummary = (String) item.get("taskSummary");
+//				String hours = (String) item.get("hours");
+//				String date = (String) item.get("date");
+
+//				Long projectId = projectService.getProjectId(project);
+//				ProjectModel proj = projectService.findById(projectId);
+
+//				TaskModel taskNew = new TaskModel();
+//				taskNew.setHours(Integer.parseInt(hours));
+//				taskNew.setDescription(taskSummary);
+//				taskNew.setTaskName(taskType);
+//				taskNew.setproject(proj);
+//				taskNew.setDate(new Date());
+//				taskService.saveTaskDetails(taskNew);
+//			task.setDate(Date.parse(date);
 //			}
 			jsonDataRes.put("status", "success");
-//			}
 //		} catch (Exception e) {
 //			jsonDataRes.put("status", "Failure");
 //		}
 
 		return jsonDataRes;
 	}
-
 
 
 	

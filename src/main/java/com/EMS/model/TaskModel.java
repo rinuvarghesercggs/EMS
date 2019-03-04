@@ -28,6 +28,9 @@ public class TaskModel {
 
 	@Column(name = "date")
 	private Date date;
+	
+	@Column(name = "taskName")
+	private String taskName;
 
 	@Column(name = "hours")
 	private Integer hours;
@@ -37,8 +40,7 @@ public class TaskModel {
 
 	@ManyToOne
 	private UserModel user;
-
-	private String taskName;
+	
 
 	public long getId() {
 		return id;
