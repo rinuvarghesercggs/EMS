@@ -90,7 +90,6 @@ public class TasktrackController {
 	public JSONObject getprojectnameList() {
 		List<Object[]>projectTitleList = projectService.getNameId();
 		List<Object[]> taskTypesList = taskService.getTaskList();
-//		List<Object[]> getNameId =projectService.getNameId();
 		JSONObject returnData = new JSONObject();
 		JSONObject projectTaskDatas = new JSONObject();
 		List<JSONObject> projectIdTitleList = new ArrayList<>();
@@ -98,8 +97,6 @@ public class TasktrackController {
 
 		try {
 			if (!projectTitleList.isEmpty() && !taskTypesList.isEmpty() && projectTitleList.size() > 0 && taskTypesList.size() > 0) {
-//				projectTaskDatas.put("projectTitle", projectTitleList);
-//				projectTaskDatas.put("taskTypes", taskTypesList);
 				
 				for (Object[] itemNew : projectTitleList) {
 					JSONObject jsonObjectNew = new JSONObject();
@@ -129,8 +126,8 @@ public class TasktrackController {
 	@PostMapping(value = "/addTask", headers = "Accept=application/json")
 	public JSONObject updateData(@RequestBody JSONObject taskData) {
 		JSONObject jsonDataRes = new JSONObject();
-		List<JSONObject> listObject = (List<JSONObject>) taskData.get("addTask");
-		jsonDataRes.put("data", listObject);
+		
+		jsonDataRes.put("data", taskData);
 
 //		try {
 //			for(JSONObject item :taskData) {
