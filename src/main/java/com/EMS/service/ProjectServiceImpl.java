@@ -75,7 +75,6 @@ public class ProjectServiceImpl implements ProjectService {
 		return user_owner;
 	}
 
-
 	@Override
 	public ArrayList<ContractModel> getcontractType() {
 
