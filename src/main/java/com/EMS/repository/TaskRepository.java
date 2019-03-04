@@ -12,9 +12,8 @@ import com.EMS.model.TaskModel;
 
 public interface TaskRepository extends JpaRepository<TaskModel, Long> {
 	
-	@Query("SELECT t.taskName FROM TaskModel t")
-	List<String> getTaskName();
-	
+	@Query("SELECT t.id,t.taskName FROM TaskModel t")
+	List<Object[]> getTaskNameId();
 	
 	@Query("SELECT t.taskName FROM TaskModel t WHERE t.userId=?1")
 	List<String> getTaskByUser(Long id);

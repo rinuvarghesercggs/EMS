@@ -64,6 +64,7 @@ public class TasktrackController {
 			if (!tracklist.isEmpty() && tracklist.size() > 0) {
 				for (TaskModel item : tracklist) {
 					JSONObject jsonObject = new JSONObject();
+					jsonObject.put("id", item.getId());
 					jsonObject.put("project", item.getProjectId().getProject_name());
 					jsonObject.put("taskType", item.getTaskName());
 					jsonObject.put("taskSummary", item.getDescription());
@@ -87,16 +88,33 @@ public class TasktrackController {
 	
 	@GetMapping(value = "/getprojectTaskDatas")
 	public JSONObject getprojectnameList() {
-		List<String> projectTitleList = projectService.getProjectsList();
-		List<String> taskTypesList = taskService.getTaskList();
+		List<Object[]>projectTitleList = projectService.getNameId();
+		List<Object[]> taskTypesList = taskService.getTaskList();
+//		List<Object[]> getNameId =projectService.getNameId();
 		JSONObject returnData = new JSONObject();
 		JSONObject projectTaskDatas = new JSONObject();
+		List<JSONObject> projectIdTitleList = new ArrayList<>();
+		List<JSONObject> taskIdTitleList = new ArrayList<>();
 
 		try {
-			if (!projectTitleList.isEmpty() && !taskTypesList.isEmpty() && projectTitleList.size() > 0
-					&& taskTypesList.size() > 0) {
-				projectTaskDatas.put("projectTitle", projectTitleList);
-				projectTaskDatas.put("taskTypes", taskTypesList);
+			if (!projectTitleList.isEmpty() && !taskTypesList.isEmpty() && projectTitleList.size() > 0 && taskTypesList.size() > 0) {
+//				projectTaskDatas.put("projectTitle", projectTitleList);
+//				projectTaskDatas.put("taskTypes", taskTypesList);
+				
+				for (Object[] itemNew : projectTitleList) {
+					JSONObject jsonObjectNew = new JSONObject();
+					jsonObjectNew.put("id", itemNew[0]);
+					jsonObjectNew.put("value", itemNew[1]);
+					projectIdTitleList.add(jsonObjectNew);
+				}
+				for (Object[] itemNew : taskTypesList) {
+					JSONObject jsonObjectNew = new JSONObject();
+					jsonObjectNew.put("id", itemNew[0]);
+					jsonObjectNew.put("value", itemNew[1]);
+					taskIdTitleList.add(jsonObjectNew);
+				}
+				projectTaskDatas.put("taskTypes", taskIdTitleList);
+				projectTaskDatas.put("projectTitle", projectIdTitleList);
 				returnData.put("status", "success");
 				returnData.put("data", projectTaskDatas);
 			}
@@ -108,38 +126,38 @@ public class TasktrackController {
 	}
 
 	
-	@PutMapping(value = "/addTask", headers = "Accept=application/json")
-	public List<JSONObject> updateData(@RequestBody List<JSONObject> taskData) {
-
+	@PostMapping(value = "/addTask", headers = "Accept=application/json")
+	public JSONObject updateData(@RequestBody JSONObject taskData) {
 		JSONObject jsonDataRes = new JSONObject();
+		List<JSONObject> listObject = (List<JSONObject>) taskData.get("addTask");
+		jsonDataRes.put("data", listObject);
 
 //		try {
-			for(JSONObject item :taskData) {
-			String project = item.get("project").toString();
-			String taskType = item.get("taskType").toString();
-			String taskSummary = item.get("taskSummary").toString();
-			String hours = item.get("hours").toString();
-			String date = item.get("date").toString();
-			Long projectId = projectService.getProjectId(project);
-			ProjectModel proj =projectService.findById(projectId);
-			
-			
-//			TaskModel taskModel=taskService.get
-			
-			
-			TaskModel task = new TaskModel();
-			task.setHours(Integer.parseInt(hours));
-			task.setDescription(taskSummary);
-			task.setProjectId(proj);
-//			task.setDate(Date.parse(date);
-			}
+//			for(JSONObject item :taskData) {
+//			String project = item.get("project").toString();
+//			String taskType = item.get("taskType").toString();
+//			String taskSummary = item.get("taskSummary").toString();
+//			String hours = item.get("hours").toString();
+//			String date = item.get("date").toString();
+//			
+//			Long projectId = projectService.getProjectId(project);
+//			ProjectModel proj =projectService.findById(projectId);			
+//			
+//			TaskModel taskNew = new TaskModel();
+//			taskNew.setHours(Integer.parseInt(hours));
+//			taskNew.setDescription(taskSummary);
+//			taskNew.setTaskName(taskType);
+//			taskNew.setProjectId(proj);
+//			taskService.saveTaskDetails(taskNew);
+////			task.setDate(Date.parse(date);
+//			}
 			jsonDataRes.put("status", "success");
 //			}
 //		} catch (Exception e) {
 //			jsonDataRes.put("status", "Failure");
 //		}
 
-		return taskData;
+		return jsonDataRes;
 	}
 
 

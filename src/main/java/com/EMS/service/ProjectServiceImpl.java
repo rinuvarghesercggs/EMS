@@ -61,6 +61,11 @@ public class ProjectServiceImpl implements ProjectService {
 		Long pid = project_repositary.getProjectId(projectName);
 		return pid;
 	}
+	public List<Object[]> getNameId() {
+		List<Object[]>idNameList =project_repositary.getByIdName();
+		return idNameList;
+		
+	}
 
 	@Override
 	public List<String> getproject_owner() {

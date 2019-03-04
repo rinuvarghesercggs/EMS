@@ -15,10 +15,9 @@ public class TaskServiceImpl implements TaskService {
 	@Autowired
 	TaskRepository taskRepository;
 	
-	
 	@Override
-	public List<String> getTaskList() {
-		List<String> taskList = taskRepository.getTaskName();
+	public List<Object[]> getTaskList() {
+		List<Object[]> taskList = taskRepository.getTaskNameId();
 		return taskList;
 	}
 	
@@ -27,11 +26,17 @@ public class TaskServiceImpl implements TaskService {
 		List<String> taskByUser= taskRepository.getTaskByUser(id);
 		return taskByUser;
 	}
-	
+	@Override
 	public List<TaskModel> getByDate(Date currentDate,Long uId){
 		return  taskRepository.getByDate(currentDate,uId);
 				
 	}
+	@Override
+	public TaskModel saveTaskDetails(TaskModel task){
+		return  taskRepository.save(task);
+				
+	}
+	
 
 
 }

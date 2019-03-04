@@ -33,6 +33,8 @@ public interface ProjectService {
 //		Method invocation for getting department details
 		List<DepartmentModel> getdepartment();
 
+		List<Object[]> getNameId();
+
 
 
 
