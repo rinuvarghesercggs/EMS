@@ -139,15 +139,17 @@ public class TasktrackController {
 	@PostMapping(value = "/addTask", headers = "Accept=application/json")
 	public JSONObject updateData(@RequestBody JSONObject taskData) throws JSONException, ParseException{
 		JSONObject jsonDataRes = new JSONObject();  
-		
 		String resource=taskData.get("addTask").toString();
+		String usedId = taskData.get("uId").toString();
 		org.json.JSONArray jsonArray = new org.json.JSONArray(resource);
-		
+
 		int count = jsonArray.length(); 
 		for(int i=0 ; i< count; i++){  
 			
-			org.json.JSONObject jsonObject = jsonArray.getJSONObject(i); 
+			org.json.JSONObject jsonObject = jsonArray.getJSONObject(i);
+			
 			TaskModel newTask=new TaskModel();
+			
 			newTask.setTaskName(jsonObject.getString("taskType"));
 			newTask.setDescription(jsonObject.getString("taskSummary"));
 			newTask.setHours(jsonObject.getInt("hours"));
