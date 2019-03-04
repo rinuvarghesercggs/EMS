@@ -42,20 +42,20 @@ public class ProjectController {
 		try {
 			
 				ProjectModel project=new ProjectModel();
-				project.setProject_details(requestdata.get("project_details").toString());
-				project.setProject_name(requestdata.get("project_name").toString());
-				project.setProject_owner(requestdata.get("project_owner").toString());
-				project.setContract_type(requestdata.get("contract_type").toString());
-				project.setEstimated_hours(Integer.parseInt(requestdata.get("estimated_hours").toString()));
-				String startdate=requestdata.get("start_date").toString();
-				String enddate=requestdata.get("end_date").toString();
+				project.setprojectDetails(requestdata.get("projectDetails").toString());
+				project.setprojectName(requestdata.get("projectName").toString());
+				project.setprojectOwner(requestdata.get("projectOwner").toString());
+				project.setcontractType(requestdata.get("contractType").toString());
+				project.setestimatedHours(Integer.parseInt(requestdata.get("estimatedHours").toString()));
+				String startdate=requestdata.get("startDate").toString();
+				String enddate=requestdata.get("endDate").toString();
 				
 				DateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
 				Date date1 = formatter.parse(startdate);
 				Date date2 = formatter.parse(enddate);
 				
-				project.setStart_date(date1);
-				project.setEnd_date(date2);
+				project.setstartDate(date1);
+				project.setendDate(date2);
 				
 //				Method invocation for creating new project record
 				ProjectModel projectmodel=projectservice.save_project_record(project);
@@ -112,10 +112,10 @@ public class ProjectController {
 
 		try {
 //   			Method invocation for getting contract type 
-				ArrayList<ContractModel> contract=projectservice.getcontract_type();
+				ArrayList<ContractModel> contract=projectservice.getcontractType();
 				
 				if(contract.isEmpty())
-					array.put("contract_type", contract_array);
+					array.put("contractType", contract_array);
 				else {
 					
 //						Looping for storing data on json array				
@@ -126,19 +126,19 @@ public class ProjectController {
 							
 //							adding records to json object
 							contractobject.put("id", cont.getId());
-							contractobject.put("contrct_type", cont.getContrct_type());
-							System.out.println("id : "+cont.getId()+" type : "+cont.getContrct_type());
+							contractobject.put("contractType", cont.getcontractType());
+							System.out.println("id : "+cont.getId()+" type : "+cont.getcontractType());
 //							adding records object to json array
 							contract_array.add(contractobject);			
 						}
 						
 //						storing records array to json object
-						array.put("contract_type", contract_array);
+						array.put("contractType", contract_array);
 				}
 				
 				
 //				Method invocation for getting users  with role as owner				
-				List<String> users_owner=projectservice.getproject_owner();
+				List<String> users_owner=projectservice.getprojectOwner();
 				
 				if(users_owner.isEmpty())
 					array.put("user_owner", userarray);
@@ -178,7 +178,7 @@ public class ProjectController {
 						
 //						adding records to json object
 						object.put("id", dept.getId());
-						object.put("department", dept.getDepartment_name());
+						object.put("department", dept.getdepartmentName());
 						
 //						adding records object to json array
 						department_array.add(object);			

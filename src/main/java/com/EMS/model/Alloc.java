@@ -21,13 +21,13 @@ public class Alloc {
 	private long id;
 
 	@ManyToOne
-	private ProjectModel projectModel;
+	private ProjectModel project;
 
 //	@ManyToMany
 //	private List<UserModel> userModel;
 	
 	@ManyToOne
-	private UserModel userModel;
+	private UserModel user;
 	
 	private Double allocatedPerce;
 	
@@ -41,19 +41,19 @@ public class Alloc {
 	}
 	
 	
-	public ProjectModel getProjectModel() {
-		return projectModel;
+	public ProjectModel getproject() {
+		return project;
 	}
-	public void setProjectModel(ProjectModel projectModel) {
-		this.projectModel = projectModel;
+	public void setproject(ProjectModel project) {
+		this.project = project;
 	}
 	
 	
-//	public List<UserModel> getUserModel() {
-//		return userModel;
+//	public List<UserModel> getuser() {
+//		return user;
 //	}
-//	public void setUserModel(List<UserModel> userModel) {
-//		this.userModel = userModel;
+//	public void setuser(List<UserModel> user) {
+//		this.user = user;
 //	}
 	
 	
@@ -71,11 +71,11 @@ public class Alloc {
 		this.freeAllocation = freeAllocation;
 	}
 	
-	public UserModel getUserModel() {
-		return userModel;
+	public UserModel getuser() {
+		return user;
 	}
-	public void setUserModel(UserModel userModel) {
-		this.userModel = userModel;
+	public void setuser(UserModel user) {
+		this.user = user;
 	}
 	
 	

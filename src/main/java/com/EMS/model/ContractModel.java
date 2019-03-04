@@ -15,7 +15,7 @@ public class ContractModel {
 	@Column(name="id")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private long id;
-	private String contrct_type;
+	private String contractType;
 	
 	
 	
@@ -26,16 +26,16 @@ public class ContractModel {
 	public void setId(long id) {
 		this.id = id;
 	}
-	public String getContrct_type() {
-		return contrct_type;
+	public String getcontractType() {
+		return contractType;
 	}
-	public void setContrct_type(String contrct_type) {
-		this.contrct_type = contrct_type;
+	public void setcontractType(String contractType) {
+		this.contractType = contractType;
 	}
-	public ContractModel(long id, String contrct_type) {
+	public ContractModel(long id, String contractType) {
 		super();
 		this.id = id;
-		this.contrct_type = contrct_type;
+		this.contractType = contractType;
 	}
 	
 	public ContractModel() {

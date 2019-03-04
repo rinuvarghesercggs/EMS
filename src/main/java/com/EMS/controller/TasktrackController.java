@@ -65,7 +65,7 @@ public class TasktrackController {
 				for (TaskModel item : tracklist) {
 					JSONObject jsonObject = new JSONObject();
 					jsonObject.put("id", item.getId());
-					jsonObject.put("project", item.getProjectId().getProject_name());
+					jsonObject.put("project", item.getproject().getprojectName());
 					jsonObject.put("taskType", item.getTaskName());
 					jsonObject.put("taskSummary", item.getDescription());
 					jsonObject.put("hours", item.getHours());

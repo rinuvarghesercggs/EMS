@@ -33,10 +33,10 @@ public class TaskModel {
 	private Integer hours;
 
 	@ManyToOne
-	private ProjectModel projectId;
+	private ProjectModel project;
 
 	@ManyToOne
-	private UserModel userId;
+	private UserModel user;
 
 	private String taskName;
 
@@ -48,20 +48,20 @@ public class TaskModel {
 		this.id = id;
 	}
 
-	public ProjectModel getProjectId() {
-		return projectId;
+	public ProjectModel getproject() {
+		return project;
 	}
 
-	public void setProjectId(ProjectModel projectId) {
-		this.projectId = projectId;
+	public void setproject(ProjectModel project) {
+		this.project = project;
 	}
 
-	public UserModel getUserId() {
-		return userId;
+	public UserModel getuser() {
+		return user;
 	}
 
-	public void setUserId(UserModel userId) {
-		this.userId = userId;
+	public void setuser(UserModel user) {
+		this.user = user;
 	}
 
 	public String getTaskName() {
