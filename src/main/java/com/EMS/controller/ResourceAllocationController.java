@@ -182,8 +182,6 @@ public class ResourceAllocationController {
 		@GetMapping(value = "/getresourceList")
 		public JSONObject getAllocationLists() {
 			List<Alloc> alloc = resourceAllocation.getAllocationLists();
-			List<UserModel> userList = resourceAllocation.getUserList();
-			List<DepartmentModel> departmentList = resourceAllocation.getDepartmentList();
 
 			String response = null;
 			JSONObject jsonData = new JSONObject();
@@ -199,14 +197,13 @@ public class ResourceAllocationController {
 						jsonObject.put("name", item.getuser().getFirstName());
 						jsonObject.put("allocatedVal", item.getAllocatedPerce());
 						jsonObject.put("allocatedFree", item.getFreeAllocation());
+						jsonObject.put("department name", item.getuser().getdepartment().getdepartmentName());
 						jsonArray.add(jsonObject);
 					}
 
 					jsonData.put("resourceList", jsonArray);
 				}
 				
-				jsonData.put("userList", userList);
-				jsonData.put("departmentList", departmentList);
 				jsonDataRes.put("status", "Success");
 
 				
