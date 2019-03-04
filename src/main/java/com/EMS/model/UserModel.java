@@ -17,7 +17,6 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.ForeignKey;
 
-import com.fasterxml.jackson.annotation.JacksonInject;
 
 @Entity
 @Table(name = "User")

@@ -2,7 +2,6 @@ package com.EMS.service;
 
 import java.util.ArrayList;
 
-import com.EMS.model.DepartmentModel;
 import com.EMS.model.UserModel;
 
 public interface LoginService {

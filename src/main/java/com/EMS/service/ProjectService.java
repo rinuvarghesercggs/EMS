@@ -7,7 +7,6 @@ import com.EMS.model.ContractModel;
 import com.EMS.model.DepartmentModel;
 import com.EMS.model.ProjectModel;
 import com.EMS.model.Resources;
-import com.EMS.model.UserModel;
 
 public interface ProjectService {
 

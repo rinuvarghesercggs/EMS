@@ -6,9 +6,7 @@ import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.EMS.model.DepartmentModel;
 import com.EMS.model.UserModel;
-import com.EMS.repository.DepartmentRepository;
 import com.EMS.repository.UserRepository;
 
 @Service

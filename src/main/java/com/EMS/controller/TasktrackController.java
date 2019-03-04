@@ -43,14 +43,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.EMS.dto.Taskdetails;
-import com.EMS.model.Alloc;
 import com.EMS.model.ProjectModel;
 import com.EMS.model.TaskModel;
 import com.EMS.model.UserModel;
 import com.EMS.service.ProjectService;
 import com.EMS.service.TaskService;
 import com.EMS.service.UserService;
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -145,61 +143,66 @@ public class TasktrackController {
 		String userId = taskData.get("uId").toString();
 		Long uId = Long.parseLong(userId);
 		org.json.JSONArray newArray = new org.json.JSONArray(taskListString);
-
-		if (!userId.isEmpty() && uId != null) {
-			UserModel user = userService.getUserDetailsById(uId);
-			int count = newArray.length();
-			Boolean saveFail = false;
-			for (int i = 0; i < count; i++) {
-				org.json.JSONObject jsonObject = newArray.getJSONObject(i);
-				TaskModel newTask = new TaskModel();
-				if (!jsonObject.getString("project").isEmpty()) {
-					Long projectId = projectService.getProjectId(jsonObject.getString("project"));
-					if (projectId != null) {
-						ProjectModel proj = projectService.findById(projectId);
-						if (proj != null) {
-							newTask.setproject(proj);
+		try {
+			if (!userId.isEmpty() && uId != null) {
+				UserModel user = userService.getUserDetailsById(uId);
+				int count = newArray.length();
+				Boolean saveFail = false;
+				for (int i = 0; i < count; i++) {
+					org.json.JSONObject jsonObject = newArray.getJSONObject(i);
+					TaskModel newTask = new TaskModel();
+					if (!jsonObject.getString("project").isEmpty()) {
+						Long projectId = projectService.getProjectId(jsonObject.getString("project"));
+						if (projectId != null) {
+							ProjectModel proj = projectService.findById(projectId);
+							if (proj != null) {
+								newTask.setproject(proj);
+							}
+						} else {
+							saveFail = true;
 						}
 					} else {
 						saveFail = true;
 					}
-				} else {
-					saveFail = true;
-				}
-				if (!jsonObject.getString("date").isEmpty()) {
-					String dateNew = jsonObject.getString("date");
-					Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(dateNew);
-					if (date1 != null) {
-						newTask.setDate(date1);
+					if (!jsonObject.getString("date").isEmpty()) {
+						String dateNew = jsonObject.getString("date");
+						Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(dateNew);
+						if (date1 != null) {
+							newTask.setDate(date1);
+						} else {
+							saveFail = true;
+						}
 					} else {
 						saveFail = true;
 					}
-				} else {
-					saveFail = true;
+					if (!jsonObject.getString("taskType").isEmpty()) {
+						newTask.setTaskName(jsonObject.getString("taskType"));
+					} else {
+						saveFail = true;
+					}
+					if (!jsonObject.getString("taskSummary").isEmpty()) {
+						newTask.setDescription(jsonObject.getString("taskSummary"));
+					} else {
+						saveFail = true;
+					}
+					newTask.setHours(jsonObject.getInt("hours"));
+					newTask.setuser(user);
+					if (!saveFail) {
+						taskService.saveTaskDetails(newTask);
+					}
 				}
-				if (!jsonObject.getString("taskType").isEmpty()) {
-					newTask.setTaskName(jsonObject.getString("taskType"));
-				} else {
-					saveFail = true;
-				}
-				if (!jsonObject.getString("taskSummary").isEmpty()) {
-					newTask.setDescription(jsonObject.getString("taskSummary"));
-				} else {
-					saveFail = true;
-				}
-				newTask.setHours(jsonObject.getInt("hours"));
-				newTask.setuser(user);
 				if (!saveFail) {
-					taskService.saveTaskDetails(newTask);
+					jsonDataRes.put("status", "Success");
+				} else {
+					jsonDataRes.put("status", "Failure");
 				}
-			}
-			if (!saveFail) {
-				jsonDataRes.put("status", "Success");
 			} else {
 				jsonDataRes.put("status", "Failure");
 			}
-		} else {
+		} catch (Exception e) {
 			jsonDataRes.put("status", "Failure");
+			System.out.println("Exception " + e);
+
 		}
 
 		return jsonDataRes;

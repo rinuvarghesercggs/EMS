@@ -24,7 +24,6 @@ import com.EMS.model.ContractModel;
 import com.EMS.model.DepartmentModel;
 import com.EMS.model.ProjectModel;
 import com.EMS.model.Resources;
-import com.EMS.model.UserModel;
 import com.EMS.service.ProjectService;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
