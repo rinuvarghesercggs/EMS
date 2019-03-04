@@ -25,7 +25,7 @@ public interface ProjectService {
 //		method declaration for getting user details for project creation
 		List<String> getprojectOwner();
 
-//		ArrayList<ProjectModel> getProjects();
+
 	
 //		method declaration for getting contract type details for project creation
 		ArrayList<ContractModel> getcontractType();
@@ -34,6 +34,9 @@ public interface ProjectService {
 		List<DepartmentModel> getdepartment();
 
 		List<Object[]> getNameId();
+
+//		Method for creating project resouce records
+		Resources addprojectresouce(Resources resou1);
 
 
 

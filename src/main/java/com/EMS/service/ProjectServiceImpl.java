@@ -75,11 +75,6 @@ public class ProjectServiceImpl implements ProjectService {
 		return user_owner;
 	}
 
-//	@Override
-//	public ArrayList<ProjectModel> getProjects() {
-//		ArrayList<ProjectModel> project=(ArrayList<ProjectModel>) project_repositary.findAll();
-//		return project;
-//	}
 
 	@Override
 	public ArrayList<ContractModel> getcontractType() {
@@ -101,6 +96,12 @@ public class ProjectServiceImpl implements ProjectService {
 	public List<DepartmentModel> getdepartment() {
 		List<DepartmentModel> department = department_repositary.findAll();
 		return department;
+	}
+
+	@Override
+	public Resources addprojectresouce(Resources resou1) {
+		Resources value=resource_repository.save(resou1);
+		return value;
 	}
 
 }

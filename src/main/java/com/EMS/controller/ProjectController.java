@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
-import org.json.simple.JSONArray;
+
 import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +26,8 @@ import com.EMS.model.ProjectModel;
 import com.EMS.model.Resources;
 import com.EMS.model.UserModel;
 import com.EMS.service.ProjectService;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 public class ProjectController {
@@ -33,14 +37,16 @@ public class ProjectController {
 	
 	
 	
-	//api for creating new project
+//	api for creating new project
 	
 	@PostMapping("/addProject")
 	public JSONObject save_newproject(@RequestBody JSONObject requestdata) {
 		
+		
 		JSONObject responsedata=new JSONObject();
 		try {
-			
+
+//				setting values to object from json request 
 				ProjectModel project=new ProjectModel();
 				project.setprojectDetails(requestdata.get("projectDetails").toString());
 				project.setprojectName(requestdata.get("projectName").toString());
@@ -62,18 +68,33 @@ public class ProjectController {
 				
 //				method invocation for storing resouces of project created
 				String resource=requestdata.get("resources").toString();
-//				System.out.println("1");
-//				JSONParser parser = new JSONParser();
-//				JSONArray json = (JSONArray) parser.parse(resource);
-//
-//				System.out.println("1");
-//				ArrayList<Resources> resourcelist=new ArrayList<Resources>();
-//				System.out.println("1");
-						
+				
+//				json array for storing json array from request data				
+				org.json.JSONArray jsonArray = new org.json.JSONArray(resource);
+
+//				get totalCount of all jsonObjects
+				int count = jsonArray.length(); 
+				for(int i=0 ; i< count; i++){    
 					
+					org.json.JSONObject jsonObject = jsonArray.getJSONObject(i);  // get jsonObject @ i position 					
+					
+//					setting values on resource object					
+					Resources resou1=new Resources();
+					resou1.setProject(projectmodel.getId());
+					String depart=jsonObject.getString("department");
+					int count1=jsonObject.getInt("resourceCount");
+					resou1.setDepartment(depart);
+					resou1.setresourceCount(count1);
+					
+//					method invocation for storing resource details					
+					Resources resourcevalue=projectservice.addprojectresouce(resou1);
+					
+					if(resourcevalue!=null)
+						responsedata.put("status", "success");
+					else
+						responsedata.put("status", "Failed");
+				}
 				
-				
-				responsedata.put("status", "success");
 		}catch(Exception e) {
 			System.out.println("Exception : "+e);
 			responsedata.put("status", "Failed");
@@ -81,14 +102,6 @@ public class ProjectController {
 		return responsedata;
 	}
 	
-	
-	
-//	@GetMapping("/project")
-//	public ArrayList<ProjectModel> getproject(){
-//		ArrayList<ProjectModel> project=projectservice.getProjects();
-//		return project;
-//	}
-//	
 	
 	
 	//Api for getting project owner details from user table
