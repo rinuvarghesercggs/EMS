@@ -5,6 +5,6 @@ import com.EMS.model.UserModel;
 
 public interface UserService {
 	
-	UserModel getUserDetailsByName(String Uname);
+	UserModel getUserDetailsById(Long uId);
 
 }

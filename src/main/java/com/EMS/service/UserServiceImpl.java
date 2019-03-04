@@ -13,8 +13,8 @@ public class UserServiceImpl implements UserService {
 	UserRepositary userRepositary;
 	
 	@Override
-	public UserModel getUserDetailsByName(String name){
-		return  userRepositary.getUserDetailsByName(name);
+	public UserModel getUserDetailsById(Long id){
+		return  userRepositary.getOne(id);
 				
 	}
 

@@ -46,8 +46,10 @@ import com.EMS.dto.Taskdetails;
 import com.EMS.model.Alloc;
 import com.EMS.model.ProjectModel;
 import com.EMS.model.TaskModel;
+import com.EMS.model.UserModel;
 import com.EMS.service.ProjectService;
 import com.EMS.service.TaskService;
+import com.EMS.service.UserService;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -64,7 +66,8 @@ public class TasktrackController {
 	ProjectService projectService;
 	@Autowired
 	TaskService taskService;
-	
+	@Autowired
+	UserService userService;
 
 	@PostMapping(value = "/getTaskdetails")
 	public JSONObject getByDate(@RequestBody Taskdetails requestdata) {
@@ -98,10 +101,9 @@ public class TasktrackController {
 		return jsonDataRes;
 	}
 
-	
 	@GetMapping(value = "/getprojectTaskDatas")
 	public JSONObject getprojectnameList() {
-		List<Object[]>projectTitleList = projectService.getNameId();
+		List<Object[]> projectTitleList = projectService.getNameId();
 		List<Object[]> taskTypesList = taskService.getTaskList();
 		JSONObject returnData = new JSONObject();
 		JSONObject projectTaskDatas = new JSONObject();
@@ -109,8 +111,9 @@ public class TasktrackController {
 		List<JSONObject> taskIdTitleList = new ArrayList<>();
 
 		try {
-			if (!projectTitleList.isEmpty() && !taskTypesList.isEmpty() && projectTitleList.size() > 0 && taskTypesList.size() > 0) {
-				
+			if (!projectTitleList.isEmpty() && !taskTypesList.isEmpty() && projectTitleList.size() > 0
+					&& taskTypesList.size() > 0) {
+
 				for (Object[] itemNew : projectTitleList) {
 					JSONObject jsonObjectNew = new JSONObject();
 					jsonObjectNew.put("id", itemNew[0]);
@@ -135,70 +138,72 @@ public class TasktrackController {
 		return returnData;
 	}
 
-	
 	@PostMapping(value = "/addTask", headers = "Accept=application/json")
-	public JSONObject updateData(@RequestBody JSONObject taskData) throws JSONException, ParseException{
-		JSONObject jsonDataRes = new JSONObject();  
-		String resource=taskData.get("addTask").toString();
-		String usedId = taskData.get("uId").toString();
-		org.json.JSONArray jsonArray = new org.json.JSONArray(resource);
+	public JSONObject updateData(@RequestBody JSONObject taskData) throws JSONException, ParseException {
+		JSONObject jsonDataRes = new JSONObject();
+		String taskListString = taskData.get("addTask").toString();
+		String userId = taskData.get("uId").toString();
+		Long uId = Long.parseLong(userId);
+		org.json.JSONArray newArray = new org.json.JSONArray(taskListString);
 
-		int count = jsonArray.length(); 
-		for(int i=0 ; i< count; i++){  
-			
-			org.json.JSONObject jsonObject = jsonArray.getJSONObject(i);
-			
-			TaskModel newTask=new TaskModel();
-			
-			newTask.setTaskName(jsonObject.getString("taskType"));
-			newTask.setDescription(jsonObject.getString("taskSummary"));
-			newTask.setHours(jsonObject.getInt("hours"));
-			Long projectId = projectService.getProjectId(jsonObject.getString("project"));
-			ProjectModel proj = projectService.findById(projectId);
-			newTask.setproject(proj);
-			String dateNew= jsonObject.getString("date");
-			Date date1=new SimpleDateFormat("yyyy-MM-dd").parse(dateNew);  
-			newTask.setDate(date1);
-			
-			taskService.saveTaskDetails(newTask);
+		if (!userId.isEmpty() && uId != null) {
+			UserModel user = userService.getUserDetailsById(uId);
+			int count = newArray.length();
+			Boolean saveFail = false;
+			for (int i = 0; i < count; i++) {
+				org.json.JSONObject jsonObject = newArray.getJSONObject(i);
+				TaskModel newTask = new TaskModel();
+				if (!jsonObject.getString("project").isEmpty()) {
+					Long projectId = projectService.getProjectId(jsonObject.getString("project"));
+					if (projectId != null) {
+						ProjectModel proj = projectService.findById(projectId);
+						if (proj != null) {
+							newTask.setproject(proj);
+						}
+					} else {
+						saveFail = true;
+					}
+				} else {
+					saveFail = true;
+				}
+				if (!jsonObject.getString("date").isEmpty()) {
+					String dateNew = jsonObject.getString("date");
+					Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(dateNew);
+					if (date1 != null) {
+						newTask.setDate(date1);
+					} else {
+						saveFail = true;
+					}
+				} else {
+					saveFail = true;
+				}
+				if (!jsonObject.getString("taskType").isEmpty()) {
+					newTask.setTaskName(jsonObject.getString("taskType"));
+				} else {
+					saveFail = true;
+				}
+				if (!jsonObject.getString("taskSummary").isEmpty()) {
+					newTask.setDescription(jsonObject.getString("taskSummary"));
+				} else {
+					saveFail = true;
+				}
+				newTask.setHours(jsonObject.getInt("hours"));
+				newTask.setuser(user);
+				if (!saveFail) {
+					taskService.saveTaskDetails(newTask);
+				}
+			}
+			if (!saveFail) {
+				jsonDataRes.put("status", "Success");
+			} else {
+				jsonDataRes.put("status", "Failure");
+			}
+		} else {
+			jsonDataRes.put("status", "Failure");
 		}
-		
-//		JSONArray jew = taskData.getJSONArray("addTask");
-//		String usedId = taskData.get("uId").toString();
-//		System.out.println("Done with data");
-//		try {
-//			for (JSONObject item : jsonList) {
-//				String project = (String) item.get("project");
-//				System.out.println("Project Name"+project);
-//				String taskType = (String) item.get("taskType");
-//				String taskSummary = (String) item.get("taskSummary");
-//				String hours = (String) item.get("hours");
-//				String date = (String) item.get("date");
-
-//				Long projectId = projectService.getProjectId(project);
-//				ProjectModel proj = projectService.findById(projectId);
-
-//				TaskModel taskNew = new TaskModel();
-//				taskNew.setHours(Integer.parseInt(hours));
-//				taskNew.setDescription(taskSummary);
-//				taskNew.setTaskName(taskType);
-//				taskNew.setproject(proj);
-//				taskNew.setDate(new Date());
-//				taskService.saveTaskDetails(taskNew);
-//			task.setDate(Date.parse(date);
-//			}
-			jsonDataRes.put("status", "success");
-//		} catch (Exception e) {
-//			jsonDataRes.put("status", "Failure");
-//		}
 
 		return jsonDataRes;
 	}
-
-
-	
-	
-	
 
 //	@GetMapping(value = "find/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 //	public ResponseEntity<Timetrack> getRecordById(@PathVariable("id") long id) {
