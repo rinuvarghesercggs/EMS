@@ -38,6 +38,8 @@ public interface ProjectService {
 //		Method for creating project resouce records
 		Resources addprojectresouce(Resources resou1);
 
+		ContractModel getContract(long contractId);
+
 
 
 

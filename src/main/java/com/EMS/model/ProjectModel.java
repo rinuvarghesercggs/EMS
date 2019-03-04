@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -28,9 +29,12 @@ public class ProjectModel {
 	@Cascade(CascadeType.ALL)
 	private long id;
 	
-	private String projectName,projectOwner,projectDetails,contractType;
+	private String projectName,projectOwner,projectDetails;
 	private int estimatedHours;
 	private Date startDate,endDate;
+	
+	@ManyToOne
+	private ContractModel contract;
 	
 //	@OneToMany(targetEntity=Resources.class)
 //	private List<Resources> resources;
@@ -50,13 +54,12 @@ public class ProjectModel {
 //		this.resources = resources;
 //	}
 	public ProjectModel(long id, String projectName, String projectOwner, String projectDetails,
-			String contractType, int estimatedHours, Date startDate, Date endDate) {
+			 int estimatedHours, Date startDate, Date endDate) {
 		super();
 		this.id = id;
 		this.projectName = projectName;
 		this.projectOwner = projectOwner;
 		this.projectDetails = projectDetails;
-		this.contractType = contractType;
 		this.estimatedHours = estimatedHours;
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -67,7 +70,7 @@ public class ProjectModel {
 	@Override
 	public String toString() {
 		return "ProjectModel [id=" + id + ", projectName=" + projectName + ", projectOwner=" + projectOwner
-				+ ", projectDetails=" + projectDetails + ", contractType=" + contractType + ", estimatedHours="
+				+ ", projectDetails=" + projectDetails + ", contractType=" + ", estimatedHours="
 				+ estimatedHours + ", startDate=" + startDate + ", endDate=" + endDate + "]";
 	}
 	public void setprojectOwner(String projectOwner) {
@@ -79,11 +82,12 @@ public class ProjectModel {
 	public void setprojectDetails(String projectDetails) {
 		this.projectDetails = projectDetails;
 	}
-	public String getcontractType() {
-		return contractType;
+	
+	public ContractModel getContract() {
+		return contract;
 	}
-	public void setcontractType(String contractType) {
-		this.contractType = contractType;
+	public void setContract(ContractModel contract) {
+		this.contract = contract;
 	}
 	public int getestimatedHours() {
 		return estimatedHours;

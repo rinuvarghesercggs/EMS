@@ -103,4 +103,10 @@ public class ProjectServiceImpl implements ProjectService {
 		return value;
 	}
 
+	@Override
+	public ContractModel getContract(long id) {
+		ContractModel contract = contract_repository.getOne(id);
+		return contract;
+	}
+
 }

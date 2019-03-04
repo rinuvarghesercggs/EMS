@@ -48,10 +48,12 @@ public class ProjectController {
 
 //				setting values to object from json request 
 				ProjectModel project=new ProjectModel();
+				String contractId = requestdata.get("contract").toString();
+				ContractModel contractModel = projectservice.getContract(Long.parseLong(contractId));
 				project.setprojectDetails(requestdata.get("projectDetails").toString());
 				project.setprojectName(requestdata.get("projectName").toString());
 				project.setprojectOwner(requestdata.get("projectOwner").toString());
-				project.setcontractType(requestdata.get("contractType").toString());
+				project.setContract(contractModel);
 				project.setestimatedHours(Integer.parseInt(requestdata.get("estimatedHours").toString()));
 				String startdate=requestdata.get("startDate").toString();
 				String enddate=requestdata.get("endDate").toString();
