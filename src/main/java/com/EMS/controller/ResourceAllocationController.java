@@ -66,38 +66,6 @@ public class ResourceAllocationController {
 
 	}
 
-//	// To get the allocation list based on project name
-//
-//	@GetMapping(value = "/getresourceList/{projectId}")
-//	public JSONObject getAllocationLists(@PathVariable("projectId") Long projectId) {
-//		List<Alloc> alloc = resourceAllocation.getAllocationList(projectId);
-//		String response = null;
-//		JSONObject jsonData = new JSONObject();
-//		JSONObject jsonDataRes = new JSONObject();
-//		List<JSONObject> jsonArray = new ArrayList<>();
-//
-//		try {
-//			if (!(alloc.isEmpty() && alloc.size() > 0)) {
-//				for (Alloc item : alloc) {
-//					JSONObject jsonObject = new JSONObject();
-//					jsonObject.put("id", item.getId());
-//					jsonObject.put("projectTitle", item.getProjectModel().getprojectName());
-//					jsonObject.put("name", item.getuser().getFirstName());
-//					jsonObject.put("allocatedVal", item.getAllocatedPerce());
-//					jsonObject.put("allocatedFree", item.getFreeAllocation());
-//					jsonArray.add(jsonObject);
-//				}
-//
-//				jsonData.put("resourceList", jsonArray);
-//				jsonDataRes.put("status", "Success");
-//			}
-//		} catch (Exception e) {
-//			jsonDataRes.put("status", "Failure");
-//		}
-//		jsonDataRes.put("data", jsonData);
-//		return jsonDataRes;
-//
-//	}
 
 	// To update resource allocation data
 
@@ -130,50 +98,6 @@ public class ResourceAllocationController {
 	
 	
 
-//	// To get user name list
-//	
-//	@GetMapping(value = "/getUsers")
-//	public JSONObject getUsernameList() {
-//		JSONObject jsonData = new JSONObject();
-//		JSONObject jsonDataRes = new JSONObject();
-//		try {
-//			List<UserModel> userList = resourceAllocation.getUserList();
-//			if( !(userList).isEmpty() && userList.size() > 0) {
-//				jsonData.put("userList", userList);
-//				jsonDataRes.put("status", "Success");
-//			}
-//		}catch (Exception e) {
-//			jsonDataRes.put("status", "Failure");
-//		}
-//		jsonDataRes.put("data", jsonData);
-//		return jsonDataRes;
-//
-//	}
-//	
-//	
-//
-//	// To get department name list
-//	
-//	@GetMapping(value = "/getDepartment")
-//	public JSONObject getDepartmentnameList() {
-//		JSONObject jsonData = new JSONObject();
-//		JSONObject jsonDataRes = new JSONObject();
-//
-//		try {
-//			List<DepartmentModel> departmentList = resourceAllocation.getDepartmentList();
-//			if( !(departmentList).isEmpty() && departmentList.size() > 0 ) {
-//				jsonDataRes.put("status", "Success");
-//				jsonData.put("departmentList", departmentList);
-//			}
-//		}catch (Exception e) {
-//			jsonDataRes.put("status", "Failure");
-//		}
-//			jsonDataRes.put("data", jsonData);
-//			
-//		return jsonDataRes;
-//
-//	}
-	
 	
 	
 	
