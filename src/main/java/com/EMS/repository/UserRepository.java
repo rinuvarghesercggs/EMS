@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.EMS.model.UserModel;
 
-public interface UserRepositary extends JpaRepository<UserModel, Long>{
+public interface UserRepository extends JpaRepository<UserModel, Long>{
 	
 	
 	@Query("SELECT u FROM UserModel u WHERE u.userName=?1 AND u.password=?2") //Query for checking username and password are matching or not

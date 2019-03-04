@@ -9,13 +9,13 @@ import org.springframework.stereotype.Service;
 import com.EMS.model.DepartmentModel;
 import com.EMS.model.UserModel;
 import com.EMS.repository.DepartmentRepository;
-import com.EMS.repository.UserRepositary;
+import com.EMS.repository.UserRepository;
 
 @Service
 public class LoginServiceImpl implements LoginService {
 
 	@Autowired
-	UserRepositary login_repositary;
+	UserRepository user_repositary;
 
 	
 	
@@ -29,7 +29,7 @@ public class LoginServiceImpl implements LoginService {
 		UserModel checkuserid=null;															
 		try {
 //			calling sql query by passing parameters			
-			checkuserid=login_repositary.getUserdetails(userName,password);
+			checkuserid=user_repositary.getUserdetails(userName,password);
 			System.out.print("user : "+checkuserid.getId());
 			return checkuserid;
 		}catch(Exception e) {

@@ -13,11 +13,11 @@ import com.EMS.model.DepartmentModel;
 import com.EMS.model.ProjectModel;
 import com.EMS.model.Resources;
 import com.EMS.model.UserModel;
-import com.EMS.repository.ContractRepositary;
+import com.EMS.repository.ContractRepository;
 import com.EMS.repository.DepartmentRepository;
 import com.EMS.repository.ProjectRepository;
 import com.EMS.repository.ResourceRepository;
-import com.EMS.repository.UserRepositary;
+import com.EMS.repository.UserRepository;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
@@ -26,13 +26,13 @@ public class ProjectServiceImpl implements ProjectService {
 	ProjectRepository project_repositary;
 
 	@Autowired
-	UserRepositary user_repositary;
+	UserRepository user_repositary;
 
 	@Autowired
 	ResourceRepository resource_repository;
 
 	@Autowired
-	ContractRepositary contract_repository;
+	ContractRepository contract_repository;
 
 	@Autowired
 	DepartmentRepository department_repositary;
