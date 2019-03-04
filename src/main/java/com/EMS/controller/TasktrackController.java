@@ -64,7 +64,7 @@ public class TasktrackController {
 			if (!tracklist.isEmpty() && tracklist.size() > 0) {
 				for (TaskModel item : tracklist) {
 					JSONObject jsonObject = new JSONObject();
-					jsonObject.put("project", item.getProjectId().getProject_name());
+					jsonObject.put("project", item.getproject().getprojectName());
 					jsonObject.put("taskType", item.getTaskName());
 					jsonObject.put("taskSummary", item.getDescription());
 					jsonObject.put("hours", item.getHours());
@@ -130,7 +130,7 @@ public class TasktrackController {
 			TaskModel task = new TaskModel();
 			task.setHours(Integer.parseInt(hours));
 			task.setDescription(taskSummary);
-			task.setProjectId(proj);
+			task.setproject(proj);
 //			task.setDate(Date.parse(date);
 			}
 			jsonDataRes.put("status", "success");

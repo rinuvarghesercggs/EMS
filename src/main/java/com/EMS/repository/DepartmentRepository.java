@@ -14,7 +14,7 @@ import com.EMS.model.UserModel;
 @Repository
 public interface DepartmentRepository extends JpaRepository<DepartmentModel, Long> {
 
-	@Query("SELECT s.department_name FROM DepartmentModel s")
+	@Query("SELECT s.departmentName FROM DepartmentModel s")
 	List<DepartmentModel> findDeptName();
 
 	

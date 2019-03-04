@@ -29,10 +29,10 @@ public class UserModel {
 	private long id;
 
 	@ManyToOne
-	private DepartmentModel departmentId;
+	private DepartmentModel department;
 
 	@ManyToOne
-	private RoleModel roleId;
+	private RoleModel role;
 	private String firstName, lastName, userName, password, email;
 	private int contact;
 
@@ -45,20 +45,20 @@ public class UserModel {
 		this.id = id;
 	}
 
-	public DepartmentModel getDepartmentId() {
-		return departmentId;
+	public DepartmentModel getdepartment() {
+		return department;
 	}
 
-	public void setDepartmentId(DepartmentModel departmentId) {
-		this.departmentId = departmentId;
+	public void setdepartment(DepartmentModel department) {
+		this.department = department;
 	}
 
-	public RoleModel getRoleId() {
-		return roleId;
+	public RoleModel getrole() {
+		return role;
 	}
 
-	public void setRoleId(RoleModel roleId) {
-		this.roleId = roleId;
+	public void setrole(RoleModel role) {
+		this.role = role;
 	}
 
 	public String getFirstName() {

@@ -23,12 +23,12 @@ public interface ProjectService {
 		Long getProjectId(String projectName);
 
 //		method declaration for getting user details for project creation
-		List<String> getproject_owner();
+		List<String> getprojectOwner();
 
 //		ArrayList<ProjectModel> getProjects();
 	
 //		method declaration for getting contract type details for project creation
-		ArrayList<ContractModel> getcontract_type();
+		ArrayList<ContractModel> getcontractType();
 
 //		Method invocation for getting department details
 		List<DepartmentModel> getdepartment();

@@ -81,8 +81,8 @@ public class ResourceAllocationController {
 //				for (Alloc item : alloc) {
 //					JSONObject jsonObject = new JSONObject();
 //					jsonObject.put("id", item.getId());
-//					jsonObject.put("projectTitle", item.getProjectModel().getProject_name());
-//					jsonObject.put("name", item.getUserModel().getFirstName());
+//					jsonObject.put("projectTitle", item.getProjectModel().getprojectName());
+//					jsonObject.put("name", item.getuser().getFirstName());
 //					jsonObject.put("allocatedVal", item.getAllocatedPerce());
 //					jsonObject.put("allocatedFree", item.getFreeAllocation());
 //					jsonArray.add(jsonObject);
@@ -195,8 +195,8 @@ public class ResourceAllocationController {
 					for (Alloc item : alloc) {
 						JSONObject jsonObject = new JSONObject();
 						jsonObject.put("id", item.getId());
-						jsonObject.put("projectTitle", item.getProjectModel().getProject_name());
-						jsonObject.put("name", item.getUserModel().getFirstName());
+						jsonObject.put("projectTitle", item.getproject().getprojectName());
+						jsonObject.put("name", item.getuser().getFirstName());
 						jsonObject.put("allocatedVal", item.getAllocatedPerce());
 						jsonObject.put("allocatedFree", item.getFreeAllocation());
 						jsonArray.add(jsonObject);

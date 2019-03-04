@@ -63,7 +63,7 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	@Override
-	public List<String> getproject_owner() {
+	public List<String> getprojectOwner() {
 		List<String> user_owner = new ArrayList<String>();
 		user_owner = user_repositary.getProjectOwners();
 
@@ -77,7 +77,7 @@ public class ProjectServiceImpl implements ProjectService {
 //	}
 
 	@Override
-	public ArrayList<ContractModel> getcontract_type() {
+	public ArrayList<ContractModel> getcontractType() {
 
 		ArrayList<ContractModel> contract = null;
 		try {

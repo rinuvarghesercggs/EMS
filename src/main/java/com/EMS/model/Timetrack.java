@@ -34,15 +34,15 @@ public class Timetrack {
    	private Integer hours;
     
     @ManyToOne
-	private TaskModel taskModel;
+	private TaskModel task;
     
      
-	public TaskModel getTaskModel() {
-		return taskModel;
+	public TaskModel gettask() {
+		return task;
 	}
 
-	public void setTaskModel(TaskModel taskModel) {
-		this.taskModel = taskModel;
+	public void settask(TaskModel task) {
+		this.task = task;
 	}
 
 	public long getId() {

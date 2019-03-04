@@ -28,9 +28,9 @@ public class ProjectModel {
 	@Cascade(CascadeType.ALL)
 	private long id;
 	
-	private String project_name,project_owner,project_details,contract_type;
-	private int estimated_hours;
-	private Date start_date,end_date;
+	private String projectName,projectOwner,projectDetails,contractType;
+	private int estimatedHours;
+	private Date startDate,endDate;
 	
 //	@OneToMany(targetEntity=Resources.class)
 //	private List<Resources> resources;
@@ -49,70 +49,70 @@ public class ProjectModel {
 //	public void setResources(List<Resources> resources) {
 //		this.resources = resources;
 //	}
-	public ProjectModel(long id, String project_name, String project_owner, String project_details,
-			String contract_type, int estimated_hours, Date start_date, Date end_date) {
+	public ProjectModel(long id, String projectName, String projectOwner, String projectDetails,
+			String contractType, int estimatedHours, Date startDate, Date endDate) {
 		super();
 		this.id = id;
-		this.project_name = project_name;
-		this.project_owner = project_owner;
-		this.project_details = project_details;
-		this.contract_type = contract_type;
-		this.estimated_hours = estimated_hours;
-		this.start_date = start_date;
-		this.end_date = end_date;
+		this.projectName = projectName;
+		this.projectOwner = projectOwner;
+		this.projectDetails = projectDetails;
+		this.contractType = contractType;
+		this.estimatedHours = estimatedHours;
+		this.startDate = startDate;
+		this.endDate = endDate;
 	}
-	public String getProject_owner() {
-		return project_owner;
+	public String getprojectOwner() {
+		return projectOwner;
 	}
 	@Override
 	public String toString() {
-		return "ProjectModel [id=" + id + ", project_name=" + project_name + ", project_owner=" + project_owner
-				+ ", project_details=" + project_details + ", contract_type=" + contract_type + ", estimated_hours="
-				+ estimated_hours + ", start_date=" + start_date + ", end_date=" + end_date + "]";
+		return "ProjectModel [id=" + id + ", projectName=" + projectName + ", projectOwner=" + projectOwner
+				+ ", projectDetails=" + projectDetails + ", contractType=" + contractType + ", estimatedHours="
+				+ estimatedHours + ", startDate=" + startDate + ", endDate=" + endDate + "]";
 	}
-	public void setProject_owner(String project_owner) {
-		this.project_owner = project_owner;
+	public void setprojectOwner(String projectOwner) {
+		this.projectOwner = projectOwner;
 	}
-	public String getProject_details() {
-		return project_details;
+	public String getprojectDetails() {
+		return projectDetails;
 	}
-	public void setProject_details(String project_details) {
-		this.project_details = project_details;
+	public void setprojectDetails(String projectDetails) {
+		this.projectDetails = projectDetails;
 	}
-	public String getContract_type() {
-		return contract_type;
+	public String getcontractType() {
+		return contractType;
 	}
-	public void setContract_type(String contract_type) {
-		this.contract_type = contract_type;
+	public void setcontractType(String contractType) {
+		this.contractType = contractType;
 	}
-	public int getEstimated_hours() {
-		return estimated_hours;
+	public int getestimatedHours() {
+		return estimatedHours;
 	}
-	public void setEstimated_hours(int estimated_hours) {
-		this.estimated_hours = estimated_hours;
+	public void setestimatedHours(int estimatedHours) {
+		this.estimatedHours = estimatedHours;
 	}
 	
 	
 	public void setId(long id) {
 		this.id = id;
 	}
-	public String getProject_name() {
-		return project_name;
+	public String getprojectName() {
+		return projectName;
 	}
-	public void setProject_name(String project_name) {
-		this.project_name = project_name;
+	public void setprojectName(String projectName) {
+		this.projectName = projectName;
 	}
-	public Date getStart_date() {
-		return start_date;
+	public Date getstartDate() {
+		return startDate;
 	}
-	public void setStart_date(Date start_date) {
-		this.start_date = start_date;
+	public void setstartDate(Date startDate) {
+		this.startDate = startDate;
 	}
-	public Date getEnd_date() {
-		return end_date;
+	public Date getendDate() {
+		return endDate;
 	}
-	public void setEnd_date(Date end_date) {
-		this.end_date = end_date;
+	public void setendDate(Date endDate) {
+		this.endDate = endDate;
 	}
 	
 	

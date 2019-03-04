@@ -10,7 +10,7 @@ import com.EMS.model.ProjectModel;
 
 public interface ProjectRepository extends JpaRepository<ProjectModel, Long> {
 
-	@Query("SELECT s.project_name FROM ProjectModel s")
+	@Query("SELECT s.projectName FROM ProjectModel s")
 	List<String> getProjectName();
 
 	@Query("SELECT s.id FROM ProjectModel s")

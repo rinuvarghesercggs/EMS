@@ -19,7 +19,7 @@ public class DepartmentModel {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private long id;
 	
-	private String department_name;
+	private String departmentName;
 
 	public long getId() {
 		return id;
@@ -29,26 +29,26 @@ public class DepartmentModel {
 		this.id = id;
 	}
 
-	public String getDepartment_name() {
-		return department_name;
+	public String getdepartmentName() {
+		return departmentName;
 	}
 
-	public void setDepartment_name(String department_name) {
-		this.department_name = department_name;
+	public void setdepartmentName(String departmentName) {
+		this.departmentName = departmentName;
 	}
 	
 	public DepartmentModel() {
 		
 	}
 	
-	public DepartmentModel(int id, String department_name) {
+	public DepartmentModel(int id, String departmentName) {
 		super();
 		this.id = id;
-		this.department_name = department_name;
+		this.departmentName = departmentName;
 	}
 
 	@Override
 	public String toString() {
-		return "ID "+id+" name : "+department_name;
+		return "ID "+id+" name : "+departmentName;
 	}
 }
