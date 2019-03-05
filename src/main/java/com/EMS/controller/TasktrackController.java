@@ -179,7 +179,6 @@ public class TasktrackController {
 		} catch (Exception e) {
 			jsonDataRes.put("status", "failure");
 			System.out.println("Exception " + e);
-
 		}
 
 		return jsonDataRes;
