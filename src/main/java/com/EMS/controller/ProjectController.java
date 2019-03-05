@@ -48,7 +48,12 @@ public class ProjectController {
 				ContractModel contractModel = projectservice.getContract(Long.parseLong(contractId));
 				project.setprojectDetails(requestdata.get("projectDetails").toString());
 				project.setprojectName(requestdata.get("projectName").toString());
-				project.setprojectOwner(requestdata.get("projectOwner").toString());
+				
+				UserModel pro_owner=new UserModel();
+				Long userid=Long.parseLong(requestdata.get("projectOwner").toString());
+				pro_owner.setId(userid);
+				project.setprojectOwner(pro_owner);
+				
 				project.setContract(contractModel);
 				project.setestimatedHours(Integer.parseInt(requestdata.get("estimatedHours").toString()));
 				String startdate=requestdata.get("startDate").toString();
@@ -79,9 +84,13 @@ public class ProjectController {
 //					setting values on resource object					
 					Resources resou1=new Resources();
 					resou1.setProject(projectmodel.getId());
-					String depart=jsonObject.getString("department");
+					
+					Long depart=jsonObject.getLong("department");
+					DepartmentModel departmentid=new DepartmentModel();
+					departmentid.setId(depart);
+					resou1.setDepartment(departmentid);
+					
 					int count1=jsonObject.getInt("resourceCount");
-					resou1.setDepartment(depart);
 					resou1.setresourceCount(count1);
 					
 //					method invocation for storing resource details					

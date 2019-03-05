@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -18,7 +19,9 @@ public class Resources {
 	@Column(name="id")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private long id;
-	private String department;
+	
+	@ManyToOne
+	private DepartmentModel department;
 	private int resourceCount;
 	private long project;
 	
@@ -42,16 +45,15 @@ public class Resources {
 		this.id = id;
 	}
 
-	public String getDepartment() {
+	public DepartmentModel getDepartment() {
 		return department;
 	}
-	public Resources(long id,String department, int resourceCount) {
+	public Resources(long id, int resourceCount) {
 		super();
-		this.department = department;
 		this.id=id;
 		this.resourceCount = resourceCount;
 	}
-	public void setDepartment(String department) {
+	public void setDepartment(DepartmentModel department) {
 		this.department = department;
 	}
 	public int getresourceCount() {
