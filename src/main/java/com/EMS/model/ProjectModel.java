@@ -23,9 +23,12 @@ public class ProjectModel {
 	@Cascade(CascadeType.ALL)
 	private long id;
 	
-	private String projectName,projectOwner,projectDetails;
+	private String projectName,projectDetails;
 	private int estimatedHours;
 	private Date startDate,endDate;
+	
+	@ManyToOne
+	private UserModel projectOwner;
 	
 	@ManyToOne
 	private ContractModel contract;
@@ -47,18 +50,17 @@ public class ProjectModel {
 //	public void setResources(List<Resources> resources) {
 //		this.resources = resources;
 //	}
-	public ProjectModel(long id, String projectName, String projectOwner, String projectDetails,
+	public ProjectModel(long id, String projectName, String projectDetails,
 			 int estimatedHours, Date startDate, Date endDate) {
 		super();
 		this.id = id;
 		this.projectName = projectName;
-		this.projectOwner = projectOwner;
 		this.projectDetails = projectDetails;
 		this.estimatedHours = estimatedHours;
 		this.startDate = startDate;
 		this.endDate = endDate;
 	}
-	public String getprojectOwner() {
+	public UserModel getprojectOwner() {
 		return projectOwner;
 	}
 	@Override
@@ -67,7 +69,7 @@ public class ProjectModel {
 				+ ", projectDetails=" + projectDetails + ", contractType=" + ", estimatedHours="
 				+ estimatedHours + ", startDate=" + startDate + ", endDate=" + endDate + "]";
 	}
-	public void setprojectOwner(String projectOwner) {
+	public void setprojectOwner(UserModel projectOwner) {
 		this.projectOwner = projectOwner;
 	}
 	public String getprojectDetails() {
