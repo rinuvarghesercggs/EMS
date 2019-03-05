@@ -44,10 +44,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.EMS.dto.Taskdetails;
 import com.EMS.model.ProjectModel;
-import com.EMS.model.TaskModel;
+import com.EMS.model.Tasktrack;
 import com.EMS.model.UserModel;
 import com.EMS.service.ProjectService;
-import com.EMS.service.TaskService;
+import com.EMS.service.TasktrackService;
 import com.EMS.service.UserService;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -63,20 +63,20 @@ public class TasktrackController {
 	@Autowired
 	ProjectService projectService;
 	@Autowired
-	TaskService taskService;
+	TasktrackService tasktrackService;
 	@Autowired
 	UserService userService;
 
 	@PostMapping(value = "/getTaskdetails")
 	public JSONObject getByDate(@RequestBody Taskdetails requestdata) {
-		List<TaskModel> tracklist = null;
-		tracklist = taskService.getByDate(requestdata.getTaskDate(), requestdata.getuId());
+		List<Tasktrack> tracklist = null;
+		tracklist = tasktrackService.getByDate(requestdata.getTaskDate(), requestdata.getuId());
 		JSONObject jsonData = new JSONObject();
 		JSONObject jsonDataRes = new JSONObject();
 		List<JSONObject> jsonArray = new ArrayList<>();
 		try {
 			if (!tracklist.isEmpty() && tracklist.size() > 0) {
-				for (TaskModel item : tracklist) {
+				for (Tasktrack item : tracklist) {
 					JSONObject jsonObject = new JSONObject();
 					jsonObject.put("id", item.getId());
 					jsonObject.put("project", item.getproject().getprojectName());
@@ -102,7 +102,7 @@ public class TasktrackController {
 	@GetMapping(value = "/getprojectTaskDatas")
 	public JSONObject getprojectnameList() {
 		List<Object[]> projectTitleList = projectService.getNameId();
-		List<Object[]> taskTypesList = taskService.getTaskList();
+		List<Object[]> taskTypesList = tasktrackService.getTaskList();
 		JSONObject returnData = new JSONObject();
 		JSONObject projectTaskDatas = new JSONObject();
 		List<JSONObject> projectIdTitleList = new ArrayList<>();
@@ -150,7 +150,7 @@ public class TasktrackController {
 				Boolean saveFail = false;
 				for (int i = 0; i < count; i++) {
 					org.json.JSONObject jsonObject = newArray.getJSONObject(i);
-					TaskModel newTask = new TaskModel();
+					Tasktrack newTask = new Tasktrack();
 					if (!jsonObject.getString("project").isEmpty()) {
 						Long projectId = projectService.getProjectId(jsonObject.getString("project"));
 						if (projectId != null) {
@@ -188,7 +188,7 @@ public class TasktrackController {
 					newTask.setHours(jsonObject.getInt("hours"));
 					newTask.setuser(user);
 					if (!saveFail) {
-						taskService.saveTaskDetails(newTask);
+						tasktrackService.saveTaskDetails(newTask);
 					}
 				}
 				if (!saveFail) {

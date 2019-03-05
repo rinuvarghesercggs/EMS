@@ -15,8 +15,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "Task")
-public class TaskModel {
+@Table(name = "Tasktrack")
+public class Tasktrack {
 
 	@Id
 	@Column(name = "id")
