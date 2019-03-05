@@ -79,7 +79,7 @@ public class ResourceAllocationController {
 			String allocatedVal = requestdata.get("allocatedVal").toString();
 			String allocatedFree = requestdata.get("allocatedFree").toString();
 
-			Alloc alloc = resourceAllocation.findDataBy(Long.parseLong(id));
+			Alloc alloc = resourceAllocation.findDataById(Long.parseLong(id));
 			if (alloc != null) {
 				alloc.setAllocatedPerce(Double.parseDouble(allocatedVal));
 				alloc.setFreeAllocation(Double.parseDouble(allocatedFree));
@@ -117,11 +117,14 @@ public class ResourceAllocationController {
 					for (Alloc item : alloc) {
 						JSONObject jsonObject = new JSONObject();
 						jsonObject.put("id", item.getId());
-						jsonObject.put("projectTitle", item.getproject().getprojectName());
-						jsonObject.put("name", item.getuser().getFirstName());
+						if(item.getproject() != null)
+							jsonObject.put("projectTitle", item.getproject().getprojectName());
+						if(item.getuser() != null)
+							jsonObject.put("name", item.getuser().getFirstName());
 						jsonObject.put("allocatedVal", item.getAllocatedPerce());
 						jsonObject.put("allocatedFree", item.getFreeAllocation());
-						jsonObject.put("department name", item.getuser().getdepartment().getdepartmentName());
+						if(item.getuser() != null && item.getuser().getdepartment() != null)
+							jsonObject.put("department name", item.getuser().getdepartment().getdepartmentName());
 						jsonArray.add(jsonObject);
 					}
 

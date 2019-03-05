@@ -42,7 +42,7 @@ public class ResourceAllocationServiceImpl implements ResourceAllocationService{
 	}
 
 	@Override
-	public Alloc findDataBy(Long id) {
+	public Alloc findDataById(Long id) {
 		return resourceAllocationRepository.getOne(id);
 	}
 
