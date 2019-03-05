@@ -59,7 +59,7 @@ public class ProjectController {
 				String startdate=requestdata.get("startDate").toString();
 				String enddate=requestdata.get("endDate").toString();
 				
-				DateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
+				DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
 				Date date1 = formatter.parse(startdate);
 				Date date2 = formatter.parse(enddate);
 				
