@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import org.json.JSONException;
 import org.json.simple.JSONObject;
@@ -47,7 +49,9 @@ public class TasktrackController {
 				for (Tasktrack item : tracklist) {
 					JSONObject jsonObject = new JSONObject();
 					jsonObject.put("id", item.getId());
+					if(item.getProject() !=null)
 					jsonObject.put("project", item.getProject().getprojectName());
+					if(item.getTask() != null)
 					jsonObject.put("taskType", item.getTask().getTaskName());
 					jsonObject.put("taskSummary", item.getDescription());
 					jsonObject.put("hours", item.getHours());
@@ -130,7 +134,10 @@ public class TasktrackController {
 					}
 					if (!jsonObject.getString("date").isEmpty()) {
 						String dateNew = jsonObject.getString("date");
-						Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(dateNew);
+						TimeZone zone = TimeZone.getTimeZone("MST");
+						SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+						outputFormat.setTimeZone(zone);
+						Date date1 = outputFormat.parse(dateNew);
 						if (date1 != null) {
 							newTask.setDate(date1);
 						} else {
@@ -173,7 +180,7 @@ public class TasktrackController {
 		}
 
 		return jsonDataRes;
-		
+
 	}
 
 //	@GetMapping(value = "find/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
