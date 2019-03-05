@@ -47,7 +47,7 @@ public class TasktrackController {
 				for (Tasktrack item : tracklist) {
 					JSONObject jsonObject = new JSONObject();
 					jsonObject.put("id", item.getId());
-					jsonObject.put("project", item.getproject().getprojectName());
+					jsonObject.put("project", item.getProject().getprojectName());
 					jsonObject.put("taskType", item.getTaskName());
 					jsonObject.put("taskSummary", item.getDescription());
 					jsonObject.put("hours", item.getHours());
@@ -124,7 +124,7 @@ public class TasktrackController {
 						if (projectId != null) {
 							ProjectModel proj = projectService.findById(projectId);
 							if (proj != null) {
-								newTask.setproject(proj);
+								newTask.setProject(proj);
 							}
 						} else {
 							saveFail = true;
@@ -154,7 +154,7 @@ public class TasktrackController {
 						saveFail = true;
 					}
 					newTask.setHours(jsonObject.getInt("hours"));
-					newTask.setuser(user);
+					newTask.setUser(user);
 					if (!saveFail) {
 						tasktrackService.saveTaskDetails(newTask);
 					}

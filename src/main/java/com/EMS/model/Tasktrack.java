@@ -41,6 +41,8 @@ public class Tasktrack {
 	@ManyToOne
 	private UserModel user;
 	
+	@ManyToOne
+	private Task task;
 
 	public long getId() {
 		return id;
@@ -48,30 +50,6 @@ public class Tasktrack {
 
 	public void setId(long id) {
 		this.id = id;
-	}
-
-	public ProjectModel getproject() {
-		return project;
-	}
-
-	public void setproject(ProjectModel project) {
-		this.project = project;
-	}
-
-	public UserModel getuser() {
-		return user;
-	}
-
-	public void setuser(UserModel user) {
-		this.user = user;
-	}
-
-	public String getTaskName() {
-		return taskName;
-	}
-
-	public void setTaskName(String taskName) {
-		this.taskName = taskName;
 	}
 
 	public String getDescription() {
@@ -90,6 +68,14 @@ public class Tasktrack {
 		this.date = date;
 	}
 
+	public String getTaskName() {
+		return taskName;
+	}
+
+	public void setTaskName(String taskName) {
+		this.taskName = taskName;
+	}
+
 	public Integer getHours() {
 		return hours;
 	}
@@ -97,8 +83,30 @@ public class Tasktrack {
 	public void setHours(Integer hours) {
 		this.hours = hours;
 	}
-	
-	
 
+	public ProjectModel getProject() {
+		return project;
+	}
+
+	public void setProject(ProjectModel project) {
+		this.project = project;
+	}
+
+	public UserModel getUser() {
+		return user;
+	}
+
+	public void setUser(UserModel user) {
+		this.user = user;
+	}
+
+	public Task getTask() {
+		return task;
+	}
+
+	public void setTask(Task task) {
+		this.task = task;
+	}
+	
 
 }
