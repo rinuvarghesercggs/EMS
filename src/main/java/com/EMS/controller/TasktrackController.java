@@ -38,7 +38,7 @@ public class TasktrackController {
 	@Autowired
 	UserService userService;
 
-	@PostMapping(value = "/getTaskdetails")
+	@PostMapping(value = "/getTaskDetails")
 	public JSONObject getByDate(@RequestBody Taskdetails requestdata) {
 		List<Tasktrack> tracklist = null;
 		tracklist = tasktrackService.getByDate(requestdata.getTaskDate(), requestdata.getuId());
@@ -72,7 +72,7 @@ public class TasktrackController {
 		return jsonDataRes;
 	}
 
-	@GetMapping(value = "/getprojectTaskDatas")
+	@GetMapping(value = "/getProjectTaskDatas")
 	public JSONObject getprojectnameList() {
 		List<Object[]> projectTitleList = projectService.getNameId();
 		List<Object[]> taskTypesList = tasktrackService.getTaskList();

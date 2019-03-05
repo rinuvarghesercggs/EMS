@@ -103,7 +103,7 @@ public class ResourceAllocationController {
 	
 	// To get the allocation list 
 
-		@GetMapping(value = "/getresourceList")
+		@GetMapping(value = "/getResourceList")
 		public JSONObject getAllocationLists() {
 			List<Alloc> alloc = resourceAllocation.getAllocationLists();
 
