@@ -40,6 +40,9 @@ public interface ProjectService {
 
 		ContractModel getContract(long contractId);
 
+//		Method for checking duplicate values in project name
+		int duplicationchecking(String getprojectName);
+
 
 
 

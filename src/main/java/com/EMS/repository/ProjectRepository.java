@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.EMS.model.ProjectModel;
 
@@ -17,6 +18,10 @@ public interface ProjectRepository extends JpaRepository<ProjectModel, Long> {
 	
 	@Query("SELECT s.id,s.projectName FROM ProjectModel s")
 	List<Object[]>getByIdName();
+
+	@Query("SELECT count(p) FROM ProjectModel p WHERE p.projectName LIKE :name")
+	int findproject(@Param("name") String getprojectName);
+
 	
 
 }

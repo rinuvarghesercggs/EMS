@@ -65,43 +65,54 @@ public class ProjectController {
 				
 				project.setstartDate(date1);
 				project.setendDate(date2);
-				
-//				Method invocation for creating new project record
-				ProjectModel projectmodel=projectservice.save_project_record(project);
-				
-//				method invocation for storing resouces of project created
-				String resource=requestdata.get("resources").toString();
-				
-//				json array for storing json array from request data				
-				org.json.JSONArray jsonArray = new org.json.JSONArray(resource);
 
-//				get totalCount of all jsonObjects
-				int count = jsonArray.length(); 
-				for(int i=0 ; i< count; i++){    
-					
-					org.json.JSONObject jsonObject = jsonArray.getJSONObject(i);  // get jsonObject @ i position 					
-					
-//					setting values on resource object					
-					Resources resou1=new Resources();
-					resou1.setProject(projectmodel.getId());
-					
-					Long depart=jsonObject.getLong("department");
-					DepartmentModel departmentid=new DepartmentModel();
-					departmentid.setId(depart);
-					resou1.setDepartment(departmentid);
-					
-					int count1=jsonObject.getInt("resourceCount");
-					resou1.setresourceCount(count1);
-					
-//					method invocation for storing resource details					
-					Resources resourcevalue=projectservice.addprojectresouce(resou1);
-					
-					if(resourcevalue!=null)
-						responsedata.put("status", "success");
-					else
-						responsedata.put("status", "Failed");
-				}
+//				method invocation for checking duplicate entry for project name
 				
+				int result=projectservice.duplicationchecking(project.getprojectName());
+				System.out.println("count : "+result);
+				
+				if(result==0) {
+					
+//					Method invocation for creating new project record
+					ProjectModel projectmodel=projectservice.save_project_record(project);
+					
+//					method invocation for storing resouces of project created
+					String resource=requestdata.get("resources").toString();
+					
+//					json array for storing json array from request data				
+					org.json.JSONArray jsonArray = new org.json.JSONArray(resource);
+
+//					get totalCount of all jsonObjects
+					int count = jsonArray.length(); 
+					for(int i=0 ; i< count; i++){    
+						
+						org.json.JSONObject jsonObject = jsonArray.getJSONObject(i);  // get jsonObject @ i position 					
+						
+//						setting values on resource object					
+						Resources resou1=new Resources();
+						resou1.setProject(projectmodel.getId());
+						
+						Long depart=jsonObject.getLong("department");
+						DepartmentModel departmentid=new DepartmentModel();
+						departmentid.setId(depart);
+						resou1.setDepartment(departmentid);
+						
+						int count1=jsonObject.getInt("resourceCount");
+						resou1.setresourceCount(count1);
+						
+//						method invocation for storing resource details					
+						Resources resourcevalue=projectservice.addprojectresouce(resou1);
+						
+						if(resourcevalue!=null)
+							responsedata.put("status", "success");
+						else
+							responsedata.put("status", "Failed");
+					}
+		
+				}else {
+					responsedata.put("status", "Failed");
+				}
+						
 		}catch(Exception e) {
 			System.out.println("Exception : "+e);
 			responsedata.put("status", "Failed");

@@ -110,4 +110,10 @@ public class ProjectServiceImpl implements ProjectService {
 		
 	}
 
+	@Override
+	public int duplicationchecking(String getprojectName) {
+		int value=project_repositary.findproject(getprojectName);
+		return value;
+	}
+
 }
