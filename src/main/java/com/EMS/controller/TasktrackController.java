@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.EMS.dto.Taskdetails;
@@ -27,7 +28,7 @@ import com.EMS.service.TasktrackService;
 import com.EMS.service.UserService;
 
 @RestController
-@RequestMapping(value = { "/timetrack" })
+@RequestMapping(value = { "/tasktrack" })
 public class TasktrackController {
 
 	@Autowired
@@ -235,5 +236,5 @@ public class TasktrackController {
 //			timetrackService.deleteRecordById(id);
 //			return new ResponseEntity<Timetrack>(HttpStatus.NO_CONTENT);
 //		}
-
+	
 }
