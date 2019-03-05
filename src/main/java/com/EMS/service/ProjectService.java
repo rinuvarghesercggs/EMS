@@ -7,6 +7,7 @@ import com.EMS.model.ContractModel;
 import com.EMS.model.DepartmentModel;
 import com.EMS.model.ProjectModel;
 import com.EMS.model.Resources;
+import com.EMS.model.UserModel;
 
 public interface ProjectService {
 
@@ -22,7 +23,7 @@ public interface ProjectService {
 		Long getProjectId(String projectName);
 
 //		method declaration for getting user details for project creation
-		List<String> getprojectOwner();
+		List<UserModel> getprojectOwner();
 
 
 	

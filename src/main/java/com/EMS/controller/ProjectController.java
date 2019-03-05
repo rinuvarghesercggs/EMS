@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -20,6 +21,7 @@ import com.EMS.model.ContractModel;
 import com.EMS.model.DepartmentModel;
 import com.EMS.model.ProjectModel;
 import com.EMS.model.Resources;
+import com.EMS.model.UserModel;
 import com.EMS.service.ProjectService;
 
 
@@ -147,20 +149,23 @@ public class ProjectController {
 				
 				
 //				Method invocation for getting users  with role as owner				
-				List<String> users_owner=projectservice.getprojectOwner();
+				List<UserModel> users_owner=projectservice.getprojectOwner();
 				
 				if(users_owner.isEmpty())
 					array.put("user_owner", userarray);
 				else {
 					
+					Iterator<UserModel> itr=users_owner.listIterator();  
 //					Looping for storing data on json array				
-					for(String user : users_owner) {
+					while(itr.hasNext()) {
 						
 //					json object for storing single record
 						JSONObject object=new JSONObject();
 						
 //						adding records to json object
-						object.put("firstname", user);
+						UserModel user=itr.next();
+						object.put("firstName", user.getFirstName());
+						object.put("id", user.getId());
 					
 //						adding records object to json array
 						userarray.add(object);			

@@ -14,8 +14,8 @@ public interface UserRepository extends JpaRepository<UserModel, Long>{
 	@Query("SELECT u FROM UserModel u WHERE u.userName=?1 AND u.password=?2") //Query for checking username and password are matching or not
 	UserModel getUserdetails(String userName, String password);
 
-	@Query("SELECT u.firstName FROM UserModel u WHERE u.role = 3")//for getting user details with role as owner by providing role
-	List<String> getProjectOwners();
+	@Query("SELECT u FROM UserModel u WHERE u.role = 3")//for getting user details with role as owner by providing role
+	List<UserModel> getProjectOwners();
 
 	@Query("SELECT u.firstName FROM UserModel u WHERE u.role = 1")
 	List<UserModel> getUser();

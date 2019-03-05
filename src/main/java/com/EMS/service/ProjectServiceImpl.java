@@ -10,6 +10,7 @@ import com.EMS.model.ContractModel;
 import com.EMS.model.DepartmentModel;
 import com.EMS.model.ProjectModel;
 import com.EMS.model.Resources;
+import com.EMS.model.UserModel;
 import com.EMS.repository.ContractRepository;
 import com.EMS.repository.DepartmentRepository;
 import com.EMS.repository.ProjectRepository;
@@ -64,13 +65,7 @@ public class ProjectServiceImpl implements ProjectService {
 		
 	}
 
-	@Override
-	public List<String> getprojectOwner() {
-		List<String> user_owner = new ArrayList<String>();
-		user_owner = user_repositary.getProjectOwners();
-
-		return user_owner;
-	}
+	
 
 	@Override
 	public ArrayList<ContractModel> getcontractType() {
@@ -104,6 +99,15 @@ public class ProjectServiceImpl implements ProjectService {
 	public ContractModel getContract(long id) {
 		ContractModel contract = contract_repository.getOne(id);
 		return contract;
+	}
+
+	@Override
+	public List<UserModel> getprojectOwner() {
+		List<UserModel> user_owner = new ArrayList<UserModel>();
+		user_owner = user_repositary.getProjectOwners();
+
+		return user_owner;
+		
 	}
 
 }
