@@ -44,7 +44,7 @@ public class ResourceAllocationController {
 
 			if (userList.isEmpty() && userList.size() <=0 && departmentList.isEmpty()
 					&& departmentList.size() <= 0) {
-				jsonDataRes.put("status", "Failure");
+				jsonDataRes.put("status", "failure");
 			}
 			if(!(userList).isEmpty() && userList.size() > 0) {
 				jsonData.put("userList", userList);
@@ -56,10 +56,10 @@ public class ResourceAllocationController {
 				jsonData.put("userList", userList);
 
 			}
-				jsonDataRes.put("status", "Success");
+				jsonDataRes.put("status", "success");
 			
 		} catch (Exception e) {
-			jsonDataRes.put("status", "Failure");
+			jsonDataRes.put("status", "failure");
 		}
 		jsonDataRes.put("data", jsonData);
 		return jsonDataRes;
@@ -89,7 +89,7 @@ public class ResourceAllocationController {
 			}
 
 		} catch (Exception e) {
-			jsonDataRes.put("status", "Failure");
+			jsonDataRes.put("status", "failure");
 		}
 
 		return jsonDataRes;
@@ -128,11 +128,11 @@ public class ResourceAllocationController {
 					jsonData.put("resourceList", jsonArray);
 				}
 				
-				jsonDataRes.put("status", "Success");
+				jsonDataRes.put("status", "success");
 
 				
 			} catch (Exception e) {
-				jsonDataRes.put("status", "Failure");
+				jsonDataRes.put("status", "failure");
 			}
 			jsonDataRes.put("data", jsonData);
 			return jsonDataRes;
