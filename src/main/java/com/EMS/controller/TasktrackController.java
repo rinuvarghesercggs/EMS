@@ -17,12 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.EMS.dto.Taskdetails;
 import com.EMS.model.ProjectModel;
+import com.EMS.model.Task;
 import com.EMS.model.Tasktrack;
 import com.EMS.model.UserModel;
 import com.EMS.service.ProjectService;
 import com.EMS.service.TasktrackService;
 import com.EMS.service.UserService;
-
 
 @RestController
 @RequestMapping(value = { "/timetrack" })
@@ -48,7 +48,7 @@ public class TasktrackController {
 					JSONObject jsonObject = new JSONObject();
 					jsonObject.put("id", item.getId());
 					jsonObject.put("project", item.getProject().getprojectName());
-					jsonObject.put("taskType", item.getTaskName());
+					jsonObject.put("taskType", item.getTask().getTaskName());
 					jsonObject.put("taskSummary", item.getDescription());
 					jsonObject.put("hours", item.getHours());
 					jsonArray.add(jsonObject);
@@ -119,15 +119,11 @@ public class TasktrackController {
 				for (int i = 0; i < count; i++) {
 					org.json.JSONObject jsonObject = newArray.getJSONObject(i);
 					Tasktrack newTask = new Tasktrack();
-					if (!jsonObject.getString("project").isEmpty()) {
-						Long projectId = projectService.getProjectId(jsonObject.getString("project"));
-						if (projectId != null) {
-							ProjectModel proj = projectService.findById(projectId);
-							if (proj != null) {
-								newTask.setProject(proj);
-							}
-						} else {
-							saveFail = true;
+					Long projectId = jsonObject.getLong("projectId");
+					if (projectId != null) {
+						ProjectModel proj = projectService.findById(projectId);
+						if (proj != null) {
+							newTask.setProject(proj);
 						}
 					} else {
 						saveFail = true;
@@ -143,8 +139,11 @@ public class TasktrackController {
 					} else {
 						saveFail = true;
 					}
-					if (!jsonObject.getString("taskType").isEmpty()) {
-						newTask.setTaskName(jsonObject.getString("taskType"));
+
+					Long taskId = jsonObject.getLong("taskTypeId");
+					if (taskId != null) {
+						Task task = tasktrackService.getTaskById(taskId);
+						newTask.setTask(task);
 					} else {
 						saveFail = true;
 					}

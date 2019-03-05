@@ -29,9 +29,6 @@ public class Tasktrack {
 	@Column(name = "date")
 	private Date date;
 	
-	@Column(name = "taskName")
-	private String taskName;
-
 	@Column(name = "hours")
 	private Integer hours;
 
@@ -66,14 +63,6 @@ public class Tasktrack {
 
 	public void setDate(Date date) {
 		this.date = date;
-	}
-
-	public String getTaskName() {
-		return taskName;
-	}
-
-	public void setTaskName(String taskName) {
-		this.taskName = taskName;
 	}
 
 	public Integer getHours() {
