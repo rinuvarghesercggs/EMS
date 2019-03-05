@@ -74,6 +74,7 @@ public class TasktrackController {
 
 	@GetMapping(value = "/getProjectTaskDatas")
 	public JSONObject getprojectnameList() {
+		
 		List<Object[]> projectTitleList = projectService.getNameId();
 		List<Object[]> taskTypesList = tasktrackService.getTaskList();
 		JSONObject returnData = new JSONObject();
@@ -183,59 +184,5 @@ public class TasktrackController {
 
 		return jsonDataRes;
 
-	}
-
-//	@GetMapping(value = "find/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-//	public ResponseEntity<Timetrack> getRecordById(@PathVariable("id") long id) {
-//		System.out.println("Fetching Record with id " + id);
-//		Timetrack timetrack = timetrackService.findById(id);
-//		timetrack.setDate(new Date());
-//		Timetrack timetracknew = timetrackService.update(timetrack);
-//		System.out.println("Timetrack : " + timetrack);
-//		if (timetrack == null) {
-//			return new ResponseEntity<Timetrack>(HttpStatus.NOT_FOUND);
-//		}
-//		return new ResponseEntity<Timetrack>(timetracknew, HttpStatus.OK);
-//	}
-//
-//	@GetMapping(value = "/get")
-//	public List<Timetrack> getAllTimetrackRecords() {
-//		List<Timetrack> tracklist = timetrackService.getAllRecord();
-//		return tracklist;
-//
-//	}
-//	
-
-//	 @PostMapping(value="/create",headers="Accept=application/json")
-//	 public ResponseEntity<Void> createNewRecord(@RequestBody Timetrack timetrack, UriComponentsBuilder ucBuilder){
-//	     System.out.println("Creating entry "+timetrack.getId());
-//	     timetrackService.createNewRecord(timetrack);
-//	     HttpHeaders headers = new HttpHeaders();
-//	     headers.setLocation(ucBuilder.path("/timetrack/get").buildAndExpand(timetrack.getId()).toUri());
-//	     return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
-//	 }
-
-//	 @PutMapping(value="/update", headers="Accept=application/json")
-//		public ResponseEntity<String> updateRecord(@RequestBody Timetrack timetrack)
-//		{
-//			System.out.println("Updating");
-//		Timetrack timetrackOld = timetrackService.findById(timetrack.getId());
-//		if (timetrackOld ==null) {
-//			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
-//		}
-//		timetrackService.update(timetrack);
-//		return new ResponseEntity<String>(HttpStatus.OK);
-//		}
-//	 
-//	 
-//	 @DeleteMapping(value="delete/{id}", headers ="Accept=application/json")
-//		public ResponseEntity<Timetrack> deleteUser(@PathVariable("id") long id){
-//			Timetrack timetrack = timetrackService.findById(id);
-//			if (timetrack == null) {
-//				return new ResponseEntity<Timetrack>(HttpStatus.NOT_FOUND);
-//			}
-//			timetrackService.deleteRecordById(id);
-//			return new ResponseEntity<Timetrack>(HttpStatus.NO_CONTENT);
-//		}
-	
+	}	
 }
