@@ -59,12 +59,12 @@ public class TasktrackController {
 					jsonArray.add(jsonObject);
 				}
 				jsonData.put("taskDetails", jsonArray);
-				jsonDataRes.put("status", "Success");
+				jsonDataRes.put("status", "success");
 			} else {
 				jsonDataRes.put("status", "Date Not Found");
 			}
 		} catch (Exception e) {
-			jsonDataRes.put("status", "Failure");
+			jsonDataRes.put("status", "failure");
 			jsonData.put("taskDetails", jsonArray);
 		}
 		jsonDataRes.put("data", jsonData);
@@ -103,9 +103,10 @@ public class TasktrackController {
 				returnData.put("data", projectTaskDatas);
 			}
 		} catch (Exception e) {
-			returnData.put("status", "Failure");
+			returnData.put("status", "failure"); 
 			returnData.put("data", projectTaskDatas);
 		}
+		
 		return returnData;
 	}
 
@@ -167,15 +168,15 @@ public class TasktrackController {
 					}
 				}
 				if (!saveFail) {
-					jsonDataRes.put("status", "Success");
+					jsonDataRes.put("status", "success");
 				} else {
-					jsonDataRes.put("status", "Failure");
+					jsonDataRes.put("status", "failure");
 				}
 			} else {
-				jsonDataRes.put("status", "Failure");
+				jsonDataRes.put("status", "failure");
 			}
 		} catch (Exception e) {
-			jsonDataRes.put("status", "Failure");
+			jsonDataRes.put("status", "failure");
 			System.out.println("Exception " + e);
 
 		}
