@@ -116,4 +116,10 @@ public class ProjectServiceImpl implements ProjectService {
 		return value;
 	}
 
+	@Override
+	public DepartmentModel getDepartmentDetails(Long depart) {
+		DepartmentModel department=department_repositary.getOne(depart);
+		return department;
+	}
+
 }

@@ -24,6 +24,7 @@ import com.EMS.model.ProjectModel;
 import com.EMS.model.Resources;
 import com.EMS.model.UserModel;
 import com.EMS.service.ProjectService;
+import com.EMS.service.UserService;
 
 
 @RestController
@@ -32,6 +33,9 @@ public class ProjectController {
 	
 	@Autowired
 	private ProjectService projectservice;
+	
+	@Autowired
+	private UserService userservice;
 	
 	
 	
@@ -46,27 +50,43 @@ public class ProjectController {
 
 //				setting values to object from json request 
 				ProjectModel project=new ProjectModel();
-				String contractId = requestdata.get("contract").toString();
-				ContractModel contractModel = projectservice.getContract(Long.parseLong(contractId));
+				String contract = requestdata.get("contract").toString();
+				Long contractId=Long.parseLong(contract);
+				ContractModel contractModel=new ContractModel();
+				if(contractId!=null)
+					contractModel = projectservice.getContract(contractId);
 				project.setprojectDetails(requestdata.get("projectDetails").toString());
 				project.setprojectName(requestdata.get("projectName").toString());
 				
-				UserModel pro_owner=new UserModel();
-				Long userid=Long.parseLong(requestdata.get("projectOwner").toString());
-				pro_owner.setId(userid);
-				project.setprojectOwner(pro_owner);
 				
-				project.setContract(contractModel);
+				Long userid=Long.parseLong(requestdata.get("projectOwner").toString());
+				UserModel pro_owner=new UserModel();
+				if (userid!=null)
+					pro_owner=userservice.getUserDetailsById(userid);
+			
+				if(pro_owner!=null)
+					project.setprojectOwner(pro_owner);
+			
+				if(contractModel!=null)
+					project.setContract(contractModel);
+				
 				project.setestimatedHours(Integer.parseInt(requestdata.get("estimatedHours").toString()));
 				String startdate=requestdata.get("startDate").toString();
 				String enddate=requestdata.get("endDate").toString();
 				
 				DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
-				Date date1 = formatter.parse(startdate);
-				Date date2 = formatter.parse(enddate);
+				Date date1=null,date2=null;
+				if(!startdate.isEmpty()) {
+					date1 = formatter.parse(startdate);
+					project.setstartDate(date1);
+				}
 				
-				project.setstartDate(date1);
-				project.setendDate(date2);
+				if(!enddate.isEmpty())	{
+					date2 = formatter.parse(enddate);
+					project.setendDate(date2);
+				}
+				
+				
 
 //				method invocation for checking duplicate entry for project name
 				
@@ -92,12 +112,16 @@ public class ProjectController {
 						
 //						setting values on resource object					
 						Resources resou1=new Resources();
-						resou1.setProject(projectmodel.getId());
+						if(projectmodel!=null)
+							resou1.setProject(projectmodel.getId());
 						
 						Long depart=jsonObject.getLong("department");
-						DepartmentModel departmentid=new DepartmentModel();
-						departmentid.setId(depart);
-						resou1.setDepartment(departmentid);
+						DepartmentModel department=new DepartmentModel();
+						if(depart!=null)
+							department=projectservice.getDepartmentDetails(depart);
+					
+						if(department!=null)
+							resou1.setDepartment(department);
 						
 						int count1=jsonObject.getInt("resourceCount");
 						resou1.setresourceCount(count1);

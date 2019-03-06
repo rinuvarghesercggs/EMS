@@ -43,6 +43,9 @@ public interface ProjectService {
 //		Method for checking duplicate values in project name
 		int duplicationchecking(String getprojectName);
 
+//		Method for getting department details with ID
+		DepartmentModel getDepartmentDetails(Long depart);
+
 
 
 

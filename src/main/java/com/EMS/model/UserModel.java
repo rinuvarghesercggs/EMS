@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 
 
@@ -25,7 +26,11 @@ public class UserModel {
 
 	@ManyToOne
 	private RoleModel role;
-	private String firstName, lastName, userName, password, email;
+	private String firstName, lastName,password, email;
+	
+	@Column(unique = true)
+	private String  userName;
+	
 	private int contact;
 
 
