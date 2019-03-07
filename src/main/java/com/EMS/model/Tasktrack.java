@@ -30,7 +30,7 @@ public class Tasktrack {
 	private Date date;
 	
 	@Column(name = "hours")
-	private Integer hours;
+	private Double hours;
 
 	@ManyToOne
 	private ProjectModel project;
@@ -65,11 +65,11 @@ public class Tasktrack {
 		this.date = date;
 	}
 
-	public Integer getHours() {
+	public Double getHours() {
 		return hours;
 	}
 
-	public void setHours(Integer hours) {
+	public void setHours(Double hours) {
 		this.hours = hours;
 	}
 

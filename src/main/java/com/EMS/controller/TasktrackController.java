@@ -162,7 +162,7 @@ public class TasktrackController {
 					} else {
 						saveFail = true;
 					}
-					newTask.setHours(jsonObject.getInt("hours"));
+					newTask.setHours(jsonObject.getDouble("hours"));
 					newTask.setUser(user);
 					if (!saveFail) {
 						tasktrackService.saveTaskDetails(newTask);
