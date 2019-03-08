@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
@@ -42,10 +43,11 @@ public class ProjectController {
 //	api for creating new project
 	
 	@PostMapping("/addProject")
-	public JSONObject save_newproject(@RequestBody JSONObject requestdata) {
+	public JSONObject save_newproject(@RequestBody JSONObject requestdata,HttpServletResponse httpstatus) {
 		
 		
 		JSONObject responsedata=new JSONObject();
+		int responseflag=0;
 		try {
 
 //				setting values to object from json request 
@@ -130,19 +132,33 @@ public class ProjectController {
 //						method invocation for storing resource details					
 						Resources resourcevalue=projectservice.addprojectresouce(resou1);
 						
-						if(resourcevalue!=null)
-							responsedata.put("status", "success");
-						else
-							responsedata.put("status", "Failed");
+						if(resourcevalue==null)
+							responseflag=1;
+			
 					}
 		
 				}else {
+					responseflag=1;
+				}
+				
+				if(responseflag==0) {
+					responsedata.put("status", "success");
+					responsedata.put("code",httpstatus.getStatus());
+					responsedata.put("message", "Record Inserted");
+					responsedata.put("payload", "");
+				}else {
 					responsedata.put("status", "Failed");
+					responsedata.put("code",httpstatus.getStatus());
+					responsedata.put("message", "Insertion failed");
+					responsedata.put("payload", "");
 				}
 						
 		}catch(Exception e) {
 			System.out.println("Exception : "+e);
 			responsedata.put("status", "Failed");
+			responsedata.put("code",httpstatus.getStatus());
+			responsedata.put("message", "Exception "+e);
+			responsedata.put("payload", "");
 		}
 		return responsedata;
 	}
