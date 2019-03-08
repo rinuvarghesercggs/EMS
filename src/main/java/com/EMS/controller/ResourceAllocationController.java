@@ -118,7 +118,7 @@ public class ResourceAllocationController {
 						JSONObject jsonObject = new JSONObject();
 						jsonObject.put("id", item.getAllocId());
 						if(item.getproject() != null)
-							jsonObject.put("projectTitle", item.getproject().getprojectName());
+							jsonObject.put("projectTitle", item.getproject().getProjectName());
 						if(item.getuser() != null)
 							jsonObject.put("name", item.getuser().getFirstName());
 						jsonObject.put("allocatedVal", item.getAllocatedPerce());

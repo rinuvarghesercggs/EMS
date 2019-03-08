@@ -55,8 +55,12 @@ public class ProjectController {
 				ContractModel contractModel=new ContractModel();
 				if(contractId!=null)
 					contractModel = projectservice.getContract(contractId);
-				project.setprojectDetails(requestdata.get("projectDetails").toString());
-				project.setprojectName(requestdata.get("projectName").toString());
+				project.setProjectDetails(requestdata.get("projectDetails").toString());
+				project.setProjectName(requestdata.get("projectName").toString());;
+				project.setBillable(Integer.parseInt(requestdata.get("billable").toString()));
+				project.setProjectCode(requestdata.get("projectCode").toString());
+				project.setPhase(Integer.parseInt(requestdata.get("phase").toString()));
+				project.setType(Integer.parseInt(requestdata.get("type").toString()));
 				
 				
 				Long userid=Long.parseLong(requestdata.get("projectOwner").toString());
@@ -65,12 +69,12 @@ public class ProjectController {
 					pro_owner=userservice.getUserDetailsById(userid);
 			
 				if(pro_owner!=null)
-					project.setprojectOwner(pro_owner);
+					project.setProjectOwner(pro_owner);;
 			
 				if(contractModel!=null)
 					project.setContract(contractModel);
 				
-				project.setestimatedHours(Integer.parseInt(requestdata.get("estimatedHours").toString()));
+				project.setEstimatedHours(Integer.parseInt(requestdata.get("estimatedHours").toString()));;
 				String startdate=requestdata.get("startDate").toString();
 				String enddate=requestdata.get("endDate").toString();
 				
@@ -78,26 +82,23 @@ public class ProjectController {
 				Date date1=null,date2=null;
 				if(!startdate.isEmpty()) {
 					date1 = formatter.parse(startdate);
-					project.setstartDate(date1);
+					project.setStartDate(date1);
 				}
 				
 				if(!enddate.isEmpty())	{
 					date2 = formatter.parse(enddate);
-					project.setendDate(date2);
+					project.setEndDate(date2);;
 				}
 				
 				
 
 //				method invocation for checking duplicate entry for project name
 				
-				int result=projectservice.duplicationchecking(project.getprojectName());
-				System.out.println("count : "+result);
-				
+				int result=projectservice.duplicationchecking(project.getProjectName());
 				if(result==0) {
 					
 //					Method invocation for creating new project record
 					ProjectModel projectmodel=projectservice.save_project_record(project);
-					
 //					method invocation for storing resouces of project created
 					String resource=requestdata.get("resources").toString();
 					
@@ -113,7 +114,7 @@ public class ProjectController {
 //						setting values on resource object					
 						Resources resou1=new Resources();
 						if(projectmodel!=null)
-							resou1.setProject(projectmodel.getId());
+							resou1.setProject(projectmodel.getProjectId());
 						
 						Long depart=jsonObject.getLong("department");
 						DepartmentModel department=new DepartmentModel();
@@ -182,9 +183,8 @@ public class ProjectController {
 							JSONObject contractobject=new JSONObject();
 							
 //							adding records to json object
-							contractobject.put("id", cont.getId());
-							contractobject.put("contractType", cont.getcontractType());
-							System.out.println("id : "+cont.getId()+" type : "+cont.getcontractType());
+							contractobject.put("id", cont.getContractTypeId());
+							contractobject.put("contractType", cont.getContractTypeName());
 //							adding records object to json array
 							contract_array.add(contractobject);			
 						}
