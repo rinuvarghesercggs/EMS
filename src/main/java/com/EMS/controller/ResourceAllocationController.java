@@ -72,7 +72,7 @@ public class ResourceAllocationController {
 				for (UserModel user : userList) {
 					JSONObject jsonObject = new JSONObject();
 
-					jsonObject.put("userId", user.getId());
+					jsonObject.put("userId", user.getUserId());
 					jsonObject.put("name", user.getFirstName());
 					jsonObject.put("department", user.getdepartment());
 					jsonArray.add(jsonObject);
