@@ -31,7 +31,7 @@ public class UserModel {
 	@Column(unique = true)
 	private String  userName;
 	
-	private int contact;
+	private long contact;
 
 
 	
@@ -100,11 +100,11 @@ public class UserModel {
 		this.email = email;
 	}
 
-	public int getContact() {
+	public long getContact() {
 		return contact;
 	}
 
-	public void setContact(int contact) {
+	public void setContact(long contact) {
 		this.contact = contact;
 	}
 
@@ -113,7 +113,7 @@ public class UserModel {
 	}
 
 	public UserModel(long userId, String firstName, String lastName, String userName, String password, String email,
-			int contact) {
+			long contact) {
 		super();
 		this.userId = userId;
 		this.firstName = firstName;
