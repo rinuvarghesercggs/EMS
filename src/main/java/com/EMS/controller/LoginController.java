@@ -47,7 +47,7 @@ public class LoginController {
 						
 						data.put("username", usercheck.getUserName());
 						data.put("id", usercheck.getId());
-						data.put("role", usercheck.getrole().getId());
+						data.put("role", usercheck.getrole().getroleId());
 						data.put("roleName", usercheck.getrole().getroleName());
 					}
 //						Setting data on json object

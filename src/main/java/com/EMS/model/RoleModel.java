@@ -12,18 +12,18 @@ import javax.persistence.Table;
 public class RoleModel {
 
 	@Id
-	@Column(name="id")
+	@Column(name="roleId")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private long id;
+	private long roleId;
 	private String roleName;
 	
 	
 	
-	public long getId() {
-		return id;
+	public long getroleId() {
+		return roleId;
 	}
-	public void setId(long id) {
-		this.id = id;
+	public void setroleId(long roleId) {
+		this.roleId = roleId;
 	}
 	public String getroleName() {
 		return roleName;
@@ -31,9 +31,9 @@ public class RoleModel {
 	public void setroleName(String roleName) {
 		this.roleName = roleName;
 	}
-	public RoleModel(long id, String roleName) {
+	public RoleModel(long roleId, String roleName) {
 		super();
-		this.id = id;
+		this.roleId = roleId;
 		this.roleName = roleName;
 	}
 	

@@ -13,19 +13,12 @@ import javax.persistence.Table;
 public class DepartmentModel {
 
 	@Id
-	@Column(name="id")
+	@Column(name="departmentId")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private long id;
+	private long departmentId;
 	
 	private String departmentName;
 
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
 
 	public String getdepartmentName() {
 		return departmentName;
@@ -38,15 +31,20 @@ public class DepartmentModel {
 	public DepartmentModel() {
 		
 	}
-	
-	public DepartmentModel(int id, String departmentName) {
-		super();
-		this.id = id;
-		this.departmentName = departmentName;
+
+	public long getDepartmentId() {
+		return departmentId;
 	}
 
-	@Override
-	public String toString() {
-		return "ID "+id+" name : "+departmentName;
+	public void setDepartmentId(long departmentId) {
+		this.departmentId = departmentId;
 	}
+
+	public DepartmentModel(long departmentId, String departmentName) {
+		super();
+		this.departmentId = departmentId;
+		this.departmentName = departmentName;
+	}
+	
+	
 }

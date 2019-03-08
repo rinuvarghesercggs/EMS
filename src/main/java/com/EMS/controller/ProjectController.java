@@ -183,8 +183,8 @@ public class ProjectController {
 							JSONObject contractobject=new JSONObject();
 							
 //							adding records to json object
-							contractobject.put("id", cont.getContractTypeId());
-							contractobject.put("contractType", cont.getContractTypeName());
+							contractobject.put("contractTypeId", cont.getContractTypeId());
+							contractobject.put("contractTypeName", cont.getContractTypeName());
 //							adding records object to json array
 							contract_array.add(contractobject);			
 						}
@@ -237,7 +237,7 @@ public class ProjectController {
 						JSONObject object=new JSONObject();
 						
 //						adding records to json object
-						object.put("id", dept.getId());
+						object.put("departmentId", dept.getDepartmentId());
 						object.put("department", dept.getdepartmentName());
 						
 //						adding records object to json array

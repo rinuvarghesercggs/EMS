@@ -16,9 +16,9 @@ public class Resources {
 	
 	
 	@Id
-	@Column(name="id")
+	@Column(name="resourceId")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private long id;
+	private long resourceId;
 	
 	@ManyToOne
 	private DepartmentModel department;
@@ -37,22 +37,25 @@ public class Resources {
 		
 	}
 	
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
+	public Resources(long resourceId, int resourceCount, long project) {
+		super();
+		this.resourceId = resourceId;
+		this.resourceCount = resourceCount;
+		this.project = project;
 	}
 
 	public DepartmentModel getDepartment() {
 		return department;
 	}
-	public Resources(long id, int resourceCount) {
-		super();
-		this.id=id;
-		this.resourceCount = resourceCount;
+	
+	public long getResourceId() {
+		return resourceId;
 	}
+
+	public void setResourceId(long resourceId) {
+		this.resourceId = resourceId;
+	}
+
 	public void setDepartment(DepartmentModel department) {
 		this.department = department;
 	}
