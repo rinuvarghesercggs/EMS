@@ -12,32 +12,30 @@ import javax.persistence.Table;
 public class ContractModel {
 
 	@Id
-	@Column(name="id")
+	@Column(name="contractTypeId")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private long id;
-	private String contractType;
+	private long contractTypeId;
+	private String contractTypeName;
 	
 	
-	
-	
-	public long getId() {
-		return id;
+	public long getContractTypeId() {
+		return contractTypeId;
 	}
-	public void setId(long id) {
-		this.id = id;
+	public void setContractTypeId(long contractTypeId) {
+		this.contractTypeId = contractTypeId;
 	}
-	public String getcontractType() {
-		return contractType;
+	public String getContractTypeName() {
+		return contractTypeName;
 	}
-	public void setcontractType(String contractType) {
-		this.contractType = contractType;
+
+	public void setContractTypeName(String contractTypeName) {
+		this.contractTypeName = contractTypeName;
 	}
-	public ContractModel(long id, String contractType) {
+	public ContractModel(long contractTypeId, String contractTypeName) {
 		super();
-		this.id = id;
-		this.contractType = contractType;
+		this.contractTypeId = contractTypeId;
+		this.contractTypeName = contractTypeName;
 	}
-	
 	public ContractModel() {
 		
 	}

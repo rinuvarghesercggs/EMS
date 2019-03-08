@@ -141,16 +141,17 @@ public class ResourceAllocationController {
 		JSONObject jsonDataRes = new JSONObject();
 		List<JSONObject> jsonArray = new ArrayList<>();
 
-		try {
-			if (!(alloc.isEmpty() && alloc.size() > 0)) {
-				for (Alloc item : alloc) {
-					JSONObject jsonObject = new JSONObject();
-					jsonObject.put("id", item.getAllocId());
-					if (item.getproject() != null)
-						jsonObject.put("projectTitle", item.getproject().getprojectName());
-					if (item.getuser() != null)
-						jsonObject.put("name", item.getuser().getFirstName());
-					jsonObject.put("allocatedVal", item.getAllocatedPerce());
+			try {
+				if (!(alloc.isEmpty() && alloc.size() > 0)) {
+					for (Alloc item : alloc) {
+						JSONObject jsonObject = new JSONObject();
+						jsonObject.put("id", item.getAllocId());
+						if(item.getproject() != null)
+							jsonObject.put("projectTitle", item.getproject().getProjectName());
+						if(item.getuser() != null)
+							jsonObject.put("name", item.getuser().getFirstName());
+						jsonObject.put("allocatedVal", item.getAllocatedPerce());
+
 //						jsonObject.put("allocatedFree", item.getFreeAllocation());
 					if (item.getuser() != null && item.getuser().getdepartment() != null)
 						jsonObject.put("department name", item.getuser().getdepartment().getdepartmentName());

@@ -51,7 +51,7 @@ public class TasktrackController {
 					JSONObject jsonObject = new JSONObject();
 					jsonObject.put("id", item.getId());
 					if(item.getProject() !=null)
-					jsonObject.put("project", item.getProject().getprojectName());
+					jsonObject.put("project", item.getProject().getProjectName());
 					if(item.getTask() != null)
 					jsonObject.put("taskType", item.getTask().getTaskName());
 					jsonObject.put("taskSummary", item.getDescription());

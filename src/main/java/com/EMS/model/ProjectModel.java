@@ -18,102 +18,150 @@ import org.hibernate.annotations.CascadeType;
 public class ProjectModel {
 	
 	@Id
-	@Column(name="id")
+	@Column(name="projectId")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Cascade(CascadeType.ALL)
-	private long id;
+	private long projectId;
 	
 	private String projectName,projectDetails;
 	private int estimatedHours;
 	private Date startDate,endDate;
+	private int billable;
+	private String projectCode;
+	private int phase;
+	private int type;
+	
 	
 	@ManyToOne
 	private UserModel projectOwner;
 	
 	@ManyToOne
 	private ContractModel contract;
+
 	
-//	@OneToMany(targetEntity=Resources.class)
-//	private List<Resources> resources;
-//	
+	
+	
+	
+	
+	public ProjectModel(long projectId, String projectName, String projectDetails, int estimatedHours, Date startDate,
+			Date endDate, int billable, String projectCode, int phase, int type, UserModel projectOwner,
+			ContractModel contract) {
+		super();
+		this.projectId = projectId;
+		this.projectName = projectName;
+		this.projectDetails = projectDetails;
+		this.estimatedHours = estimatedHours;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.billable = billable;
+		this.projectCode = projectCode;
+		this.phase = phase;
+		this.type = type;
+		this.projectOwner = projectOwner;
+		this.contract = contract;
+	}
 	
 	public ProjectModel() {
 		
 	}
-	public long getId() {
-		return id;
+
+	public long getProjectId() {
+		return projectId;
 	}
 
-//	public List<Resources> getResources() {
-//		return resources;
-//	}
-//	public void setResources(List<Resources> resources) {
-//		this.resources = resources;
-//	}
-	public ProjectModel(long id, String projectName, String projectDetails,
-			 int estimatedHours, Date startDate, Date endDate) {
-		super();
-		this.id = id;
+	public void setProjectId(long projectId) {
+		this.projectId = projectId;
+	}
+
+	public String getProjectName() {
+		return projectName;
+	}
+
+	public void setProjectName(String projectName) {
 		this.projectName = projectName;
-		this.projectDetails = projectDetails;
-		this.estimatedHours = estimatedHours;
-		this.startDate = startDate;
-		this.endDate = endDate;
 	}
-	public UserModel getprojectOwner() {
-		return projectOwner;
-	}
-	@Override
-	public String toString() {
-		return "ProjectModel [id=" + id + ", projectName=" + projectName + ", projectOwner=" + projectOwner
-				+ ", projectDetails=" + projectDetails + ", contractType=" + ", estimatedHours="
-				+ estimatedHours + ", startDate=" + startDate + ", endDate=" + endDate + "]";
-	}
-	public void setprojectOwner(UserModel projectOwner) {
-		this.projectOwner = projectOwner;
-	}
-	public String getprojectDetails() {
+
+	public String getProjectDetails() {
 		return projectDetails;
 	}
-	public void setprojectDetails(String projectDetails) {
+
+	public void setProjectDetails(String projectDetails) {
 		this.projectDetails = projectDetails;
 	}
-	
+
+	public int getEstimatedHours() {
+		return estimatedHours;
+	}
+
+	public void setEstimatedHours(int estimatedHours) {
+		this.estimatedHours = estimatedHours;
+	}
+
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+
+	public int getBillable() {
+		return billable;
+	}
+
+	public void setBillable(int billable) {
+		this.billable = billable;
+	}
+
+	public String getProjectCode() {
+		return projectCode;
+	}
+
+	public void setProjectCode(String projectCode) {
+		this.projectCode = projectCode;
+	}
+
+	public int getPhase() {
+		return phase;
+	}
+
+	public void setPhase(int phase) {
+		this.phase = phase;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
+	}
+
+	public UserModel getProjectOwner() {
+		return projectOwner;
+	}
+
+	public void setProjectOwner(UserModel projectOwner) {
+		this.projectOwner = projectOwner;
+	}
+
 	public ContractModel getContract() {
 		return contract;
 	}
+
 	public void setContract(ContractModel contract) {
 		this.contract = contract;
 	}
-	public int getestimatedHours() {
-		return estimatedHours;
-	}
-	public void setestimatedHours(int estimatedHours) {
-		this.estimatedHours = estimatedHours;
-	}
 	
-	
-	public void setId(long id) {
-		this.id = id;
-	}
-	public String getprojectName() {
-		return projectName;
-	}
-	public void setprojectName(String projectName) {
-		this.projectName = projectName;
-	}
-	public Date getstartDate() {
-		return startDate;
-	}
-	public void setstartDate(Date startDate) {
-		this.startDate = startDate;
-	}
-	public Date getendDate() {
-		return endDate;
-	}
-	public void setendDate(Date endDate) {
-		this.endDate = endDate;
-	}
-	
+
+
 	
 }
