@@ -1,5 +1,7 @@
 package com.EMS.model;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,28 +18,28 @@ public class Alloc {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private long id;
-
+	private long allocId;
+	
 	@ManyToOne
 	private ProjectModel project;
-
-//	@ManyToMany
-//	private List<UserModel> userModel;
 	
 	@ManyToOne
 	private UserModel user;
 	
 	private Double allocatedPerce;
+//	private Double freeAllocation;
+	private Date startDate;
+	private Date endDate;
+
 	
-	private Double freeAllocation;
 	
-	public long getId() {
-		return id;
+	
+	public long getAllocId() {
+		return allocId;
 	}
-	public void setId(long id) {
-		this.id = id;
+	public void setAllocId(long allocId) {
+		this.allocId = allocId;
 	}
-	
 	
 	public ProjectModel getproject() {
 		return project;
@@ -47,27 +49,36 @@ public class Alloc {
 	}
 	
 	
-//	public List<UserModel> getuser() {
-//		return user;
-//	}
-//	public void setuser(List<UserModel> user) {
-//		this.user = user;
-//	}
-	
-	
 	public Double getAllocatedPerce() {
 		return allocatedPerce;
+	}
+	public Date getStartDate() {
+		return startDate;
+	}
+	
+	
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+	public Date getEndDate() {
+		return endDate;
+	}
+	
+	
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
 	}
 	public void setAllocatedPerce(Double allocatedPerce) {
 		this.allocatedPerce = allocatedPerce;
 	}
 	
-	public Double getFreeAllocation() {
-		return freeAllocation;
-	}
-	public void setFreeAllocation(Double freeAllocation) {
-		this.freeAllocation = freeAllocation;
-	}
+	
+	/*
+	 * public Double getFreeAllocation() { return freeAllocation; } public void
+	 * setFreeAllocation(Double freeAllocation) { this.freeAllocation =
+	 * freeAllocation; }
+	 */
+	
 	
 	public UserModel getuser() {
 		return user;
