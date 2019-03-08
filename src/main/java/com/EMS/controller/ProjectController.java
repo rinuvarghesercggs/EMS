@@ -211,7 +211,7 @@ public class ProjectController {
 //						adding records to json object
 						UserModel user=itr.next();
 						object.put("firstName", user.getFirstName());
-						object.put("id", user.getId());
+						object.put("id", user.getUserId());
 					
 //						adding records object to json array
 						userarray.add(object);			

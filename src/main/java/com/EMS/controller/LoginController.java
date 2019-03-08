@@ -37,7 +37,7 @@ public class LoginController {
 				try {
 //					Invoking user authentication method 					
 					UserModel usercheck=login_service.login_authentication(username,password);	
-					System.out.print("user :"+usercheck.getId());
+					System.out.print("user :"+usercheck.getUserId());
 					if(usercheck==null) 
 //						Setting status on json object							
 						response.put("status", "Failed");									
@@ -46,7 +46,7 @@ public class LoginController {
 						response.put("status", "success");
 						
 						data.put("username", usercheck.getUserName());
-						data.put("id", usercheck.getId());
+						data.put("id", usercheck.getUserId());
 						data.put("role", usercheck.getrole().getroleId());
 						data.put("roleName", usercheck.getrole().getroleName());
 					}

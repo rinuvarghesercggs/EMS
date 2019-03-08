@@ -17,9 +17,9 @@ import javax.persistence.UniqueConstraint;
 public class UserModel {
 
 	@Id
-	@Column(name = "id")
+	@Column(name = "userId")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	private long userId;
 
 	@ManyToOne
 	private DepartmentModel department;
@@ -34,12 +34,14 @@ public class UserModel {
 	private int contact;
 
 
-	public long getId() {
-		return id;
+	
+
+	public long getUserId() {
+		return userId;
 	}
 
-	public void setId(long id) {
-		this.id = id;
+	public void setUserId(long userId) {
+		this.userId = userId;
 	}
 
 	public DepartmentModel getdepartment() {
@@ -110,10 +112,10 @@ public class UserModel {
 
 	}
 
-	public UserModel(long id, String firstName, String lastName, String userName, String password, String email,
+	public UserModel(long userId, String firstName, String lastName, String userName, String password, String email,
 			int contact) {
 		super();
-		this.id = id;
+		this.userId = userId;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.userName = userName;
