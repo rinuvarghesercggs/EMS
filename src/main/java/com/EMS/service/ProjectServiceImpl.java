@@ -122,4 +122,10 @@ public class ProjectServiceImpl implements ProjectService {
 		return department;
 	}
 
+	@Override
+	public List<ProjectModel> getProjectList() {
+		List<ProjectModel> project = project_repositary.findAll();
+		return project;
+	}
+
 }

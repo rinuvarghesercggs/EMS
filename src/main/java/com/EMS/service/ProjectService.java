@@ -46,6 +46,8 @@ public interface ProjectService {
 //		Method for getting department details with ID
 		DepartmentModel getDepartmentDetails(Long depart);
 
+		List<ProjectModel> getProjectList();
+
 
 
 
