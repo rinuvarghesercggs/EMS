@@ -59,13 +59,12 @@ public class ProjectServiceImpl implements ProjectService {
 		Long pid = project_repositary.getProjectId(projectName);
 		return pid;
 	}
-	public List<Object[]> getNameId() {
-		List<Object[]>idNameList =project_repositary.getByIdName();
-		return idNameList;
-		
-	}
 
-	
+	public List<Object[]> getNameId() {
+		List<Object[]> idNameList = project_repositary.getByIdName();
+		return idNameList;
+
+	}
 
 	@Override
 	public ArrayList<ContractModel> getcontractType() {
@@ -91,7 +90,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Override
 	public Resources addprojectresouce(Resources resou1) {
-		Resources value=resource_repository.save(resou1);
+		Resources value = resource_repository.save(resou1);
 		return value;
 	}
 
@@ -107,18 +106,18 @@ public class ProjectServiceImpl implements ProjectService {
 		user_owner = user_repositary.getProjectOwners();
 
 		return user_owner;
-		
+
 	}
 
 	@Override
 	public int duplicationchecking(String getprojectName) {
-		int value=project_repositary.findproject(getprojectName);
+		int value = project_repositary.findproject(getprojectName);
 		return value;
 	}
 
 	@Override
 	public DepartmentModel getDepartmentDetails(Long depart) {
-		DepartmentModel department=department_repositary.getOne(depart);
+		DepartmentModel department = department_repositary.getOne(depart);
 		return department;
 	}
 

@@ -10,11 +10,11 @@ import com.EMS.repository.UserRepository;
 public class UserServiceImpl implements UserService {
 	@Autowired
 	UserRepository userRepository;
-	
+
 	@Override
-	public UserModel getUserDetailsById(Long id){
-		return  userRepository.getOne(id);
-				
+	public UserModel getUserDetailsById(Long id) {
+		return userRepository.getOne(id);
+
 	}
 
 }
