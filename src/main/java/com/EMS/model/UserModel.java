@@ -8,7 +8,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 
 
@@ -26,13 +28,18 @@ public class UserModel {
 
 	@ManyToOne
 	private RoleModel role;
-	private String firstName, lastName,password, email;
+	
+	@Size(min=2,max=35)
+	private String firstName, lastName,password;
+	
+	@NotNull @Email
+	@Size(min=10,max=50)
+	private String email;
 	
 	@Column(unique = true)
+	@Size(min=2,max=35)
 	private String  userName;
-	
 	private long contact;
-
 
 	
 
