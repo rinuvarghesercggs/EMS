@@ -22,6 +22,9 @@ public interface UserRepository extends JpaRepository<UserModel, Long>{
 	
 	@Query("SELECT u FROM UserModel u WHERE u.userName=?1")
 	UserModel getUserDetailsByName(String userName);
+
+	@Query("SELECT u FROM UserModel u WHERE u.department.departmentId = ?1")
+	List<UserModel> findByDeptId(Long deptId);
 	
 	
 }
