@@ -19,6 +19,8 @@ public interface ResourceAllocationService {
 	public List<DepartmentModel> getDepartmentList();
 	public List<UserModel> getUserList();
 	public List<Alloc> getAllocationLists();
+	public Boolean checkIsExist(long userId);
+	public List<Alloc> getListByUser(long userId);
 	
 
 }

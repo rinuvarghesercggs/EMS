@@ -13,7 +13,7 @@ import com.EMS.model.Alloc;
 public interface ResourceAllocationRepository extends JpaRepository<Alloc, Long> {
 
 
-	@Query("SELECT s FROM Alloc s WHERE s.project = ?1")
+	@Query("SELECT s FROM Alloc s WHERE s.project.projectId = ?1")
 	List<Alloc> getProjectLists(Long projectId);
 //	public default List<Alloc> getProjectLists(Long projectId){
 //	getJdbcTemplate().query("select user_name as userName", new RowMapper());
@@ -22,6 +22,12 @@ public interface ResourceAllocationRepository extends JpaRepository<Alloc, Long>
 	public default void a() {
 		
 	}
+
+	@Query("SELECT count(*) > 0 FROM Alloc s WHERE s.user.userId = ?1")
+	Boolean isExists(long userId);
+
+	@Query("SELECT s FROM Alloc s WHERE s.user.userId = ?1")
+	List<Alloc> findByUserId(long userId);
 
 	
 

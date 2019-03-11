@@ -60,7 +60,6 @@ public class ResourceAllocationServiceImpl implements ResourceAllocationService{
 	@Override
 	public Alloc updatePartially(Alloc allocs, Long id) {
 		Alloc alloc = resourceAllocationRepository.getOne(id);
-//		alloc.setName(allocs.getName());
 		return resourceAllocationRepository.save(alloc);
 	}
 
@@ -89,5 +88,18 @@ public class ResourceAllocationServiceImpl implements ResourceAllocationService{
 		return allocList;
 	}
 
+	@Override
+	public Boolean checkIsExist(long userId) {
+		Boolean exist = resourceAllocationRepository.isExists(userId);
+	return exist;
+	}
+
+	@Override
+	public List<Alloc> getListByUser(long userId) {
+		List<Alloc> allocList = resourceAllocationRepository.findByUserId(userId);
+		return allocList;
+	}
+
+	
 	
 }
