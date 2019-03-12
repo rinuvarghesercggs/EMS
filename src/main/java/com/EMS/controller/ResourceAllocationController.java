@@ -276,10 +276,12 @@ public class ResourceAllocationController {
 			if (isExist) {
 				List<Alloc> allocationList = resourceAllocation.getListByUser(userId);
 				for (Alloc item : allocationList) {
-					if ((item.getEndDate().compareTo(date1) < 0) && (item.getStartDate().compareTo(date2) > 0)) {
+					if ((item.getEndDate().compareTo(date1) < 0) || (item.getStartDate().compareTo(date2) > 0)) {
 						newList.add(item);
 					}
 				}
+				
+				System.out.println("size : "+newList.size());
 
 				if (newList.size() > 0) {
 					JSONObject jsonObject = new JSONObject();
@@ -320,7 +322,7 @@ public class ResourceAllocationController {
 		jsonDataRes.put("data", jsonData);
 		jsonDataRes.put("status", "success");
 		jsonDataRes.put("code", httpstatus.getStatus());
-		jsonDataRes.put("message", "successfully saved. ");
+		jsonDataRes.put("message", "success. ");
 
 		return jsonDataRes;
 
@@ -339,7 +341,7 @@ public class ResourceAllocationController {
 		JSONObject jsonDataRes = new JSONObject();
 		List<JSONObject> jsonArrayFiltered = new ArrayList<>();
 		SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-		java.util.Date date1 = null, date2 = null;
+		java.util.Date date1 = null, date2 = null,date4 = null,date5 = null;
 		try {
 
 			String id = requestData.get("deptId").toString();
@@ -368,18 +370,19 @@ public class ResourceAllocationController {
 						List<Alloc> allocationList = resourceAllocation.getListByUser(user.getUserId());
 						for (Alloc item : allocationList) {
 
-							System.out.println("item.getEndDate() : " + item.getEndDate());
+							System.out.println("item.getEndDate() : " + outputFormat.parse(item.getEndDate().toString()));
 							System.out.println("item.getStartDate() : " + item.getStartDate());
-
-
-							if ((item.getEndDate().compareTo(date1) < 0) && (item.getStartDate().compareTo(date2) > 0)) {
+                            
+                             
+							if ((item.getEndDate().compareTo(date1) < 0) || (item.getStartDate().compareTo(date2) > 0)) {
 								newList.add(item);
 							}
+							
 
 						}
 						System.out.println("size : " + newList.size());
 
-						if (newList.size() > 0) {
+						if ( newList != null && newList.size() > 0 ) {
 							JSONObject jsonObject = new JSONObject();
 							List<JSONObject> jsonArray = new ArrayList<>();
 							jsonObject.put("userId", user.getUserId());
@@ -423,7 +426,7 @@ public class ResourceAllocationController {
 		jsonDataRes.put("data", jsonData);
 		jsonDataRes.put("status", "success");
 		jsonDataRes.put("code", httpstatus.getStatus());
-		jsonDataRes.put("message", "successfully saved. ");
+		jsonDataRes.put("message", "success. ");
 		return jsonDataRes;
 
 	}
