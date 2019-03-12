@@ -291,6 +291,7 @@ public class ResourceAllocationController {
 					jsonObject.put("department", user.getdepartment());
 					for (Alloc item : newList) {
 						JSONObject jsonObjectData = new JSONObject();
+						jsonObjectData.put("allocationId", item.getAllocId());
 						jsonObjectData.put("projectId", item.getproject().getProjectId());
 						jsonObjectData.put("projectName", item.getproject().getProjectName());
 						jsonObjectData.put("allocationPercentage", item.getAllocatedPerce());
