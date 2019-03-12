@@ -373,8 +373,13 @@ public class ResourceAllocationController {
 							System.out.println("item.getEndDate() : " + outputFormat.parse(item.getEndDate().toString()));
 							System.out.println("item.getStartDate() : " + item.getStartDate());
                             
-                             
-							if ((item.getEndDate().compareTo(date1) < 0) || (item.getStartDate().compareTo(date2) > 0)) {
+//							if ((item.getEndDate().compareTo(date1) < 0) || (item.getStartDate().compareTo(date2) > 0) ) {
+//								newList.add(item);
+//							}
+							
+							
+							if ((item.getEndDate().compareTo(date1) < 0) || (item.getStartDate().compareTo(date2) > 0) ||
+									((item.getStartDate().compareTo(date1) < 0 ) || (item.getStartDate().compareTo(date2) > 0)) || ((item.getEndDate().compareTo(date1) < 0 ) || (item.getEndDate().compareTo(date2) > 0))) {
 								newList.add(item);
 							}
 							
