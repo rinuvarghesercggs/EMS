@@ -336,7 +336,6 @@ public class ResourceAllocationController {
 	@PostMapping("/getListsByDate")
 	public JSONObject getAllocationListByDate(@RequestBody JSONObject requestData, HttpServletResponse httpstatus) {
 
-		List<Alloc> newList = new ArrayList<Alloc>();
 		JSONObject jsonData = new JSONObject();
 		JSONObject jsonDataRes = new JSONObject();
 		List<JSONObject> jsonArrayFiltered = new ArrayList<>();
@@ -365,6 +364,7 @@ public class ResourceAllocationController {
 			if (userList != null) {
 				for (UserModel user : userList) {
 					Boolean isExist = resourceAllocation.checkIsExist(user.getUserId());
+					List<Alloc> newList = new ArrayList<Alloc>();
 
 					if (isExist) {
 						List<Alloc> allocationList = resourceAllocation.getListByUser(user.getUserId());
