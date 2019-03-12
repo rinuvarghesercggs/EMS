@@ -442,7 +442,6 @@ public class ResourceAllocationController {
 		JSONObject jsonData = new JSONObject();
 		JSONObject jsonDataRes = new JSONObject();
 		List<JSONObject> jsonArrayFiltered = new ArrayList<>();
-		DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
 		SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
 		java.util.Date date1 = null,date2 = null;
@@ -453,11 +452,12 @@ public class ResourceAllocationController {
 		String endDate = requestData.get("endDate").toString();
 		if (!startDate.isEmpty()) {
 		     date1 = outputFormat.parse(startDate);
-			System.out.println("sql date3 : "+date1);
+		     System.out.println("input start date : "+date1);
 
 		}
 		if (!endDate.isEmpty()) {
-			date2 = formatter.parse(endDate);
+			date2 = outputFormat.parse(endDate);
+			System.out.println("input end date : "+date1);
 		}
 	
 			List<UserModel> userList = userService.getUserByDeptId(deptId);
@@ -478,7 +478,7 @@ public class ResourceAllocationController {
 
 //							java.util.Date date4 = new Date(new java.util.Date(item.getStartDate()));
 
-							if ((item.getEndDate().compareTo(date1) < 0) && item.getStartDate().compareTo(date2) > 0) {
+							if ((item.getEndDate().compareTo(date1) < 0) && (item.getStartDate().compareTo(date2) > 0)) {
 
 								newList.add(item);
 
