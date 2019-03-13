@@ -57,11 +57,12 @@ public class ResourceAllocationController {
 		JSONObject jsonDataRes = new JSONObject();
 		try {
 			List<UserModel> userList = resourceAllocation.getUserList();
-//			List<DepartmentModel> departmentList = resourceAllocation.getDepartmentList();
+			List<DepartmentModel> departmentList = resourceAllocation.getDepartmentList();
 			List<ProjectModel> projectList = projectService.getProjectList();
 
 			List<JSONObject> jsonArray = new ArrayList<>();
 			List<JSONObject> jsonProjectArray = new ArrayList<>();
+			List<JSONObject> jsonDepartmentArray = new ArrayList<>();
 
 			if (!(userList).isEmpty() && userList.size() > 0) {
 				for (UserModel user : userList) {
@@ -83,6 +84,19 @@ public class ResourceAllocationController {
 				}
 				jsonData.put("projectList", jsonProjectArray);
 			}
+			
+			
+			if (!(departmentList).isEmpty() && departmentList.size() > 0) {
+				for (DepartmentModel department : departmentList) {
+					JSONObject jsonObject = new JSONObject();
+					jsonObject.put("departmentId", department.getDepartmentId());
+					jsonObject.put("departmentName", department.getdepartmentName());
+					jsonDepartmentArray.add(jsonObject);
+				}
+				jsonData.put("departmentList", jsonDepartmentArray);
+			}
+			
+			
 			jsonDataRes.put("data", jsonData);
 			jsonDataRes.put("status", "success");
 			jsonDataRes.put("code", httpstatus.getStatus());
