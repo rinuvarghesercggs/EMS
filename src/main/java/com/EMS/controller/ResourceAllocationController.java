@@ -374,15 +374,15 @@ public class ResourceAllocationController {
 							System.out.println("item.getEndDate() : " + outputFormat.parse(item.getEndDate().toString()));
 							System.out.println("item.getStartDate() : " + item.getStartDate());
                             
-//							if ((item.getEndDate().compareTo(date1) < 0) || (item.getStartDate().compareTo(date2) > 0) ) {
-//								newList.add(item);
-//							}
-							
-							
-							if ((item.getEndDate().compareTo(date1) < 0) || (item.getStartDate().compareTo(date2) > 0) ||
-									((item.getStartDate().compareTo(date1) < 0 ) || (item.getStartDate().compareTo(date2) > 0)) || ((item.getEndDate().compareTo(date1) < 0 ) || (item.getEndDate().compareTo(date2) > 0))) {
+							if ((item.getEndDate().compareTo(date1) > 0) && (item.getStartDate().compareTo(date2) < 0) ) {
 								newList.add(item);
 							}
+							
+							
+//							if ((item.getEndDate().compareTo(date1) < 0) || (item.getStartDate().compareTo(date2) > 0) ||
+//									((item.getStartDate().compareTo(date1) < 0 ) || (item.getStartDate().compareTo(date2) > 0)) || ((item.getEndDate().compareTo(date1) < 0 ) || (item.getEndDate().compareTo(date2) > 0))){
+//								newList.add(item);
+//							}
 							
 
 						}
@@ -405,6 +405,17 @@ public class ResourceAllocationController {
 								jsonArray.add(jsonObjectData);
 
 							}
+							jsonObject.put("project", jsonArray);
+							jsonArrayFiltered.add(jsonObject);
+
+						}
+						
+						if(newList.size() <= 0) {
+							JSONObject jsonObject = new JSONObject();
+							List<JSONObject> jsonArray = new ArrayList<>();
+							jsonObject.put("userId", user.getUserId());
+							jsonObject.put("userName", user.getFirstName());
+							jsonObject.put("department", user.getdepartment());
 							jsonObject.put("project", jsonArray);
 							jsonArrayFiltered.add(jsonObject);
 
