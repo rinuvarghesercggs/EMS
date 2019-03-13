@@ -11,6 +11,9 @@ public class LoginServiceImpl implements LoginService {
 
 	@Autowired
 	UserRepository user_repositary;
+	
+//	@Autowired
+//	BCryptPasswordEncoder bCryptPasswordEncoder;
 
 //	 Implementation for authenticating user with role
 
@@ -27,6 +30,25 @@ public class LoginServiceImpl implements LoginService {
 			System.out.println("Exception : " + e);
 			return checkuserid;
 		}
+	}
+
+	@Override
+	public UserModel adduser(UserModel requestdata) {
+		UserModel user=null;
+		try {
+			System.out.println("start");
+//			String newdata=bCryptPasswordEncoder.encode(requestdata.getPassword());
+//			System.out.println("newdata : "+newdata);
+//			requestdata.setPassword(newdata);
+//			System.out.println("password : "+requestdata.getPassword());
+			user=user_repositary.save(requestdata);
+			System.out.println("completed");
+			return user;
+		}catch(Exception e) {
+			System.out.println("Exception : "+e);
+			return user;
+		}
+		
 	}
 
 }

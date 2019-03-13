@@ -22,7 +22,7 @@ public class LoginController {
 	@Autowired
 	LoginService login_service;
 
-// 		api call for admin login 
+	//api call for admin login 
 
 	@PostMapping(value = "/getLoginCredentials")
 	@ResponseBody
@@ -31,7 +31,7 @@ public class LoginController {
 		JSONObject response = new JSONObject();
 		JSONObject data = new JSONObject();
 
-//				getting string value from json request
+		//getting string value from json request
 		String username = requestdata.get("username").toString();
 		String password = requestdata.get("password").toString();
 
@@ -40,17 +40,17 @@ public class LoginController {
 			if ((username != null) && (username.length() > 0) && (!username.equals(" ")) && (password != null)
 					&& (password.length() > 0)) {
 
-//						Invoking user authentication method 					
+				//Invoking user authentication method 					
 				UserModel usercheck = login_service.login_authentication(username, password);
 				System.out.print("user :" + usercheck.getUserId());
 				if (usercheck == null) {
-//							Setting status on json object							
+					//Setting status on json object							
 					response.put("status", "Failed");
 					response.put("code", httpstatus.getStatus());
 					response.put("message", "Invalid user");
 					response.put("payload", "");
 				} else {
-//							Setting status on json object						
+					//Setting status on json object						
 					response.put("status", "success");
 					response.put("code", httpstatus.getStatus());
 					response.put("message", "Valid user");
@@ -59,7 +59,7 @@ public class LoginController {
 					data.put("roleId", usercheck.getrole().getroleId());
 					data.put("roleName", usercheck.getrole().getroleName());
 				}
-//						Setting data on json object
+				//Setting data on json object
 				response.put("payload", data);
 
 			} else {
@@ -68,17 +68,26 @@ public class LoginController {
 				response.put("message", "Invalid credientials");
 				response.put("payload", "");
 			}
-//					
+	
 
 		} catch (Exception e) {
 			System.out.println("Exception : " + e);
-//					Setting status on json object
+			//Setting status on json object
 			response.put("status", "Failed");
 			response.put("code", httpstatus.getStatus());
 			response.put("message", "Exception " + e);
 			response.put("payload", "");
 		}
 		return response;
+	}
+	
+	
+	//api call for registering new user
+	@PostMapping(value="/adduser")
+	public void adduser(@RequestBody UserModel requestdata) {
+		System.out.println("process");
+		UserModel user=login_service.adduser(requestdata);
+		
 	}
 
 }
