@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.websocket.server.PathParam;
@@ -82,22 +83,17 @@ public class ResourceAllocationController {
 				}
 				jsonData.put("projectList", jsonProjectArray);
 			}
-
+			jsonDataRes.put("data", jsonData);
+			jsonDataRes.put("status", "success");
+			jsonDataRes.put("code", httpstatus.getStatus());
+			jsonDataRes.put("message", "success");
 		} catch (Exception e) {
 			jsonDataRes.put("status", "failure");
 			jsonDataRes.put("code", httpstatus.getStatus());
 			jsonDataRes.put("message", "failed. " + e);
-
 		}
-		jsonDataRes.put("data", jsonData);
-		jsonDataRes.put("status", "success");
-		jsonDataRes.put("code", httpstatus.getStatus());
-		jsonDataRes.put("message", "success");
-
 		return jsonDataRes;
-
 	}
-	
 	
 
 	
@@ -132,14 +128,13 @@ public class ResourceAllocationController {
 				jsonDataRes.put("code", httpstatus.getStatus());
 				jsonDataRes.put("message", "updated successfully");
 			}
-
 		} catch (Exception e) {
 			jsonDataRes.put("status", "failure");
 			jsonDataRes.put("code", httpstatus.getStatus());
 			jsonDataRes.put("message", "updation failed. " + e);
 		}
-
 		return jsonDataRes;
+
 	}
 
 	
@@ -175,22 +170,19 @@ public class ResourceAllocationController {
 							jsonObject.put("department name", item.getuser().getdepartment().getdepartmentName());
 						jsonArray.add(jsonObject);
 					}
-
 				}
-
 				jsonData.put("resourceList", jsonArray);
 			}
-
 			jsonDataRes.put("status", "success");
 			jsonDataRes.put("code", httpstatus.getStatus());
 			jsonDataRes.put("message", "success ");
+			jsonDataRes.put("data", jsonData);
 
 		} catch (Exception e) {
 			jsonDataRes.put("status", "failure");
 			jsonDataRes.put("code", httpstatus.getStatus());
 			jsonDataRes.put("message", "failed. " + e);
 		}
-		jsonDataRes.put("data", jsonData);
 		return jsonDataRes;
 
 	}
@@ -209,13 +201,19 @@ public class ResourceAllocationController {
 			String date1 = requestdata.get("startDate").toString();
 			String date2 = requestdata.get("endDate").toString();
 			DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
+			TimeZone zone = TimeZone.getTimeZone("MST");
+			SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+			outputFormat.setTimeZone(zone);
+
 			Date startDate = null, endDate = null;
 			if (!date1.isEmpty()) {
-				startDate = formatter.parse(date1);
+				startDate = outputFormat.parse(date1);
+				System.out.println("startDate : " + startDate);
 				alloc.setStartDate(startDate);
 			}
 			if (!date2.isEmpty()) {
-				endDate = formatter.parse(date2);
+				endDate = outputFormat.parse(date2);
+				System.out.println("endDate : " + endDate);
 				alloc.setEndDate(endDate);
 			}
 			String val = requestdata.get("allocatedPerce").toString();
@@ -227,18 +225,16 @@ public class ResourceAllocationController {
 			UserModel user = userService.getUserDetailsById(Long.parseLong(userId));
 			alloc.setuser(user);
 			resourceAllocation.save(alloc);
-			System.out.println("dfg");
+
+			jsonDataRes.put("status", "success");
+			jsonDataRes.put("code", httpstatus.getStatus());
+			jsonDataRes.put("message", "successfully saved. ");
 		} catch (Exception e) {
 			jsonDataRes.put("status", "failure");
 			jsonDataRes.put("code", httpstatus.getStatus());
 			jsonDataRes.put("message", "failed. " + e);
 		}
-		jsonDataRes.put("status", "success");
-		jsonDataRes.put("code", httpstatus.getStatus());
-		jsonDataRes.put("message", "successfully saved. ");
-
 		return jsonDataRes;
-
 	}
 		
 	
@@ -253,7 +249,9 @@ public class ResourceAllocationController {
 		JSONObject jsonData = new JSONObject();
 		JSONObject jsonDataRes = new JSONObject();
 		List<JSONObject> jsonArrayFiltered = new ArrayList<>();
+		TimeZone zone = TimeZone.getTimeZone("MST");
 		SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+		outputFormat.setTimeZone(zone);
 		java.util.Date date1 = null, date2 = null;
 		try {
 			String id = requestData.get("userId").toString();
@@ -262,13 +260,11 @@ public class ResourceAllocationController {
 			String endDate = requestData.get("endDate").toString();
 			if (!startDate.isEmpty()) {
 				date1 = outputFormat.parse(startDate);
-				System.out.println("date : "+date1);
-
+				System.out.println("date : " + date1);
 			}
 			if (!endDate.isEmpty()) {
 				date2 = outputFormat.parse(endDate);
-				System.out.println("date2 : "+date2);
-
+				System.out.println("date2 : " + date2);
 			}
 
 			UserModel user = userService.getUserDetailsById(userId);
@@ -276,14 +272,14 @@ public class ResourceAllocationController {
 			if (isExist) {
 				List<Alloc> allocationList = resourceAllocation.getListByUser(userId);
 				for (Alloc item : allocationList) {
-					if ((item.getEndDate().compareTo(date1) < 0) || (item.getStartDate().compareTo(date2) > 0)) {
+					if ((item.getEndDate().compareTo(date1) > 0) && (item.getStartDate().compareTo(date2) < 0)) {
 						newList.add(item);
 					}
 				}
-				
-				System.out.println("size : "+newList.size());
 
-				if (newList.size() > 0) {
+				System.out.println("size : " + newList.size());
+
+				if (newList != null && newList.size() > 0) {
 					JSONObject jsonObject = new JSONObject();
 					List<JSONObject> jsonArray = new ArrayList<>();
 					jsonObject.put("userId", userId);
@@ -302,6 +298,14 @@ public class ResourceAllocationController {
 					}
 					jsonObject.put("project", jsonArray);
 					jsonArrayFiltered.add(jsonObject);
+				} else {
+					JSONObject jsonObject = new JSONObject();
+					List<JSONObject> jsonArray = new ArrayList<>();
+					jsonObject.put("userId", user.getUserId());
+					jsonObject.put("userName", user.getFirstName());
+					jsonObject.put("department", user.getdepartment());
+					jsonObject.put("project", jsonArray);
+					jsonArrayFiltered.add(jsonObject);
 				}
 
 			} else {
@@ -312,19 +316,18 @@ public class ResourceAllocationController {
 				jsonObject.put("department", user.getdepartment());
 				jsonObject.put("project", jsonArray);
 				jsonArrayFiltered.add(jsonObject);
-
 			}
+			jsonData.put("user", jsonArrayFiltered);
+			jsonDataRes.put("data", jsonData);
+			jsonDataRes.put("status", "success");
+			jsonDataRes.put("code", httpstatus.getStatus());
+			jsonDataRes.put("message", "success. ");
 		} catch (Exception e) {
 			jsonDataRes.put("status", "failure");
 			jsonDataRes.put("code", httpstatus.getStatus());
 			jsonDataRes.put("message", "failed. " + e);
-		}
-		jsonData.put("user", jsonArrayFiltered);
-		jsonDataRes.put("data", jsonData);
-		jsonDataRes.put("status", "success");
-		jsonDataRes.put("code", httpstatus.getStatus());
-		jsonDataRes.put("message", "success. ");
 
+		}
 		return jsonDataRes;
 
 	}
@@ -340,8 +343,10 @@ public class ResourceAllocationController {
 		JSONObject jsonData = new JSONObject();
 		JSONObject jsonDataRes = new JSONObject();
 		List<JSONObject> jsonArrayFiltered = new ArrayList<>();
+		TimeZone zone = TimeZone.getTimeZone("MST");
 		SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-		java.util.Date date1 = null, date2 = null,date4 = null,date5 = null;
+		outputFormat.setTimeZone(zone);
+		java.util.Date date1 = null, date2 = null;
 		try {
 
 			String id = requestData.get("deptId").toString();
@@ -370,25 +375,13 @@ public class ResourceAllocationController {
 					if (isExist) {
 						List<Alloc> allocationList = resourceAllocation.getListByUser(user.getUserId());
 						for (Alloc item : allocationList) {
-
-							System.out.println("item.getEndDate() : " + outputFormat.parse(item.getEndDate().toString()));
-							System.out.println("item.getStartDate() : " + item.getStartDate());
-                            
-							if ((item.getEndDate().compareTo(date1) > 0) && (item.getStartDate().compareTo(date2) < 0) ) {
+							if ((item.getEndDate().compareTo(date1) > 0) && (item.getStartDate().compareTo(date2) < 0)) {
 								newList.add(item);
 							}
-							
-							
-//							if ((item.getEndDate().compareTo(date1) < 0) || (item.getStartDate().compareTo(date2) > 0) ||
-//									((item.getStartDate().compareTo(date1) < 0 ) || (item.getStartDate().compareTo(date2) > 0)) || ((item.getEndDate().compareTo(date1) < 0 ) || (item.getEndDate().compareTo(date2) > 0))){
-//								newList.add(item);
-//							}
-							
-
 						}
 						System.out.println("size : " + newList.size());
 
-						if ( newList != null && newList.size() > 0 ) {
+						if (newList != null && newList.size() > 0) {
 							JSONObject jsonObject = new JSONObject();
 							List<JSONObject> jsonArray = new ArrayList<>();
 							jsonObject.put("userId", user.getUserId());
@@ -403,14 +396,11 @@ public class ResourceAllocationController {
 								jsonObjectData.put("allocationStartDate", item.getStartDate());
 								jsonObjectData.put("allocationEndDate", item.getEndDate());
 								jsonArray.add(jsonObjectData);
-
 							}
 							jsonObject.put("project", jsonArray);
 							jsonArrayFiltered.add(jsonObject);
-
 						}
-						
-						if(newList.size() <= 0) {
+						else {
 							JSONObject jsonObject = new JSONObject();
 							List<JSONObject> jsonArray = new ArrayList<>();
 							jsonObject.put("userId", user.getUserId());
@@ -418,9 +408,7 @@ public class ResourceAllocationController {
 							jsonObject.put("department", user.getdepartment());
 							jsonObject.put("project", jsonArray);
 							jsonArrayFiltered.add(jsonObject);
-
 						}
-
 					} else {
 						JSONObject jsonObject = new JSONObject();
 						List<JSONObject> jsonArray = new ArrayList<>();
@@ -429,22 +417,20 @@ public class ResourceAllocationController {
 						jsonObject.put("department", user.getdepartment());
 						jsonObject.put("project", jsonArray);
 						jsonArrayFiltered.add(jsonObject);
-
 					}
 				}
-
 			}
+			jsonData.put("user", jsonArrayFiltered);
+			jsonDataRes.put("data", jsonData);
+			jsonDataRes.put("status", "success");
+			jsonDataRes.put("code", httpstatus.getStatus());
+			jsonDataRes.put("message", "success. ");
+
 		} catch (Exception e) {
 			jsonDataRes.put("status", "failure");
 			jsonDataRes.put("code", httpstatus.getStatus());
 			jsonDataRes.put("message", "failed. " + e);
 		}
-
-		jsonData.put("user", jsonArrayFiltered);
-		jsonDataRes.put("data", jsonData);
-		jsonDataRes.put("status", "success");
-		jsonDataRes.put("code", httpstatus.getStatus());
-		jsonDataRes.put("message", "success. ");
 		return jsonDataRes;
 
 	}
