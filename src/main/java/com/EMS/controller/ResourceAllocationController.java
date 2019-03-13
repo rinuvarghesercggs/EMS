@@ -432,7 +432,6 @@ public class ResourceAllocationController {
 			jsonDataRes.put("message", "failed. " + e);
 		}
 		return jsonDataRes;
-
 	}
 		
 		
