@@ -51,7 +51,7 @@ public class ResourceAllocationController {
 
 	// To get user and department list
 
-	@GetMapping(value = "/getUsersAndDepartments")
+	@GetMapping(value = "/getPreResourceData")
 	public JSONObject getUsernameList(HttpServletResponse httpstatus) {
 		JSONObject jsonData = new JSONObject();
 		JSONObject jsonDataRes = new JSONObject();
@@ -181,7 +181,7 @@ public class ResourceAllocationController {
 						jsonObject.put("allocatedVal", item.getAllocatedPerce());
 
 						if (item.getuser() != null && item.getuser().getdepartment() != null)
-							jsonObject.put("department name", item.getuser().getdepartment().getdepartmentName());
+							jsonObject.put("departmentName", item.getuser().getdepartment().getdepartmentName());
 						jsonArray.add(jsonObject);
 					}
 				}
