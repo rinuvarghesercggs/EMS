@@ -22,6 +22,9 @@ public class UserModel {
 	@Column(name = "userId")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long userId;
+	
+	@Column(unique = true)
+	private long empId;
 
 	@ManyToOne
 	private DepartmentModel department;
@@ -42,6 +45,14 @@ public class UserModel {
 	private long contact;
 
 	
+
+	public long getEmpId() {
+		return empId;
+	}
+
+	public void setEmpId(long empId) {
+		this.empId = empId;
+	}
 
 	public long getUserId() {
 		return userId;
@@ -120,11 +131,12 @@ public class UserModel {
 	}
 
 	public UserModel(long userId, String firstName, String lastName, String userName, String password, String email,
-			long contact) {
+			long contact,long empId) {
 		super();
 		this.userId = userId;
 		this.firstName = firstName;
 		this.lastName = lastName;
+		this.empId=empId;
 		this.userName = userName;
 		this.password = password;
 		this.email = email;
