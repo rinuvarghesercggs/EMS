@@ -26,9 +26,9 @@ public class ProjectModel {
 	private String projectName,projectDetails;
 	private int estimatedHours;
 	private Date startDate,endDate,releasingDate;
-	private int billable;
+	private int isBillable;
 	private String projectCode;
-	private int phase,type,poc,status;
+	private int projectPhase,projectType,isPOC,projectStatus;
 	
 	
 	
@@ -41,7 +41,7 @@ public class ProjectModel {
 	
 
 	public ProjectModel(long projectId, String projectName, String projectDetails, int estimatedHours, Date startDate,
-			Date endDate, int billable, String projectCode, int phase, int type, UserModel projectOwner,
+			Date endDate, int isBillable, String projectCode, int projectPhase, int projectType, UserModel projectOwner,
 			ContractModel contract) {
 		super();
 		this.projectId = projectId;
@@ -50,10 +50,10 @@ public class ProjectModel {
 		this.estimatedHours = estimatedHours;
 		this.startDate = startDate;
 		this.endDate = endDate;
-		this.billable = billable;
+		this.isBillable = isBillable;
 		this.projectCode = projectCode;
-		this.phase = phase;
-		this.type = type;
+		this.projectPhase = projectPhase;
+		this.projectType = projectType;
 		this.projectOwner = projectOwner;
 		this.contract = contract;
 	}
@@ -67,18 +67,18 @@ public class ProjectModel {
 	public void setReleasingDate(Date releasingDate) {
 		this.releasingDate = releasingDate;
 	}
-	public int getPoc() {
-		return poc;
+	public int getisPOC() {
+		return isPOC;
 	}
-	public void setPoc(int poc) {
-		this.poc = poc;
+	public void setisPOC(int isPOC) {
+		this.isPOC = isPOC;
 	}
 
-	public int getStatus() {
-		return status;
+	public int getprojectStatus() {
+		return projectStatus;
 	}
-	public void setStatus(int status) {
-		this.status = status;
+	public void setprojectStatus(int projectStatus) {
+		this.projectStatus = projectStatus;
 	}
 
 
@@ -136,12 +136,12 @@ public class ProjectModel {
 		this.endDate = endDate;
 	}
 
-	public int getBillable() {
-		return billable;
+	public int getisBillable() {
+		return isBillable;
 	}
 
-	public void setBillable(int billable) {
-		this.billable = billable;
+	public void setisBillable(int isBillable) {
+		this.isBillable = isBillable;
 	}
 
 	public String getProjectCode() {
@@ -152,20 +152,20 @@ public class ProjectModel {
 		this.projectCode = projectCode;
 	}
 
-	public int getPhase() {
-		return phase;
+	public int getprojectPhase() {
+		return projectPhase;
 	}
 
-	public void setPhase(int phase) {
-		this.phase = phase;
+	public void setprojectPhase(int projectPhase) {
+		this.projectPhase = projectPhase;
 	}
 
-	public int getType() {
-		return type;
+	public int getprojectType() {
+		return projectType;
 	}
 
-	public void setType(int type) {
-		this.type = type;
+	public void setprojectType(int projectType) {
+		this.projectType = projectType;
 	}
 
 	public UserModel getProjectOwner() {

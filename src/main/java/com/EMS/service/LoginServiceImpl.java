@@ -1,5 +1,7 @@
 package com.EMS.service;
 
+import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +34,14 @@ public class LoginServiceImpl implements LoginService {
 		}
 	}
 
+//	@Override
+//	public ArrayList<UserModel> getAllUser() {
+//		ArrayList<UserModel> userarray=(ArrayList<UserModel>) user_repositary.findAll();
+//		return userarray;
+//	}
+
+	
+	
 //	@Override
 //	public UserModel adduser(UserModel requestdata) {
 //		UserModel user=null;

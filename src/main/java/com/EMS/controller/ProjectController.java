@@ -39,30 +39,29 @@ public class ProjectController {
 
 	//api for creating new project
 
-	@PostMapping("/addProject")
+	@PostMapping("/createProject")
 	public JSONObject save_newproject(@RequestBody JSONObject requestdata, HttpServletResponse httpstatus) {
-
+		System.out.println("api start");
 		JSONObject responsedata = new JSONObject();
 		int responseflag = 0;
 		try {
 
 			//setting values to object from json request 
 			ProjectModel project = new ProjectModel();
-			String contract = requestdata.get("contract").toString();
+			String contract = requestdata.get("contractType").toString();
 			Long contractId = Long.parseLong(contract);
 			ContractModel contractModel = new ContractModel();
 			if ((contractId != null) && (!contractId.equals(" ")))
 				contractModel = projectservice.getContract(contractId);
 			project.setProjectDetails(requestdata.get("projectDetails").toString());
 			project.setProjectName(requestdata.get("projectName").toString());
-			project.setBillable(Integer.parseInt(requestdata.get("billable").toString()));
+			project.setisBillable(Integer.parseInt(requestdata.get("isBillable").toString()));
 			project.setProjectCode(requestdata.get("projectCode").toString());
-			project.setPhase(Integer.parseInt(requestdata.get("phase").toString()));
-			project.setType(Integer.parseInt(requestdata.get("type").toString()));
-			project.setStatus(Integer.parseInt(requestdata.get("status").toString()));
-			project.setPoc(Integer.parseInt(requestdata.get("poc").toString()));
+			project.setprojectPhase(Integer.parseInt(requestdata.get("projectPhase").toString()));
+			project.setprojectType(Integer.parseInt(requestdata.get("projectType").toString()));
+			project.setprojectStatus(Integer.parseInt(requestdata.get("projectStatus").toString()));
+			project.setisPOC(Integer.parseInt(requestdata.get("isPOC").toString()));
 			
-
 			Long userid = Long.parseLong(requestdata.get("projectOwner").toString());
 			UserModel pro_owner = new UserModel();
 
@@ -79,7 +78,7 @@ public class ProjectController {
 			project.setEstimatedHours(Integer.parseInt(requestdata.get("estimatedHours").toString()));
 			String startdate = requestdata.get("startDate").toString();
 			String enddate = requestdata.get("endDate").toString();
-			String releasingdate=requestdata.get("releasingDate").toString();
+
 
 			//Formatting the dates before storing
 			DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
@@ -94,27 +93,18 @@ public class ProjectController {
 				project.setEndDate(date2);
 
 			}
-			
-			if (!releasingdate.isEmpty()) {
-				releaseDate = formatter.parse(releasingdate);
-				project.setReleasingDate(releaseDate);
+			System.out.println("start1");
 
-			}else
-				project.setReleasingDate(releaseDate);
-
-			//checking for restricting invalid data
 			if ((project.getProjectDetails() != null) && (project.getProjectDetails().length() > 0)
 					&& (!project.getProjectDetails().equals(" ")) && (project.getProjectName() != null)
 					&& (!project.getProjectName().equals(" ")) && (project.getProjectName().length() > 0)
 					&& (project.getProjectCode() != null)
 					&& (!project.getProjectCode().equals(" ") && (project.getProjectCode().length() > 0))
-					&& (project.getPhase()) >= 1) {
-
+					&& (project.getprojectPhase()) >= 1) {
 				//method invocation for checking duplicate entry for project name
 
 				int result = projectservice.duplicationchecking(project.getProjectName());
 				if (result == 0) {
-
 					//Method invocation for creating new project record
 					ProjectModel projectmodel = projectservice.save_project_record(project);
 					//method invocation for storing resouces of project created
@@ -205,11 +195,29 @@ public class ProjectController {
 		ArrayList<JSONObject> userarray = new ArrayList<JSONObject>();
 		JSONArray contract_array = new JSONArray();
 		JSONArray department_array = new JSONArray();
+		JSONArray project_array=new JSONArray();
 
 		//json object for storing records array
 		JSONObject array = new JSONObject();
 
 		try {
+			
+			//method invocation for getting project details
+			List<ProjectModel> projectlist=projectservice.getProjectList();
+			if(projectlist.isEmpty())
+				array.put("projectName", project_array);
+			else {
+				for(ProjectModel projectdata:projectlist) {
+					JSONObject projectobject=new JSONObject();
+					
+					projectobject.put("projectId", projectdata.getProjectId());
+					projectobject.put("projectName", projectdata.getProjectName());
+					project_array.add(projectobject);
+				}
+				array.put("projectName", project_array);
+			}
+			
+			
 			//Method invocation for getting contract type 
 			ArrayList<ContractModel> contract = projectservice.getcontractType();
 

@@ -24,10 +24,10 @@ public class UserTechnology {
 	@OneToOne
 	private UserModel user;
 	private long technology;
-	private int experience;
+	private double experience;
 	
 	
-	public UserTechnology(long userTechnologyId, long technology, int experience) {
+	public UserTechnology(long userTechnologyId, long technology, double experience) {
 		super();
 		this.userTechnologyId = userTechnologyId;
 		this.technology = technology;
@@ -51,10 +51,10 @@ public class UserTechnology {
 	public void setTechnology(long technology) {
 		this.technology = technology;
 	}
-	public int getExperience() {
+	public double getExperience() {
 		return experience;
 	}
-	public void setExperience(int experience) {
+	public void setExperience(double experience) {
 		this.experience = experience;
 	}
 	

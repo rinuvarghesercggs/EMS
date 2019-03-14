@@ -1,11 +1,16 @@
 package com.EMS.controller;
 
+import java.util.ArrayList;
+
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.catalina.LifecycleListener;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -88,6 +93,23 @@ public class LoginController {
 //		System.out.println("process");
 //		UserModel user=login_service.adduser(requestdata);
 //		
+//	}
+	
+	
+	//api for user view
+//	@GetMapping(value="/viewuser")
+//	public ArrayList<UserModel> viewAllUser() {
+//		JSONObject responsedata=new JSONObject();
+//		JSONArray userjsonarray=new JSONArray();
+//		
+//		ArrayList<UserModel> userarray=login_service.getAllUser();
+//		
+//		for(UserModel user:userarray) {
+//			JSONObject userobject=new JSONObject();
+//			
+//		}
+//		
+//		return userarray;
 //	}
 
 }
