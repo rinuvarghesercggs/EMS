@@ -56,25 +56,30 @@ public class ResourceAllocationController {
 		JSONObject jsonData = new JSONObject();
 		JSONObject jsonDataRes = new JSONObject();
 		try {
+			//Method invocation for getting user list
 			List<UserModel> userList = resourceAllocation.getUserList();
+			//Method invocation for getting department list
 			List<DepartmentModel> departmentList = resourceAllocation.getDepartmentList();
+			//Method invocation for getting project list
 			List<ProjectModel> projectList = projectService.getProjectList();
 
 			List<JSONObject> jsonArray = new ArrayList<>();
 			List<JSONObject> jsonProjectArray = new ArrayList<>();
 			List<JSONObject> jsonDepartmentArray = new ArrayList<>();
 
+			// Add user list to json object
 			if (!(userList).isEmpty() && userList.size() > 0) {
 				for (UserModel user : userList) {
 					JSONObject jsonObject = new JSONObject();
 					jsonObject.put("userId", user.getUserId());
-					jsonObject.put("name", user.getFirstName());
+					jsonObject.put("name", user.getFirstName()+" "+user.getLastName());
 					jsonObject.put("department", user.getdepartment());
 					jsonArray.add(jsonObject);
 				}
 				jsonData.put("userList", jsonArray);
 			}
 
+			// Add project list to json object
 			if (!(projectList).isEmpty() && projectList.size() > 0) {
 				for (ProjectModel project : projectList) {
 					JSONObject jsonObject = new JSONObject();
@@ -85,7 +90,7 @@ public class ResourceAllocationController {
 				jsonData.put("projectList", jsonProjectArray);
 			}
 			
-			
+			// Add department list to json object
 			if (!(departmentList).isEmpty() && departmentList.size() > 0) {
 				for (DepartmentModel department : departmentList) {
 					JSONObject jsonObject = new JSONObject();
@@ -131,12 +136,13 @@ public class ResourceAllocationController {
 			if (!date2.isEmpty()) {
 				endDate = formatter.parse(date2);
 			}
+			//Method invocation for getting allocation details
 			Alloc alloc = resourceAllocation.findDataById(Long.parseLong(id));
 			if (alloc != null) {
 				alloc.setAllocatedPerce(Double.parseDouble(allocatedVal));
 				alloc.setStartDate(startDate);
 				alloc.setEndDate(endDate);
-
+                //Updating allcation details
 				resourceAllocation.updateData(alloc);
 				jsonDataRes.put("status", "success");
 				jsonDataRes.put("code", httpstatus.getStatus());
@@ -160,6 +166,7 @@ public class ResourceAllocationController {
 	@GetMapping(value = "/getResourceListBasedonProject/{projectId}")
 	public JSONObject getAllocationListsBasedonProject(@PathVariable("projectId") Long projectId,
 			HttpServletResponse httpstatus) {
+		// Method invocation for getting allocation list based on the project
 		List<Alloc> alloc = resourceAllocation.getAllocationList(projectId);
 
 		String response = null;

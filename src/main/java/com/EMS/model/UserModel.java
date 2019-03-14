@@ -1,6 +1,8 @@
 package com.EMS.model;
 
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 
 
@@ -44,7 +47,50 @@ public class UserModel {
 	private String  userName;
 	private long contact;
 
+	@Past
+	private Date dob;
 	
+	
+
+	private Date joiningDate;
+	private String bloodGroup;
+	private String qualification;
+
+//	private Address address;
+//	private long mobileNo;
+	
+
+	public Date getDob() {
+		return dob;
+	}
+
+	public void setDob(Date dob) {
+		this.dob = dob;
+	}
+
+	public Date getJoiningDate() {
+		return joiningDate;
+	}
+	
+	public String getQualification() {
+		return qualification;
+	}
+
+	public void setQualification(String qualification) {
+		this.qualification = qualification;
+	}
+
+	public void setJoiningDate(Date joiningDate) {
+		this.joiningDate = joiningDate;
+	}
+
+	public String getBloodGroup() {
+		return bloodGroup;
+	}
+
+	public void setBloodGroup(String bloodGroup) {
+		this.bloodGroup = bloodGroup;
+	}
 
 	public long getEmpId() {
 		return empId;
