@@ -59,6 +59,9 @@ public class ProjectController {
 			project.setProjectCode(requestdata.get("projectCode").toString());
 			project.setPhase(Integer.parseInt(requestdata.get("phase").toString()));
 			project.setType(Integer.parseInt(requestdata.get("type").toString()));
+			project.setStatus(Integer.parseInt(requestdata.get("status").toString()));
+			project.setPoc(Integer.parseInt(requestdata.get("poc").toString()));
+			
 
 			Long userid = Long.parseLong(requestdata.get("projectOwner").toString());
 			UserModel pro_owner = new UserModel();
@@ -76,10 +79,11 @@ public class ProjectController {
 			project.setEstimatedHours(Integer.parseInt(requestdata.get("estimatedHours").toString()));
 			String startdate = requestdata.get("startDate").toString();
 			String enddate = requestdata.get("endDate").toString();
+			String releasingdate=requestdata.get("releasingDate").toString();
 
 			//Formatting the dates before storing
 			DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
-			Date date1 = null, date2 = null;
+			Date date1 = null, date2 = null,releaseDate=null;
 			if (!startdate.isEmpty()) {
 				date1 = formatter.parse(startdate);
 				project.setStartDate(date1);
@@ -90,6 +94,13 @@ public class ProjectController {
 				project.setEndDate(date2);
 
 			}
+			
+			if (!releasingdate.isEmpty()) {
+				releaseDate = formatter.parse(releasingdate);
+				project.setReleasingDate(releaseDate);
+
+			}else
+				project.setReleasingDate(releaseDate);
 
 			//checking for restricting invalid data
 			if ((project.getProjectDetails() != null) && (project.getProjectDetails().length() > 0)

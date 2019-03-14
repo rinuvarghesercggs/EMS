@@ -25,11 +25,11 @@ public class ProjectModel {
 	
 	private String projectName,projectDetails;
 	private int estimatedHours;
-	private Date startDate,endDate;
+	private Date startDate,endDate,releasingDate;
 	private int billable;
 	private String projectCode;
-	private int phase;
-	private int type;
+	private int phase,type,poc,status;
+	
 	
 	
 	@ManyToOne
@@ -39,10 +39,7 @@ public class ProjectModel {
 	private ContractModel contract;
 
 	
-	
-	
-	
-	
+
 	public ProjectModel(long projectId, String projectName, String projectDetails, int estimatedHours, Date startDate,
 			Date endDate, int billable, String projectCode, int phase, int type, UserModel projectOwner,
 			ContractModel contract) {
@@ -61,6 +58,32 @@ public class ProjectModel {
 		this.contract = contract;
 	}
 	
+	
+	
+	
+	public Date getReleasingDate() {
+		return releasingDate;
+	}
+	public void setReleasingDate(Date releasingDate) {
+		this.releasingDate = releasingDate;
+	}
+	public int getPoc() {
+		return poc;
+	}
+	public void setPoc(int poc) {
+		this.poc = poc;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
+
+
+
 	public ProjectModel() {
 		
 	}

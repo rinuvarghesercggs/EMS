@@ -18,26 +18,26 @@ import org.hibernate.annotations.GeneratorType;
 public class UserTechnology {
 	
 	@Id
-	@Column(name="personelId")
+	@Column(name="userTechnologyId")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private long personalId;
+	private long userTechnologyId;
 	@OneToOne
 	private UserModel user;
-	private String technology,qualification;
-	
-	@Past
-	private Date dob;
-	
-	private Date joiningDate;
-//	private Address address;
-	private long mobileNo;
+	private long technology;
 	private int experience;
-	private String bloodGroup;
-	public long getPersonalId() {
-		return personalId;
+	
+	
+	public UserTechnology(long userTechnologyId, long technology, int experience) {
+		super();
+		this.userTechnologyId = userTechnologyId;
+		this.technology = technology;
+		this.experience = experience;
 	}
-	public void setPersonalId(long personalId) {
-		this.personalId = personalId;
+	public long getUserTechnologyId() {
+		return userTechnologyId;
+	}
+	public void setUserTechnologyId(long userTechnologyId) {
+		this.userTechnologyId = userTechnologyId;
 	}
 	public UserModel getUser() {
 		return user;
@@ -45,35 +45,11 @@ public class UserTechnology {
 	public void setUser(UserModel user) {
 		this.user = user;
 	}
-	public String getTechnology() {
+	public long getTechnology() {
 		return technology;
 	}
-	public void setTechnology(String technology) {
+	public void setTechnology(long technology) {
 		this.technology = technology;
-	}
-	public String getQualification() {
-		return qualification;
-	}
-	public void setQualification(String qualification) {
-		this.qualification = qualification;
-	}
-	public Date getDob() {
-		return dob;
-	}
-	public void setDob(Date dob) {
-		this.dob = dob;
-	}
-	public Date getJoiningDate() {
-		return joiningDate;
-	}
-	public void setJoiningDate(Date joiningDate) {
-		this.joiningDate = joiningDate;
-	}
-	public long getMobileNo() {
-		return mobileNo;
-	}
-	public void setMobileNo(long mobileNo) {
-		this.mobileNo = mobileNo;
 	}
 	public int getExperience() {
 		return experience;
@@ -81,25 +57,9 @@ public class UserTechnology {
 	public void setExperience(int experience) {
 		this.experience = experience;
 	}
-	public String getBloodGroup() {
-		return bloodGroup;
-	}
-	public void setBloodGroup(String bloodGroup) {
-		this.bloodGroup = bloodGroup;
-	}
-	public UserTechnology(long personalId, String technology, String qualification, @Past Date dob, Date joiningDate,
-			long mobileNo, int experience, String bloodGroup) {
-		super();
-		this.personalId = personalId;
-		this.technology = technology;
-		this.qualification = qualification;
-		this.dob = dob;
-		this.joiningDate = joiningDate;
-		this.mobileNo = mobileNo;
-		this.experience = experience;
-		this.bloodGroup = bloodGroup;
-	}
 	
-
+	
+	
+	
 	
 }
