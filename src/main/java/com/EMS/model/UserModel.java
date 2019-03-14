@@ -57,7 +57,6 @@ public class UserModel {
 	private String qualification;
 
 //	private Address address;
-//	private long mobileNo;
 	
 
 	public Date getDob() {

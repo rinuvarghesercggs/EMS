@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Past;
@@ -21,16 +23,18 @@ public class UserTechnology {
 	@Column(name="userTechnologyId")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private long userTechnologyId;
-	@OneToOne
+	
+	@ManyToOne
 	private UserModel user;
-	private long technology;
+	
+	@ManyToOne
+	private Technology technology;
 	private double experience;
 	
 	
-	public UserTechnology(long userTechnologyId, long technology, double experience) {
+	public UserTechnology(long userTechnologyId,double experience) {
 		super();
 		this.userTechnologyId = userTechnologyId;
-		this.technology = technology;
 		this.experience = experience;
 	}
 	public long getUserTechnologyId() {
@@ -45,10 +49,10 @@ public class UserTechnology {
 	public void setUser(UserModel user) {
 		this.user = user;
 	}
-	public long getTechnology() {
+	public Technology getTechnology() {
 		return technology;
 	}
-	public void setTechnology(long technology) {
+	public void setTechnology(Technology technology) {
 		this.technology = technology;
 	}
 	public double getExperience() {

@@ -15,9 +15,16 @@ public class Technology {
 	@Column(name="technologyId")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private long technologyId;
-	private String technologyName;
+	private String technologyName,category;
 	
 	
+	
+	public String getCategory() {
+		return category;
+	}
+	public void setCategory(String category) {
+		this.category = category;
+	}
 	public long getTechnologyId() {
 		return technologyId;
 	}
