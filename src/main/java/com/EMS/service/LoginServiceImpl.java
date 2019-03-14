@@ -32,23 +32,23 @@ public class LoginServiceImpl implements LoginService {
 		}
 	}
 
-	@Override
-	public UserModel adduser(UserModel requestdata) {
-		UserModel user=null;
-		try {
-			System.out.println("start");
-//			String newdata=bCryptPasswordEncoder.encode(requestdata.getPassword());
-//			System.out.println("newdata : "+newdata);
-//			requestdata.setPassword(newdata);
-//			System.out.println("password : "+requestdata.getPassword());
-			user=user_repositary.save(requestdata);
-			System.out.println("completed");
-			return user;
-		}catch(Exception e) {
-			System.out.println("Exception : "+e);
-			return user;
-		}
-		
-	}
+//	@Override
+//	public UserModel adduser(UserModel requestdata) {
+//		UserModel user=null;
+//		try {
+//			System.out.println("start");
+////			String newdata=bCryptPasswordEncoder.encode(requestdata.getPassword());
+////			System.out.println("newdata : "+newdata);
+////			requestdata.setPassword(newdata);
+////			System.out.println("password : "+requestdata.getPassword());
+//			user=user_repositary.save(requestdata);
+//			System.out.println("completed");
+//			return user;
+//		}catch(Exception e) {
+//			System.out.println("Exception : "+e);
+//			return user;
+//		}
+//		
+//	}
 
 }

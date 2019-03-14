@@ -82,12 +82,12 @@ public class LoginController {
 	}
 	
 	
-	//api call for registering new user
-	@PostMapping(value="/adduser")
-	public void adduser(@RequestBody UserModel requestdata) {
-		System.out.println("process");
-		UserModel user=login_service.adduser(requestdata);
-		
-	}
+//	//api call for registering new user
+//	@PostMapping(value="/adduser")
+//	public void adduser(@RequestBody UserModel requestdata) {
+//		System.out.println("process");
+//		UserModel user=login_service.adduser(requestdata);
+//		
+//	}
 
 }

@@ -25,6 +25,9 @@ public interface UserRepository extends JpaRepository<UserModel, Long>{
 
 	@Query("SELECT u FROM UserModel u WHERE u.department.departmentId = ?1")
 	List<UserModel> findByDeptId(Long deptId);
+
+	@Query("SELECT u FROM UserModel u WHERE u.userId = ?1 and u.department.departmentId = ?2")
+	UserModel getUser(Long userId,Long deptId);
 	
 	
 }

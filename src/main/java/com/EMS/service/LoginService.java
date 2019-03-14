@@ -11,7 +11,7 @@ public interface LoginService {
 //		abstract method declaration for user login authentication
 	UserModel login_authentication(String userName, String password);
 
-	UserModel adduser(UserModel requestdata);
+//	UserModel adduser(UserModel requestdata);
 	
 
 }

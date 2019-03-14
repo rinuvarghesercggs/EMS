@@ -25,4 +25,10 @@ public class UserServiceImpl implements UserService {
 		return userList;
 	}
 
+	@Override
+	public UserModel getUser(Long deptId, Long userId) {
+		UserModel user = userRepository.getUser(userId, deptId);
+		return user;
+	}
+
 }

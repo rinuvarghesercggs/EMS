@@ -10,4 +10,6 @@ public interface UserService {
 
 	List<UserModel> getUserByDeptId(Long deptId);
 
+	UserModel getUser(Long deptId, Long userId);
+
 }

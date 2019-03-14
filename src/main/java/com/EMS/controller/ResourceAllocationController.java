@@ -49,7 +49,7 @@ public class ResourceAllocationController {
 	
 	
 
-	// To get user and department list
+	// To get user, department and project list
 
 	@GetMapping(value = "/getPreResourceData")
 	public JSONObject getUsernameList(HttpServletResponse httpstatus) {
@@ -211,7 +211,7 @@ public class ResourceAllocationController {
 		Alloc alloc = new Alloc();
 		JSONObject jsonDataRes = new JSONObject();
 		try {
-
+           // Obtain the data from request data
 			String date1 = requestdata.get("startDate").toString();
 			String date2 = requestdata.get("endDate").toString();
 			DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
@@ -219,6 +219,7 @@ public class ResourceAllocationController {
 			SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 			outputFormat.setTimeZone(zone);
 
+			// Formating the date values
 			Date startDate = null, endDate = null;
 			if (!date1.isEmpty()) {
 				startDate = outputFormat.parse(date1);
@@ -230,6 +231,7 @@ public class ResourceAllocationController {
 				System.out.println("endDate : " + endDate);
 				alloc.setEndDate(endDate);
 			}
+			// Setting values to Allocation model object
 			String val = requestdata.get("allocatedPerce").toString();
 			alloc.setAllocatedPerce(Double.parseDouble(val));
 			String projectId = requestdata.get("projectId").toString();
@@ -448,6 +450,166 @@ public class ResourceAllocationController {
 		return jsonDataRes;
 	}
 		
+	
+	
+	
+	
+	
+	
+	@PostMapping("/getSearchResults")
+	public JSONObject getAllocationList(@RequestBody JSONObject requestData, HttpServletResponse httpstatus) {
+
+		JSONObject jsonData = new JSONObject();
+		JSONObject jsonDataRes = new JSONObject();
+		List<JSONObject> jsonArrayFiltered = new ArrayList<>();
+		TimeZone zone = TimeZone.getTimeZone("MST");
+		SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+		outputFormat.setTimeZone(zone);
+		java.util.Date date1 = null, date2 = null;
+		try {
+
+			String startDate = requestData.get("startDate").toString();
+			String endDate = requestData.get("endDate").toString();
+
+			if (!startDate.isEmpty()) {
+				date1 = outputFormat.parse(startDate);
+				System.out.println("date1 : " + date1);
+
+			}
+			if (!endDate.isEmpty()) {
+				date2 = outputFormat.parse(endDate);
+				System.out.println("date2 : " + date2);
+
+			}
+
+			String uId = requestData.get("userId").toString();
+			String dId = requestData.get("deptId").toString();
+
+			// Obtain the user list only if the department id is available and user id is not available
+			if ((dId != null || dId != "") && (uId == null || uId == "")) {
+				Long deptId = Long.parseLong(dId);
+
+				// Obtain the user list based on the department
+				List<UserModel> userList = userService.getUserByDeptId(deptId);
+
+				if (userList != null) {
+					for (UserModel user : userList) {
+						
+						// Invoc getUserAllocationList() to findout the allocation details of the user
+						getUserAllocationList(user, date1, date2, jsonArrayFiltered);
+
+					}
+				}
+			}
+
+			// Obtain the user list only if the user id is available and department id is not available
+			else if ((uId != null && uId != "") && (dId == null || dId == "")) {
+
+				Long userId = Long.parseLong(uId);
+				UserModel user = userService.getUserDetailsById(userId);
+
+				// Invoc getUserAllocationList() to findout the allocation details of the user
+				if (user != null) {
+					getUserAllocationList(user, date1, date2, jsonArrayFiltered);
+
+				}
+
+			}
+
+			// Obtain the user list if both department id and user id are available
+
+			else if ((uId != null && uId != "") && (dId != null || dId != "")) {
+				Long deptId = Long.parseLong(dId);
+				Long userId = Long.parseLong(uId);
+
+				UserModel user = userService.getUser(deptId, userId);
+
+				// Invoc getUserAllocationList() to findout the allocation details of the user
+				if (user != null) {
+					getUserAllocationList(user, date1, date2, jsonArrayFiltered);
+				}
+			}
+
+			jsonData.put("user", jsonArrayFiltered);
+			jsonDataRes.put("data", jsonData);
+			jsonDataRes.put("status", "success");
+			jsonDataRes.put("code", httpstatus.getStatus());
+			jsonDataRes.put("message", "success. ");
+
+		} catch (Exception e) {
+			jsonDataRes.put("status", "failure");
+			jsonDataRes.put("code", httpstatus.getStatus());
+			jsonDataRes.put("message", "failed. " + e);
+		}
+		return jsonDataRes;
+	}
+
+
+
+	private void getUserAllocationList(UserModel user, Date date1, Date date2, List<JSONObject> jsonArrayFiltered) {
+
+		List<Alloc> newUserList = new ArrayList<Alloc>();
+
+		// Checks whether the user has an entry on allocation table
+		Boolean isExist = resourceAllocation.checkIsExist(user.getUserId());
+		if (isExist) {
+
+			// find out the allocation lists of a user
+			List<Alloc> allocationList = resourceAllocation.getListByUser(user.getUserId());
+			for (Alloc item : allocationList) {
+
+				// find out the allocation details based on the date passed as an argument and added to a new list
+				if ((item.getEndDate().compareTo(date1) > 0) && (item.getStartDate().compareTo(date2) < 0)) {
+					newUserList.add(item);
+				}
+			}
+
+			System.out.println("size : " + newUserList.size());
+
+			// Add user and project alocation details to the json object
+			if (newUserList != null && newUserList.size() > 0) {
+				JSONObject jsonObject = new JSONObject();
+				List<JSONObject> jsonArray = new ArrayList<>();
+				jsonObject.put("userId", user.getUserId());
+				jsonObject.put("userName", user.getFirstName());
+				jsonObject.put("department", user.getdepartment());
+				for (Alloc item : newUserList) {
+					JSONObject jsonObjectData = new JSONObject();
+					jsonObjectData.put("allocationId", item.getAllocId());
+					jsonObjectData.put("projectId", item.getproject().getProjectId());
+					jsonObjectData.put("projectName", item.getproject().getProjectName());
+					jsonObjectData.put("allocationPercentage", item.getAllocatedPerce());
+					jsonObjectData.put("allocationStartDate", item.getStartDate());
+					jsonObjectData.put("allocationEndDate", item.getEndDate());
+					jsonArray.add(jsonObjectData);
+
+				}
+				jsonObject.put("project", jsonArray);
+				jsonArrayFiltered.add(jsonObject);
+			} else {
+				JSONObject jsonObject = new JSONObject();
+				List<JSONObject> jsonArray = new ArrayList<>();
+				jsonObject.put("userId", user.getUserId());
+				jsonObject.put("userName", user.getFirstName());
+				jsonObject.put("department", user.getdepartment());
+				jsonObject.put("project", jsonArray);
+				jsonArrayFiltered.add(jsonObject);
+			}
+
+		}
+
+		// If the user has no entry, then add user detais without project allocation details to the json object
+		else {
+			JSONObject jsonObject = new JSONObject();
+			List<JSONObject> jsonArray = new ArrayList<>();
+			jsonObject.put("userId", user.getUserId());
+			jsonObject.put("userName", user.getFirstName());
+			jsonObject.put("department", user.getdepartment());
+			jsonObject.put("project", jsonArray);
+			jsonArrayFiltered.add(jsonObject);
+		}
 		
+	}
+			
 		
 }
