@@ -4,7 +4,11 @@ package com.EMS.service;
 
 import java.util.ArrayList;
 
+import com.EMS.model.DepartmentModel;
+import com.EMS.model.RoleModel;
+import com.EMS.model.Technology;
 import com.EMS.model.UserModel;
+import com.EMS.model.UserTechnology;
 
 public interface LoginService {
 
@@ -16,7 +20,19 @@ public interface LoginService {
 	//adstract method declaration for user view
 //	ArrayList<UserModel> getAllUser();
 
-//	UserModel adduser(UserModel requestdata);
+	UserModel adduser(UserModel requestdata);
+
+	//abstract method declaration for add user technology data
+	UserTechnology addusertechnology(UserTechnology usertech);
+	
+	//find technology by given ID
+	Technology findtechnology(Long parseInt);
+	
+	//find department by given ID
+	DepartmentModel getDepartment(long parseLong);
+	
+	//find role by given ID
+	RoleModel getRole(long parseLong);
 	
 
 }

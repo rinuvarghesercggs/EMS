@@ -31,7 +31,9 @@ public class UserTechnology {
 	private Technology technology;
 	private double experience;
 	
-	
+	public UserTechnology() {
+		
+	}
 	public UserTechnology(long userTechnologyId,double experience) {
 		super();
 		this.userTechnologyId = userTechnologyId;

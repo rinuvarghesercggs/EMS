@@ -44,6 +44,8 @@ public class Technology {
 		this.technologyId = technologyId;
 		this.technologyName = technologyName;
 	}
-	
+	public Technology() {
+		
+	}
 	
 }
