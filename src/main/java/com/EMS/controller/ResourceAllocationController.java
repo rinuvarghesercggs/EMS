@@ -221,7 +221,6 @@ public class ResourceAllocationController {
            // Obtain the data from request data
 			String date1 = requestdata.get("startDate").toString();
 			String date2 = requestdata.get("endDate").toString();
-			DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
 			TimeZone zone = TimeZone.getTimeZone("MST");
 			SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 			outputFormat.setTimeZone(zone);
@@ -555,27 +554,33 @@ public class ResourceAllocationController {
 
 	private void getUserAllocationList(UserModel user, Date date1, Date date2, List<JSONObject> jsonArrayFiltered) {
 
-		List<Alloc> newUserList = new ArrayList<Alloc>();
+//		List<Alloc> newUserList = new ArrayList<Alloc>();
 
 		// Checks whether the user has an entry on allocation table
 		Boolean isExist = resourceAllocation.checkIsExist(user.getUserId());
 		if (isExist) {
 
 			// find out the allocation lists of a user
-			List<Alloc> allocationList = resourceAllocation.getListByUser(user.getUserId());
-			for (Alloc item : allocationList) {
+//			List<Alloc> allocationList = resourceAllocation.getListByUser(user.getUserId());
+//			for (Alloc item : allocationList) {
+//
+//				// find out the allocation details based on the date passed as an argument and added to a new list
+//				if ((item.getEndDate().compareTo(date1) > 0) && (item.getStartDate().compareTo(date2) < 0)) {
+//					newUserList.add(item);
+//				}
+//			}
 
-				// find out the allocation details based on the date passed as an argument and added to a new list
-				if ((item.getEndDate().compareTo(date1) > 0) && (item.getStartDate().compareTo(date2) < 0)) {
-					newUserList.add(item);
-				}
-			}
+			// find out the allocation details based on the date passed as an argument
+			List<Alloc> newUserList = resourceAllocation.getUsersList(user.getUserId(),date1,date2);
+			
+            
 
 			System.out.println("size : " + newUserList.size());
 
 			// Add user and project alocation details to the json object
 			if (newUserList != null && newUserList.size() > 0) {
 				JSONObject jsonObject = new JSONObject();
+				int freeAlloc = 100;
 				List<JSONObject> jsonArray = new ArrayList<>();
 				jsonObject.put("userId", user.getUserId());
 				jsonObject.put("userName", user.getFirstName());
@@ -586,11 +591,13 @@ public class ResourceAllocationController {
 					jsonObjectData.put("projectId", item.getproject().getProjectId());
 					jsonObjectData.put("projectName", item.getproject().getProjectName());
 					jsonObjectData.put("allocationPercentage", item.getAllocatedPerce());
-					jsonObjectData.put("allocationStartDate", item.getStartDate());
-					jsonObjectData.put("allocationEndDate", item.getEndDate());
+					jsonObjectData.put("allocationStartDate", item.getStartDate().toString());
+					jsonObjectData.put("allocationEndDate", item.getEndDate().toString());
+					freeAlloc-= item.getAllocatedPerce();
 					jsonArray.add(jsonObjectData);
 
 				}
+				jsonObject.put("freeAlloc", freeAlloc);
 				jsonObject.put("project", jsonArray);
 				jsonArrayFiltered.add(jsonObject);
 			} else {
@@ -600,6 +607,7 @@ public class ResourceAllocationController {
 				jsonObject.put("userName", user.getFirstName());
 				jsonObject.put("department", user.getdepartment());
 				jsonObject.put("project", jsonArray);
+				jsonObject.put("freeAlloc", 100);
 				jsonArrayFiltered.add(jsonObject);
 			}
 
@@ -613,6 +621,7 @@ public class ResourceAllocationController {
 			jsonObject.put("userName", user.getFirstName());
 			jsonObject.put("department", user.getdepartment());
 			jsonObject.put("project", jsonArray);
+			jsonObject.put("freeAlloc", 100);
 			jsonArrayFiltered.add(jsonObject);
 		}
 		

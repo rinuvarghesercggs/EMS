@@ -1,5 +1,6 @@
 package com.EMS.service;
 
+import java.util.Date;
 import java.util.List;
 import com.EMS.model.Alloc;
 import com.EMS.model.DepartmentModel;
@@ -21,6 +22,7 @@ public interface ResourceAllocationService {
 	public List<Alloc> getAllocationLists();
 	public Boolean checkIsExist(long userId);
 	public List<Alloc> getListByUser(long userId);
+	public List<Alloc> getUsersList(long userId, Date date1, Date date2);
 	
 
 }

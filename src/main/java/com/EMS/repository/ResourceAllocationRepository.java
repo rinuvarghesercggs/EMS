@@ -1,5 +1,6 @@
 package com.EMS.repository;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -29,6 +30,10 @@ public interface ResourceAllocationRepository extends JpaRepository<Alloc, Long>
 	@Query("SELECT s FROM Alloc s WHERE s.user.userId = ?1")
 	List<Alloc> findByUserId(long userId);
 
+	@Query(value = "SELECT s FROM Alloc s WHERE s.user.userId =:userId and s.startDate <:date2 and s.endDate >:date1")
+	List<Alloc> findUsers(long userId, Date date1, Date date2);
+
 	
+
 
 }

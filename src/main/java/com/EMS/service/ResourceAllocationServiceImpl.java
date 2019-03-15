@@ -1,5 +1,6 @@
 package com.EMS.service;
 
+import java.util.Date;
 import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,6 +100,13 @@ public class ResourceAllocationServiceImpl implements ResourceAllocationService{
 		List<Alloc> allocList = resourceAllocationRepository.findByUserId(userId);
 		return allocList;
 	}
+
+	@Override
+	public List<Alloc> getUsersList(long userId, Date date1, Date date2) {
+		List<Alloc> allocList = resourceAllocationRepository.findUsers(userId,date1,date2);
+		return allocList;
+	}
+
 
 	
 	
