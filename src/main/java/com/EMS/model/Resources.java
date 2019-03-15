@@ -23,13 +23,15 @@ public class Resources {
 	@ManyToOne
 	private DepartmentModel department;
 	private int resourceCount;
-	private long project;
 	
-	public long getProject() {
+	@ManyToOne
+	private ProjectModel project;
+	
+	public ProjectModel getProject() {
 		return project;
 	}
 
-	public void setProject(long project) {
+	public void setProject(ProjectModel project) {
 		this.project = project;
 	}
 
@@ -37,11 +39,10 @@ public class Resources {
 		
 	}
 	
-	public Resources(long resourceId, int resourceCount, long project) {
+	public Resources(long resourceId, int resourceCount) {
 		super();
 		this.resourceId = resourceId;
 		this.resourceCount = resourceCount;
-		this.project = project;
 	}
 
 	public DepartmentModel getDepartment() {
