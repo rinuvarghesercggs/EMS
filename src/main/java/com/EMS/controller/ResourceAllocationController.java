@@ -462,7 +462,7 @@ public class ResourceAllocationController {
 	
 	
 	
-	@PostMapping("/getSearchResults")
+	@PostMapping("/getUserData")
 	public JSONObject getAllocationList(@RequestBody JSONObject requestData, HttpServletResponse httpstatus) {
 
 		JSONObject jsonData = new JSONObject();

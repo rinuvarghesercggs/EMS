@@ -47,6 +47,14 @@ public interface ProjectService {
 		DepartmentModel getDepartmentDetails(Long depart);
 
 		List<ProjectModel> getProjectList();
+		
+		//Get all details of all projects 
+		ArrayList<ProjectModel> getListofProjects();
+
+		UserModel getuser(Long userid);
+		
+		//method for getting resource list
+		List<Resources> getResourceList(long projectId);
 
 
 

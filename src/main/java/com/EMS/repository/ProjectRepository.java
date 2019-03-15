@@ -1,5 +1,6 @@
 package com.EMS.repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,6 +22,8 @@ public interface ProjectRepository extends JpaRepository<ProjectModel, Long> {
 
 	@Query("SELECT count(p) FROM ProjectModel p WHERE p.projectName=?1")
 	int findproject(String getprojectName);
+
+	
 
 	
 

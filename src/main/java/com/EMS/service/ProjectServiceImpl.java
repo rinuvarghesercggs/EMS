@@ -127,4 +127,23 @@ public class ProjectServiceImpl implements ProjectService {
 		return project;
 	}
 
+	@Override
+	public ArrayList<ProjectModel> getListofProjects() {
+		ArrayList<ProjectModel> projectlist=(ArrayList<ProjectModel>) project_repositary.findAll();
+		return projectlist;
+	}
+
+	@Override
+	public UserModel getuser(Long userid) {
+		UserModel user=user_repositary.getOne(userid);
+		return user;
+	}
+
+	@Override
+	public List<Resources> getResourceList(long projectId) {
+
+		List<Resources> list=resource_repository.getResourceList(projectId);
+		return list;
+	}
+
 }
