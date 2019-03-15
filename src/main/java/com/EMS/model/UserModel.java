@@ -35,23 +35,11 @@ public class UserModel {
 	@ManyToOne
 	private RoleModel role;
 	
-	@Size(min=2,max=35)
 	private String firstName, lastName,password;
-	
-	@NotNull @Email
-	@Size(min=10,max=50)
 	private String email;
-	
-	@Column(unique = true)
-	@Size(min=2,max=35)
 	private String  userName;
 	private long contact;
-
-	@Past
 	private Date dob;
-	
-	
-
 	private Date joiningDate;
 	private String bloodGroup;
 	private String qualification;
