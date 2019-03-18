@@ -25,8 +25,8 @@ public class TasktrackServiceImpl implements TasktrackService {
 //	For Task track Model
 
 	@Override
-	public List<Tasktrack> getByDate(Date currentDate, Long uId) {
-		return tasktrackRepository.getByDate(currentDate, uId);
+	public List<Tasktrack> getByDate(Date startDate,Date endDate,Long uId) {
+		return tasktrackRepository.getByDate(startDate, endDate, uId);
 
 	}
 

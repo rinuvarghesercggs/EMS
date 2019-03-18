@@ -15,8 +15,8 @@ import com.EMS.model.Tasktrack;
 
 public interface TasktrackRepository extends JpaRepository<Tasktrack, Long> {
 
-	@Query("SELECT t FROM Tasktrack t WHERE t.date =?1 and t.user.id=?2")
-	List<Tasktrack> getByDate(Date currentDate, Long id);
+	@Query("SELECT t FROM Tasktrack t WHERE t.date BETWEEN ?1 AND ?2 order by date(t.date) asc")
+	List<Tasktrack> getByDate(Date startDate,Date endDate, Long id);
 
 	@Modifying
 	@Transactional

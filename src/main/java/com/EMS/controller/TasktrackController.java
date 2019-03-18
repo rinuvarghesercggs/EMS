@@ -4,8 +4,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 
 import org.json.JSONException;
@@ -52,37 +54,39 @@ public class TasktrackController {
 	private ObjectMapper objectMapper;
 
 	@PostMapping(value = "/getTaskDetails")
-	public JSONObject getByDate(@RequestBody Taskdetails requestdata) {
-		List<Tasktrack> tracklist = null;
-		tracklist = tasktrackService.getByDate(requestdata.getTaskDate(), requestdata.getuId());
-		JSONObject jsonData = new JSONObject();
-		JSONObject jsonDataRes = new JSONObject();
-		List<JSONObject> jsonArray = new ArrayList<>();
-		try {
-			if (!tracklist.isEmpty() && tracklist.size() > 0) {
-				for (Tasktrack item : tracklist) {
-					JSONObject jsonObject = new JSONObject();
-					jsonObject.put("id", item.getId());
-					if (item.getProject() != null)
-						jsonObject.put("project", item.getProject().getProjectName());
-					if (item.getTask() != null)
-						jsonObject.put("taskType", item.getTask().getTaskName());
-					jsonObject.put("taskSummary", item.getDescription());
-					jsonObject.put("hours", item.getHours());
-					jsonArray.add(jsonObject);
-				}
-				jsonData.put("taskDetails", jsonArray);
-				jsonDataRes.put("status", "success");
-			} else {
-				jsonDataRes.put("status", "Date Not Found");
+	public JsonNode getByDate(@RequestBody Taskdetails requestdata) {
+		List<Tasktrack> list = tasktrackService.getByDate(requestdata.getFromDate(), requestdata.getToDate(),requestdata.getuId());
+		ObjectNode node = objectMapper.createObjectNode();
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		ObjectNode taskDetails = objectMapper.createObjectNode();
+		for(Tasktrack obj:list) {
+			if(taskDetails.get(obj.getDate().toString())!=null) {
+				ObjectNode objectNode = objectMapper.createObjectNode();
+				objectNode.put("Project",obj.getProject().getProjectName());
+				objectNode.put("taskType",obj.getTask().getTaskName());
+				objectNode.put("hours",obj.getHours());
+				ArrayNode arrayNode = (ArrayNode) taskDetails.get(sdf.format(obj.getDate()));
+				arrayNode.add(objectNode);
+				taskDetails.set(obj.getDate().toString(),arrayNode);
+			}else {
+				ArrayNode arrayNode = objectMapper.createArrayNode();
+				ObjectNode objectNode = objectMapper.createObjectNode();
+				objectNode.put("Project",obj.getProject().getProjectName());
+				objectNode.put("taskType",obj.getTask().getTaskName());
+				objectNode.put("hours",obj.getHours());
+				arrayNode.add(objectNode);
+				taskDetails.set(sdf.format(obj.getDate()),arrayNode);
 			}
-		} catch (Exception e) {
-			jsonDataRes.put("status", "failure");
-			jsonData.put("taskDetails", jsonArray);
 		}
-		jsonDataRes.put("data", jsonData);
 
-		return jsonDataRes;
+		ObjectNode dataNode = objectMapper.createObjectNode();
+		dataNode.set("taskDetails",taskDetails);
+		node.put("status", "success");
+		node.set("data", dataNode);
+		
+		return node;
+		
 	}
 
 	@GetMapping(value = "/getProjectTaskDatas")

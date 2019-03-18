@@ -8,6 +8,20 @@ public class Taskdetails {
 	
 	private Long uId;
 	private Date taskDate;
+	private Date fromDate;
+	private Date toDate;
+	public Date getFromDate() {
+		return fromDate;
+	}
+	public void setFromDate(Date fromDate) {
+		this.fromDate = fromDate;
+	}
+	public Date getToDate() {
+		return toDate;
+	}
+	public void setToDate(Date toDate) {
+		this.toDate = toDate;
+	}
 	private List<String> taskName;
 	private List<String> description;
 	
