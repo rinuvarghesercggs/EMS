@@ -265,14 +265,7 @@ public class ResourceAllocationController {
 				resourceAllocation.save(alloc);
 
 			}
-				
-			
-			
-			
-			
-			
-			
-
+		
 			jsonDataRes.put("status", "success");
 			jsonDataRes.put("code", httpstatus.getStatus());
 			jsonDataRes.put("message", "successfully saved. ");
