@@ -34,6 +34,7 @@ public interface ResourceAllocationRepository extends JpaRepository<Alloc, Long>
 	List<Alloc> findUsers(long userId, Date date1, Date date2);
 
 	
-
+//	@Query(value = "SELECT * FROM EMS.alloc where  EMS.alloc.user_user_id = ?1 and EMS.alloc.end_date < ?3 or EMS.alloc.start_date > ?1", nativeQuery = true)
+//	List<Alloc> findUsers(long userId, Date date1, Date date2);
 
 }

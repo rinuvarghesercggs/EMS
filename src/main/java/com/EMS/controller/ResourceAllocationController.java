@@ -128,13 +128,15 @@ public class ResourceAllocationController {
 			String allocatedVal = requestdata.get("allocatedPerce").toString();
 			String date1 = requestdata.get("startDate").toString();
 			String date2 = requestdata.get("endDate").toString();
-			DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
+			TimeZone zone = TimeZone.getTimeZone("MST");
+			SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+			outputFormat.setTimeZone(zone);
 			Date startDate = null, endDate = null;
 			if (!date1.isEmpty()) {
-				startDate = formatter.parse(date1);
+				startDate = outputFormat.parse(date1);
 			}
 			if (!date2.isEmpty()) {
-				endDate = formatter.parse(date2);
+				endDate = outputFormat.parse(date2);
 			}
 			//Method invocation for getting allocation details
 			Alloc alloc = resourceAllocation.findDataById(Long.parseLong(id));
@@ -313,8 +315,8 @@ public class ResourceAllocationController {
 						jsonObjectData.put("projectId", item.getproject().getProjectId());
 						jsonObjectData.put("projectName", item.getproject().getProjectName());
 						jsonObjectData.put("allocationPercentage", item.getAllocatedPerce());
-						jsonObjectData.put("allocationStartDate", item.getStartDate());
-						jsonObjectData.put("allocationEndDate", item.getEndDate());
+						jsonObjectData.put("allocationStartDate", item.getStartDate().toString());
+						jsonObjectData.put("allocationEndDate", item.getEndDate().toString());
 						jsonArray.add(jsonObjectData);
 
 					}
@@ -415,8 +417,8 @@ public class ResourceAllocationController {
 								jsonObjectData.put("allocationId", item.getAllocId());
 								jsonObjectData.put("projectName", item.getproject().getProjectName());
 								jsonObjectData.put("allocationPercentage", item.getAllocatedPerce());
-								jsonObjectData.put("allocationStartDate", item.getStartDate());
-								jsonObjectData.put("allocationEndDate", item.getEndDate());
+								jsonObjectData.put("allocationStartDate", item.getStartDate().toString());
+								jsonObjectData.put("allocationEndDate", item.getEndDate().toString());
 								jsonArray.add(jsonObjectData);
 							}
 							jsonObject.put("project", jsonArray);
@@ -594,6 +596,8 @@ public class ResourceAllocationController {
 					jsonObjectData.put("allocationStartDate", item.getStartDate().toString());
 					jsonObjectData.put("allocationEndDate", item.getEndDate().toString());
 					freeAlloc-= item.getAllocatedPerce();
+					
+					
 					jsonArray.add(jsonObjectData);
 
 				}
