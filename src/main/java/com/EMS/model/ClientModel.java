@@ -17,20 +17,20 @@ public class ClientModel {
 	private long clientId;
 	
 	private String clientName;
-	private String location,country,timeZone,consultantName,consultantLocation;
+	private String clientLocation,clientCountry,timeZone,consultantName,consultantLocation;
 	private int clientType;
 	
 	public ClientModel() {
 		
 	}	
 	
-	public ClientModel(long clientId, String clientName, String location, String country, String timeZone,
+	public ClientModel(long clientId, String clientName, String clientLocation, String clientCountry, String timeZone,
 			String consultantName, String consultantLocation, int clientType) {
 		super();
 		this.clientId = clientId;
 		this.clientName = clientName;
-		this.location = location;
-		this.country = country;
+		this.consultantLocation = consultantLocation;
+		this.clientCountry = clientCountry;
 		this.timeZone = timeZone;
 		this.consultantName = consultantName;
 		this.consultantLocation = consultantLocation;
@@ -48,18 +48,25 @@ public class ClientModel {
 	public void setClientName(String clientName) {
 		this.clientName = clientName;
 	}
-	public String getLocation() {
-		return location;
+	
+	
+	
+	public String getClientLocation() {
+		return clientLocation;
 	}
-	public void setLocation(String location) {
-		this.location = location;
+
+	public void setClientLocation(String clientLocation) {
+		this.clientLocation = clientLocation;
 	}
-	public String getCountry() {
-		return country;
+
+	public String getClientCountry() {
+		return clientCountry;
 	}
-	public void setCountry(String country) {
-		this.country = country;
+
+	public void setClientCountry(String clientCountry) {
+		this.clientCountry = clientCountry;
 	}
+
 	public String getTimeZone() {
 		return timeZone;
 	}

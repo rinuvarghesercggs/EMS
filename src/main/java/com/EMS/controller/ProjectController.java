@@ -268,7 +268,8 @@ public class ProjectController {
 					UserModel user = itr.next();
 					object.put("firstName", user.getFirstName());
 					object.put("id", user.getUserId());
-
+					object.put("lastName", user.getLastName());
+					object.put("role", user.getrole().getroleId());
 					// adding records object to json array
 					userarray.add(object);
 				}
@@ -398,8 +399,11 @@ public class ProjectController {
 					if (userdata == null)
 						userobj = null;
 					else {
+						userobj.put("firstName", userdata.getFirstName());
+						userobj.put("lastName", userdata.getLastName());
+						userobj.put("role", userdata.getrole().getroleId());
 						userobj.put("userId", userdata.getUserId());
-						userobj.put("userName", userdata.getFirstName() + " " + userdata.getLastName());
+					
 						System.out.println("for sec4");
 					}
 					jsonobj.put("projectOwner", userobj);
