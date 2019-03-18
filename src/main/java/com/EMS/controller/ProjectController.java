@@ -394,6 +394,7 @@ public class ProjectController {
 						// getting user details
 						userdata = projectservice.getuser(userid);
 					}
+					
 					JSONObject userobj = new JSONObject();
 					// storing user values in jsonobject
 					if (userdata == null)
