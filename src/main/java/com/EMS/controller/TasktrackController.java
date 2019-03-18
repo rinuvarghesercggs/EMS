@@ -11,6 +11,7 @@ import java.util.TimeZone;
 import org.json.JSONException;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -209,10 +210,10 @@ public class TasktrackController {
 		ObjectNode node = objectMapper.createObjectNode();
 
 		if (tasktrackServiceImpl.updateTaskById(task)) {
-			node.put("status", 200);
+			node.put("status", HttpStatus.OK.value());
 			node.put("message", "success");
 		} else {
-			node.put("status", 500);
+			node.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
 			node.put("message", "failed to update");
 		}
 
@@ -224,10 +225,10 @@ public class TasktrackController {
 		ObjectNode node = objectMapper.createObjectNode();
 
 		if (tasktrackServiceImpl.deleteTaskById(id)) {
-			node.put("status", 200);
+			node.put("status", HttpStatus.OK.value());
 			node.put("message", "success");
 		} else {
-			node.put("status", 500);
+			node.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
 			node.put("message", "failed to update");
 		}
 
@@ -239,10 +240,10 @@ public class TasktrackController {
 		ObjectNode node = objectMapper.createObjectNode();
 
 		if (tasktrackServiceImpl.createTask(task)) {
-			node.put("status", 200);
+			node.put("status", HttpStatus.OK.value());
 			node.put("message", "success");
 		} else {
-			node.put("status", 500);
+			node.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
 			node.put("message", "failed to update");
 		}
 
