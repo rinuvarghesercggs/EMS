@@ -146,4 +146,11 @@ public class ProjectServiceImpl implements ProjectService {
 		return list;
 	}
 
+	@Override
+	public ProjectModel getProjectId(long projectId) {
+
+		ProjectModel project=project_repositary.getOne(projectId);
+		return project;
+	}
+
 }

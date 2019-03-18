@@ -15,7 +15,7 @@ public interface ResourceRepository extends JpaRepository<Resources, Long>{
 	@Query("UPDATE Resources r SET r.project=?1 WHERE r.id=?2")
 	ArrayList<Resources> updateprojectid(Long long1,long id);
 	
-	@Query("SELECT r FROM Resources r WHERE project=?1")
+	@Query("SELECT r FROM Resources r WHERE r.project.projectId=?1")
 	List<Resources> getResourceList(long projectId);
 
 

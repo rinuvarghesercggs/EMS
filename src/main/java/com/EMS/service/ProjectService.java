@@ -55,6 +55,9 @@ public interface ProjectService {
 		
 		//method for getting resource list
 		List<Resources> getResourceList(long projectId);
+		
+		//method for getting project details by ID
+		ProjectModel getProjectId(long projectId);
 
 
 

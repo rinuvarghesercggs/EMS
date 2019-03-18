@@ -120,7 +120,7 @@ public class ProjectController {
 						// setting values on resource object
 						Resources resou1 = new Resources();
 						if (projectmodel != null)
-							resou1.setProject(projectmodel.getProjectId());
+							resou1.setProject(projectmodel);
 
 						Long depart = jsonObject.getLong("department");
 						DepartmentModel department = new DepartmentModel();
@@ -137,7 +137,7 @@ public class ProjectController {
 
 						// checking resouce model values before storing
 						if ((resou1.getresourceCount() != 0) && (!resou1.getDepartment().equals(null))
-								&& (resou1.getProject() != 0)) {
+								&& (resou1.getProject() != null)) {
 
 							// method invocation for storing resource details
 							Resources resourcevalue = projectservice.addprojectresouce(resou1);
@@ -311,19 +311,21 @@ public class ProjectController {
 		JSONArray projectArray = new JSONArray();
 
 		try {
+			//Getting all projects list to arraylist
 			ArrayList<ProjectModel> projectlist = projectservice.getListofProjects();
-			System.out.println("length" + projectlist.size());
 
+			//checking for project arraylist is empty or not
 			if (projectlist.isEmpty()) {
 				responsedata.put("status", "success");
 				responsedata.put("message", "No Records Available");
 				responsedata.put("code", statusResponse.getStatus());
 				responsedata.put("payload", "");
 			} else {
-				
-				System.out.println("else");
+
+				//loop for getting projectwise details 
 				for (ProjectModel obj : projectlist) {
-					System.out.println("for");
+					
+					//storing projects details in json object
 					JSONObject jsonobj = new JSONObject();
 					jsonobj.put("projectId", obj.getProjectId());
 					jsonobj.put("projectName", obj.getProjectName());
@@ -339,72 +341,89 @@ public class ProjectController {
 					jsonobj.put("releasingDate", obj.getReleasingDate());
 					jsonobj.put("isPOC", obj.getisPOC());
 					jsonobj.put("projectStatus", obj.getprojectStatus());
-					System.out.println("for sec1");
+					
+					//null checking contract type
 					Long contractId = obj.getContract().getContractTypeId();
-					System.out.println("contract"+contractId);
-					ContractModel contract=null;
-					if(contractId!=null)
+					ContractModel contract = null;
+					if (contractId != null) {
+						//getting contract details
 						contract = projectservice.getContract(contractId);
+					}
+					//storing contract values in jsonobject
 					JSONObject contractobj = new JSONObject();
-					if(contract==null)
-						contractobj=null;
+					if (contract == null)
+						contractobj = null;
 					else {
-						System.out.println("for sec2");
+						
 						contractobj.put("contractTypeId", contract.getContractTypeId());
-						contractobj.put("contractTypeName", contract.getContractTypeName());
-						System.out.println("for sec3");
+						contractobj.put("contractTypeName", contract.getContractTypeName());	
 					}
 					jsonobj.put("contractType", contractobj);
-
-					Long userid = obj.getProjectOwner().getUserId();
-					System.out.println("user "+userid);
-					UserModel userdata=null;
-					if(userid!=null)
-						userdata = projectservice.getuser(userid);
-					JSONObject userobj = new JSONObject();
 					
-					if(userdata==null)
-						userobj=null;
+					//null checking user ID
+					Long userid = obj.getProjectOwner().getUserId();
+					UserModel userdata = null;
+					if (userid != null) {
+						//getting user details
+						userdata = projectservice.getuser(userid);
+					}
+					JSONObject userobj = new JSONObject();
+					//storing user values in jsonobject
+					if (userdata == null)
+						userobj = null;
 					else {
 						userobj.put("userId", userdata.getUserId());
 						userobj.put("userName", userdata.getFirstName() + " " + userdata.getLastName());
 						System.out.println("for sec4");
 					}
 					jsonobj.put("projectOwner", userobj);
-
+					
+					//getting list of resources based on project
 					List<Resources> resourcelist = projectservice.getResourceList(obj.getProjectId());
 					JSONArray resourceArray = new JSONArray();
-					System.out.println("for sec5 "+resourcelist.size());
 					
-					if(resourcelist.isEmpty())
+					if (resourcelist.isEmpty())
 						jsonobj.put("resource", resourceArray);
 					else {
-						System.out.println("for sec6");
+						
+						//resoucewise looping to store data in Json array
 						for (Resources resource : resourcelist) {
-							System.out.println("for 2");
+
+							//setting resouce details in json object
 							JSONObject resourceobj = new JSONObject();
 							resourceobj.put("resourceId", resource.getResourceId());
 							resourceobj.put("resourceCount", resource.getresourceCount());
-							resourceobj.put("project", resource.getProject());
-
+							
+							//getting projectdetails by ID
+							ProjectModel project = projectservice.getProjectId(resource.getProject().getProjectId());
+							JSONObject projectobj = new JSONObject();
+							if (project == null)
+								projectobj = null;
+							else {
+								projectobj.put("projectId", project.getProjectId());
+								projectobj.put("projectName", project.getProjectName());
+							}
+							resourceobj.put("project", projectobj);
+							
+							//getting departmentdetails by ID
 							DepartmentModel department = projectservice
 									.getDepartmentDetails(resource.getDepartment().getDepartmentId());
 							JSONObject departmentobj = new JSONObject();
-							
-							if(department==null)
-								departmentobj=null;
+
+							if (department == null)
+								departmentobj = null;
 							else {
 								departmentobj.put("departmentId", department.getDepartmentId());
 								departmentobj.put("departmentName", department.getdepartmentName());
 							}
 							
 							resourceobj.put("department", departmentobj);
-
+							//setting resouce json object on resource json array
 							resourceArray.add(resourceobj);
 						}
 						jsonobj.put("resource", resourceArray);
 					}
-					
+
 					projectArray.add(jsonobj);
 				}
 				responsedata.put("status", "success");
