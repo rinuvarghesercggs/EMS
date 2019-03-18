@@ -72,7 +72,9 @@ public class ResourceAllocationController {
 				for (UserModel user : userList) {
 					JSONObject jsonObject = new JSONObject();
 					jsonObject.put("userId", user.getUserId());
-					jsonObject.put("name", user.getFirstName()+" "+user.getLastName());
+					jsonObject.put("firstName", user.getFirstName());
+					jsonObject.put("lastName", user.getLastName());
+					jsonObject.put("role", user.getrole().getroleId());
 					jsonObject.put("department", user.getdepartment());
 					jsonArray.add(jsonObject);
 				}
@@ -185,8 +187,11 @@ public class ResourceAllocationController {
 						jsonObject.put("allocationId", item.getAllocId());
 						if (item.getproject() != null)
 							jsonObject.put("projectTitle", item.getproject().getProjectName());
-						if (item.getuser() != null)
-							jsonObject.put("name", item.getuser().getFirstName());
+						if (item.getuser() != null) {
+							jsonObject.put("firstName", item.getuser().getFirstName());
+							jsonObject.put("lastName", item.getuser().getLastName());
+							jsonObject.put("role", item.getuser().getrole().getroleId());
+						}
 						jsonObject.put("allocatedVal", item.getAllocatedPerce());
 
 						if (item.getuser() != null && item.getuser().getdepartment() != null)
@@ -601,7 +606,9 @@ public class ResourceAllocationController {
 				int freeAlloc = 100;
 				List<JSONObject> jsonArray = new ArrayList<>();
 				jsonObject.put("userId", user.getUserId());
-				jsonObject.put("userName", user.getFirstName());
+				jsonObject.put("firstName", user.getFirstName());
+				jsonObject.put("lastName", user.getLastName());
+				jsonObject.put("role", user.getrole().getroleId());
 				jsonObject.put("department", user.getdepartment());
 				for (Alloc item : newUserList) {
 					JSONObject jsonObjectData = new JSONObject();
@@ -626,7 +633,9 @@ public class ResourceAllocationController {
 				JSONObject jsonObject = new JSONObject();
 				List<JSONObject> jsonArray = new ArrayList<>();
 				jsonObject.put("userId", user.getUserId());
-				jsonObject.put("userName", user.getFirstName());
+				jsonObject.put("firstName", user.getFirstName());
+				jsonObject.put("lastName", user.getLastName());
+				jsonObject.put("role", user.getrole().getroleId());
 				jsonObject.put("department", user.getdepartment());
 				jsonObject.put("project", jsonArray);
 				jsonObject.put("freeAlloc", 100);
@@ -640,7 +649,9 @@ public class ResourceAllocationController {
 			JSONObject jsonObject = new JSONObject();
 			List<JSONObject> jsonArray = new ArrayList<>();
 			jsonObject.put("userId", user.getUserId());
-			jsonObject.put("userName", user.getFirstName());
+			jsonObject.put("firstName", user.getFirstName());
+			jsonObject.put("lastName", user.getLastName());
+			jsonObject.put("role", user.getrole().getroleId());
 			jsonObject.put("department", user.getdepartment());
 			jsonObject.put("project", jsonArray);
 			jsonObject.put("freeAlloc", 100);
