@@ -23,6 +23,7 @@ public interface ResourceAllocationService {
 	public Boolean checkIsExist(long userId);
 	public List<Alloc> getListByUser(long userId);
 	public List<Alloc> getUsersList(long userId, Date date1, Date date2);
+	public Long getAllocId(long parseLong, long parseLong2);
 	
 
 }

@@ -107,6 +107,12 @@ public class ResourceAllocationServiceImpl implements ResourceAllocationService{
 		return allocList;
 	}
 
+	@Override
+	public Long getAllocId(long projectId, long userId) {
+		Long id = resourceAllocationRepository.getAllocationId(projectId,userId);
+		return id;
+	}
+
 
 	
 	

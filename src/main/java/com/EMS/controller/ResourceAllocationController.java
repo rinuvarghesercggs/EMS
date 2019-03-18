@@ -231,24 +231,47 @@ public class ResourceAllocationController {
 			Date startDate = null, endDate = null;
 			if (!date1.isEmpty()) {
 				startDate = outputFormat.parse(date1);
-				System.out.println("startDate : " + startDate);
-				alloc.setStartDate(startDate);
 			}
 			if (!date2.isEmpty()) {
 				endDate = outputFormat.parse(date2);
-				System.out.println("endDate : " + endDate);
-				alloc.setEndDate(endDate);
 			}
 			// Setting values to Allocation model object
 			String val = requestdata.get("allocatedPerce").toString();
-			alloc.setAllocatedPerce(Double.parseDouble(val));
 			String projectId = requestdata.get("projectId").toString();
-			ProjectModel project = projectService.findById(Long.parseLong(projectId));
-			alloc.setproject(project);
 			String userId = requestdata.get("userId").toString();
+			
+			ProjectModel project = projectService.findById(Long.parseLong(projectId));
 			UserModel user = userService.getUserDetailsById(Long.parseLong(userId));
+			
+			alloc.setproject(project);
 			alloc.setuser(user);
-			resourceAllocation.save(alloc);
+			alloc.setStartDate(startDate);
+			alloc.setEndDate(endDate);
+			alloc.setAllocatedPerce(Double.parseDouble(val));
+
+			Long allocId = resourceAllocation.getAllocId(Long.parseLong(projectId),Long.parseLong(userId));
+			if(allocId != null) {
+				Alloc oldAlloc = resourceAllocation.findDataById(allocId);
+				if(oldAlloc != null) {
+					oldAlloc.setAllocatedPerce(alloc.getAllocatedPerce());
+					oldAlloc.setStartDate(alloc.getStartDate());
+					oldAlloc.setEndDate(alloc.getEndDate());
+					resourceAllocation.updateData(oldAlloc);
+				}
+
+			}
+			else {
+				
+				resourceAllocation.save(alloc);
+
+			}
+				
+			
+			
+			
+			
+			
+			
 
 			jsonDataRes.put("status", "success");
 			jsonDataRes.put("code", httpstatus.getStatus());
