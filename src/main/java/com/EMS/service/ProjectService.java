@@ -3,6 +3,7 @@ package com.EMS.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.EMS.model.ClientModel;
 import com.EMS.model.ContractModel;
 import com.EMS.model.DepartmentModel;
 import com.EMS.model.ProjectModel;
@@ -58,7 +59,11 @@ public interface ProjectService {
 		
 		//method for getting project details by ID
 		ProjectModel getProjectId(long projectId);
-
+		
+		//get client name by passing client ID
+		ClientModel getClientName(long parseLong);
+		//get resource details by ID
+		Resources getResourceById(long long1);
 
 
 

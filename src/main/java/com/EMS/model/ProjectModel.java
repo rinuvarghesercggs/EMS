@@ -29,8 +29,10 @@ public class ProjectModel {
 	private int isBillable;
 	private String projectCode;
 	private int projectPhase,projectType,isPOC,projectStatus;
+	private String clientPointOfContact;
 	
-	
+	@ManyToOne
+	private ClientModel clientName;
 	
 	@ManyToOne
 	private UserModel projectOwner;
@@ -61,6 +63,25 @@ public class ProjectModel {
 	
 	
 	
+	public String getClientPointOfContact() {
+		return clientPointOfContact;
+	}
+
+	public void setClientPointOfContact(String clientPointOfContact) {				//In case of external projects only
+		this.clientPointOfContact = clientPointOfContact;
+	}
+
+	public ClientModel getClientName() {
+		return clientName;
+	}
+
+	public void setClientName(ClientModel clientName) {
+		this.clientName = clientName;
+	}
+
+
+
+
 	public Date getReleasingDate() {
 		return releasingDate;
 	}

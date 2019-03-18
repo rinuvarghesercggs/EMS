@@ -6,11 +6,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.EMS.model.ClientModel;
 import com.EMS.model.ContractModel;
 import com.EMS.model.DepartmentModel;
 import com.EMS.model.ProjectModel;
 import com.EMS.model.Resources;
 import com.EMS.model.UserModel;
+import com.EMS.repository.ClientRepository;
 import com.EMS.repository.ContractRepository;
 import com.EMS.repository.DepartmentRepository;
 import com.EMS.repository.ProjectRepository;
@@ -35,6 +37,9 @@ public class ProjectServiceImpl implements ProjectService {
 	@Autowired
 	DepartmentRepository department_repositary;
 
+	@Autowired
+	ClientRepository client_repository;
+	
 	@Override
 	public ProjectModel save_project_record(ProjectModel projectmodel) {
 
@@ -152,5 +157,20 @@ public class ProjectServiceImpl implements ProjectService {
 		ProjectModel project=project_repositary.getOne(projectId);
 		return project;
 	}
+
+	@Override
+	public ClientModel getClientName(long id) {
+
+		ClientModel getclient=client_repository.getOne(id);
+		return getclient;
+	}
+
+	@Override
+	public Resources getResourceById(long long1) {
+		Resources resource=resource_repository.getOne(long1);
+		return resource;
+	}
+
+
 
 }

@@ -13,12 +13,15 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.EMS.model.ClientModel;
 import com.EMS.model.ContractModel;
 import com.EMS.model.DepartmentModel;
 import com.EMS.model.ProjectModel;
@@ -54,6 +57,14 @@ public class ProjectController {
 			if ((contractId != null) && (!contractId.equals(" ")))
 				contractModel = projectservice.getContract(contractId);
 			project.setProjectDetails(requestdata.get("projectDetails").toString());
+
+//			Long clientid=Long.parseLong(requestdata.get("clientId").toString());
+//			ClientModel client=new ClientModel();
+//			if(clientid!=null)
+//				client=projectservice.getClientName(clientid);
+//			project.setClientName(client);
+//			project.setClientPointOfContact(requestdata.get("clientPointOfContact").toString());
+
 			project.setProjectName(requestdata.get("projectName").toString());
 			project.setisBillable(Integer.parseInt(requestdata.get("isBillable").toString()));
 			project.setProjectCode(requestdata.get("projectCode").toString());
@@ -311,10 +322,10 @@ public class ProjectController {
 		JSONArray projectArray = new JSONArray();
 
 		try {
-			//Getting all projects list to arraylist
+			// Getting all projects list to arraylist
 			ArrayList<ProjectModel> projectlist = projectservice.getListofProjects();
 
-			//checking for project arraylist is empty or not
+			// checking for project arraylist is empty or not
 			if (projectlist.isEmpty()) {
 				responsedata.put("status", "success");
 				responsedata.put("message", "No Records Available");
@@ -322,10 +333,10 @@ public class ProjectController {
 				responsedata.put("payload", "");
 			} else {
 
-				//loop for getting projectwise details 
+				// loop for getting projectwise details
 				for (ProjectModel obj : projectlist) {
-					
-					//storing projects details in json object
+
+					// storing projects details in json object
 					JSONObject jsonobj = new JSONObject();
 					jsonobj.put("projectId", obj.getProjectId());
 					jsonobj.put("projectName", obj.getProjectName());
@@ -341,34 +352,49 @@ public class ProjectController {
 					jsonobj.put("releasingDate", obj.getReleasingDate());
 					jsonobj.put("isPOC", obj.getisPOC());
 					jsonobj.put("projectStatus", obj.getprojectStatus());
-					
-					//null checking contract type
+
+//					Long clientid=obj.getClientName().getClientId();
+//					ClientModel clientmodel=null;
+//					if(clientid!=null)
+//						clientmodel=projectservice.getClientName(clientid);
+//					JSONObject clientobj=new JSONObject();
+//					
+//					if(clientmodel==null)
+//						clientobj=null;
+//					else {
+//						clientobj.put("clientId", clientmodel.getClientId());
+//						clientobj.put("clientName", clientmodel.getClientName());
+//					}
+//					jsonobj.put("clientName", clientobj);
+//					jsonobj.put("clientPointOfContact", obj.getClientPointOfContact());
+
+					// null checking contract type
 					Long contractId = obj.getContract().getContractTypeId();
 					ContractModel contract = null;
 					if (contractId != null) {
-						//getting contract details
+						// getting contract details
 						contract = projectservice.getContract(contractId);
 					}
-					//storing contract values in jsonobject
+					// storing contract values in jsonobject
 					JSONObject contractobj = new JSONObject();
 					if (contract == null)
 						contractobj = null;
 					else {
-						
+
 						contractobj.put("contractTypeId", contract.getContractTypeId());
-						contractobj.put("contractTypeName", contract.getContractTypeName());	
+						contractobj.put("contractTypeName", contract.getContractTypeName());
 					}
 					jsonobj.put("contractType", contractobj);
-					
-					//null checking user ID
+
+					// null checking user ID
 					Long userid = obj.getProjectOwner().getUserId();
 					UserModel userdata = null;
 					if (userid != null) {
-						//getting user details
+						// getting user details
 						userdata = projectservice.getuser(userid);
 					}
 					JSONObject userobj = new JSONObject();
-					//storing user values in jsonobject
+					// storing user values in jsonobject
 					if (userdata == null)
 						userobj = null;
 					else {
@@ -377,24 +403,24 @@ public class ProjectController {
 						System.out.println("for sec4");
 					}
 					jsonobj.put("projectOwner", userobj);
-					
-					//getting list of resources based on project
+
+					// getting list of resources based on project
 					List<Resources> resourcelist = projectservice.getResourceList(obj.getProjectId());
 					JSONArray resourceArray = new JSONArray();
-					
+
 					if (resourcelist.isEmpty())
 						jsonobj.put("resource", resourceArray);
 					else {
-						
-						//resoucewise looping to store data in Json array
+
+						// resoucewise looping to store data in Json array
 						for (Resources resource : resourcelist) {
 
-							//setting resouce details in json object
+							// setting resouce details in json object
 							JSONObject resourceobj = new JSONObject();
 							resourceobj.put("resourceId", resource.getResourceId());
 							resourceobj.put("resourceCount", resource.getresourceCount());
-							
-							//getting projectdetails by ID
+
+							// getting projectdetails by ID
 							ProjectModel project = projectservice.getProjectId(resource.getProject().getProjectId());
 							JSONObject projectobj = new JSONObject();
 							if (project == null)
@@ -404,8 +430,8 @@ public class ProjectController {
 								projectobj.put("projectName", project.getProjectName());
 							}
 							resourceobj.put("project", projectobj);
-							
-							//getting departmentdetails by ID
+
+							// getting departmentdetails by ID
 							DepartmentModel department = projectservice
 									.getDepartmentDetails(resource.getDepartment().getDepartmentId());
 							JSONObject departmentobj = new JSONObject();
@@ -416,9 +442,9 @@ public class ProjectController {
 								departmentobj.put("departmentId", department.getDepartmentId());
 								departmentobj.put("departmentName", department.getdepartmentName());
 							}
-							
+
 							resourceobj.put("department", departmentobj);
-							//setting resouce json object on resource json array
+							// setting resouce json object on resource json array
 							resourceArray.add(resourceobj);
 						}
 						jsonobj.put("resource", resourceArray);
@@ -441,6 +467,152 @@ public class ProjectController {
 		}
 
 		return responsedata;
+	}
+
+	@PutMapping(value = "/editProject")
+	public JSONObject getprojectData(@RequestBody JSONObject requestdata, HttpServletResponse httpstatus) {
+		JSONObject responsedata = new JSONObject();
+		int responseflag = 0;
+		try {
+
+			// setting values to object from json request
+			String projectid=requestdata.get("projectId").toString();
+			ProjectModel project = projectservice.findById(Long.parseLong(projectid));
+			String contract = requestdata.get("contractType").toString();
+			Long contractId = Long.parseLong(contract);
+			ContractModel contractModel = new ContractModel();
+			if ((contractId != null) && (!contractId.equals(" ")))
+				contractModel = projectservice.getContract(contractId);
+			Long clientid=Long.parseLong(requestdata.get("clientId").toString());
+			ClientModel client=new ClientModel();
+			if(clientid!=null)
+				client=projectservice.getClientName(clientid);
+			project.setClientName(client);
+			project.setClientPointOfContact(requestdata.get("clientPointOfContact").toString());
+			System.out.println("client "+project.getClientPointOfContact()+project.getClientName().getClientName());
+			project.setProjectDetails(requestdata.get("projectDetails").toString());
+			project.setProjectName(requestdata.get("projectName").toString());
+			project.setisBillable(Integer.parseInt(requestdata.get("isBillable").toString()));
+			project.setProjectCode(requestdata.get("projectCode").toString());
+			project.setprojectPhase(Integer.parseInt(requestdata.get("projectPhase").toString()));
+			project.setprojectType(Integer.parseInt(requestdata.get("projectType").toString()));
+			project.setprojectStatus(Integer.parseInt(requestdata.get("projectStatus").toString()));
+			project.setisPOC(Integer.parseInt(requestdata.get("isPOC").toString()));
+
+			Long userid = Long.parseLong(requestdata.get("projectOwner").toString());
+			UserModel pro_owner = new UserModel();
+
+			// method for getting userdetails using ID
+			if (userid != null)
+				pro_owner = userservice.getUserDetailsById(userid);
+
+			if (pro_owner != null)
+				project.setProjectOwner(pro_owner);
+
+			if (contractModel != null)
+				project.setContract(contractModel);
+
+			project.setEstimatedHours(Integer.parseInt(requestdata.get("estimatedHours").toString()));
+			String startdate = requestdata.get("startDate").toString();
+			String enddate = requestdata.get("endDate").toString();
+
+			// Formatting the dates before storing
+			DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
+			Date date1 = null, date2 = null, releaseDate = null;
+			if (!startdate.isEmpty()) {
+				date1 = formatter.parse(startdate);
+				project.setStartDate(date1);
+			}
+
+			if (!enddate.isEmpty()) {
+				date2 = formatter.parse(enddate);
+				project.setEndDate(date2);
+
+			}
+
+			if ((project.getProjectDetails() != null) && (project.getProjectDetails().length() > 0)
+					&& (!project.getProjectDetails().equals(" ")) && (project.getProjectName() != null)
+					&& (!project.getProjectName().equals(" ")) && (project.getProjectName().length() > 0)
+					&& (project.getProjectCode() != null)
+					&& (!project.getProjectCode().equals(" ") && (project.getProjectCode().length() > 0))
+					&& (project.getprojectPhase()) >= 1) {
+				// method invocation for checking duplicate entry for project name
+
+				int result = projectservice.duplicationchecking(project.getProjectName());
+				if (result == 0) {
+					// Method invocation for creating new project record
+					ProjectModel projectmodel = projectservice.save_project_record(project);
+
+					// method invocation for storing resouces of project created
+					String resource = requestdata.get("resources").toString();
+
+					// json array for storing json array from request data
+					org.json.JSONArray jsonArray = new org.json.JSONArray(resource);
+
+					// get totalCount of all jsonObjects
+					int count = jsonArray.length();
+					for (int i = 0; i < count; i++) {
+
+						org.json.JSONObject jsonObject = jsonArray.getJSONObject(i); // get jsonObject @ i position
+
+						// setting values on resource object
+						Resources resou1 = projectservice.getResourceById(jsonObject.getLong("resourceId"));
+						if (projectmodel != null)
+							resou1.setProject(projectmodel);
+
+						Long depart = jsonObject.getLong("department");
+						DepartmentModel department = new DepartmentModel();
+
+						// method for getting department details
+						if (depart != null)
+							department = projectservice.getDepartmentDetails(depart);
+
+						if (department != null)
+							resou1.setDepartment(department);
+
+						int count1 = jsonObject.getInt("resourceCount");
+						resou1.setresourceCount(count1);
+					
+						// checking resouce model values before storing
+						if ((resou1.getresourceCount() != 0) && (!resou1.getDepartment().equals(null))
+								&& (resou1.getProject() != null)) {
+
+							// method invocation for storing resource details
+							Resources resourcevalue = projectservice.addprojectresouce(resou1);
+
+							if (resourcevalue == null)
+								responseflag = 1;
+						} else
+							responseflag = 1;
+
+					}
+				} else {
+					responseflag = 1;
+				}
+
+			} else {
+				responseflag = 1;
+			}
+
+			// setting values on response json
+			if (responseflag == 0) {
+				responsedata.put("status", "success");
+				responsedata.put("code", httpstatus.getStatus());
+				responsedata.put("message", "Record Updated");
+				responsedata.put("payload", "");
+			} else {
+				responsedata.put("status", "Failed");
+				responsedata.put("code", httpstatus.getStatus());
+				responsedata.put("message", "Updation failed due to invalid credientials");
+				responsedata.put("payload", "");
+			}
+
+		} catch (Exception e) {
+			System.out.println("Exception : " + e);
+		}
+
+		return responsedata;
+
 	}
 
 }
