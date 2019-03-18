@@ -11,11 +11,13 @@ import java.util.TimeZone;
 import org.json.JSONException;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.EMS.dto.Taskdetails;
@@ -25,7 +27,12 @@ import com.EMS.model.Tasktrack;
 import com.EMS.model.UserModel;
 import com.EMS.service.ProjectService;
 import com.EMS.service.TasktrackService;
+import com.EMS.service.TasktrackServiceImpl;
 import com.EMS.service.UserService;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @RestController
 @RequestMapping(value = { "/tasktrack" })
@@ -36,7 +43,12 @@ public class TasktrackController {
 	@Autowired
 	TasktrackService tasktrackService;
 	@Autowired
+	TasktrackServiceImpl tasktrackServiceImpl;
+	@Autowired
 	UserService userService;
+
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	@PostMapping(value = "/getTaskDetails")
 	public JSONObject getByDate(@RequestBody Taskdetails requestdata) {
@@ -50,10 +62,10 @@ public class TasktrackController {
 				for (Tasktrack item : tracklist) {
 					JSONObject jsonObject = new JSONObject();
 					jsonObject.put("id", item.getId());
-					if(item.getProject() !=null)
-					jsonObject.put("project", item.getProject().getProjectName());
-					if(item.getTask() != null)
-					jsonObject.put("taskType", item.getTask().getTaskName());
+					if (item.getProject() != null)
+						jsonObject.put("project", item.getProject().getProjectName());
+					if (item.getTask() != null)
+						jsonObject.put("taskType", item.getTask().getTaskName());
 					jsonObject.put("taskSummary", item.getDescription());
 					jsonObject.put("hours", item.getHours());
 					jsonArray.add(jsonObject);
@@ -74,7 +86,7 @@ public class TasktrackController {
 
 	@GetMapping(value = "/getProjectTaskDatas")
 	public JSONObject getprojectnameList() {
-		
+
 		List<Object[]> projectTitleList = projectService.getNameId();
 		List<Object[]> taskTypesList = tasktrackService.getTaskList();
 		JSONObject returnData = new JSONObject();
@@ -104,10 +116,10 @@ public class TasktrackController {
 				returnData.put("data", projectTaskDatas);
 			}
 		} catch (Exception e) {
-			returnData.put("status", "failure"); 
+			returnData.put("status", "failure");
 			returnData.put("data", projectTaskDatas);
 		}
-		
+
 		return returnData;
 	}
 
@@ -183,5 +195,68 @@ public class TasktrackController {
 
 		return jsonDataRes;
 
-	}	
+	}
+
+	@GetMapping("/getTaskList")
+	public ArrayNode getTasks() {
+		ArrayNode node = objectMapper.convertValue(tasktrackService.getTasks(), ArrayNode.class);
+
+		return node;
+	}
+
+	@PutMapping("/updateTaskById")
+	public JsonNode updateTaskById(@RequestBody Tasktrack task, @RequestParam("taskId") int id) {
+		ObjectNode node = objectMapper.createObjectNode();
+
+		if (tasktrackServiceImpl.updateTaskById(task)) {
+			node.put("status", 200);
+			node.put("message", "success");
+		} else {
+			node.put("status", 500);
+			node.put("message", "failed to update");
+		}
+
+		return node;
+	}
+
+	@DeleteMapping("/deleteTaskById")
+	public JsonNode deleteTaskById(@RequestParam("taskId") int id) {
+		ObjectNode node = objectMapper.createObjectNode();
+
+		if (tasktrackServiceImpl.deleteTaskById(id)) {
+			node.put("status", 200);
+			node.put("message", "success");
+		} else {
+			node.put("status", 500);
+			node.put("message", "failed to update");
+		}
+
+		return node;
+	}
+
+	@PostMapping("/createTask")
+	public JsonNode createTask(@RequestBody Tasktrack task) {
+		ObjectNode node = objectMapper.createObjectNode();
+
+		if (tasktrackServiceImpl.createTask(task)) {
+			node.put("status", 200);
+			node.put("message", "success");
+		} else {
+			node.put("status", 500);
+			node.put("message", "failed to update");
+		}
+
+		return node;
+	}
+
+	@GetMapping("/getProjectNames")
+	public JsonNode getProjectNames() {
+		return objectMapper.convertValue(tasktrackServiceImpl.getProjectNames(), ArrayNode.class);
+
+	}
+
+	@GetMapping("/getTaskCategories")
+	public JsonNode getTaskCategory() {
+		return objectMapper.convertValue(tasktrackServiceImpl.getTaskCategory(), ArrayNode.class);
+	}
 }

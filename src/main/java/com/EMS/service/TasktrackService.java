@@ -18,4 +18,5 @@ public interface TasktrackService {
 
 	Task getTaskById(Long taskId);
 
+	public List<Tasktrack> getTasks();
 }
