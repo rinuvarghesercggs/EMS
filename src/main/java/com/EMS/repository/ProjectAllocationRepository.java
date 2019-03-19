@@ -8,14 +8,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
-import com.EMS.model.Alloc;
+import com.EMS.model.AllocationModel;
 
 
-public interface ResourceAllocationRepository extends JpaRepository<Alloc, Long> {
+public interface ProjectAllocationRepository extends JpaRepository<AllocationModel, Long> {
 
 
-	@Query("SELECT s FROM Alloc s WHERE s.project.projectId = ?1")
-	List<Alloc> getProjectLists(Long projectId);
+	@Query("SELECT s FROM AllocationModel s WHERE s.project.projectId = ?1")
+	List<AllocationModel> getProjectLists(Long projectId);
 //	public default List<Alloc> getProjectLists(Long projectId){
 //	getJdbcTemplate().query("select user_name as userName", new RowMapper());
 //	}
@@ -24,16 +24,16 @@ public interface ResourceAllocationRepository extends JpaRepository<Alloc, Long>
 		
 	}
 
-	@Query("SELECT count(*) > 0 FROM Alloc s WHERE s.user.userId = ?1")
+	@Query("SELECT count(*) > 0 FROM AllocationModel s WHERE s.user.userId = ?1")
 	Boolean isExists(long userId);
 
-	@Query("SELECT s FROM Alloc s WHERE s.user.userId = ?1")
-	List<Alloc> findByUserId(long userId);
+	@Query("SELECT s FROM AllocationModel s WHERE s.user.userId = ?1")
+	List<AllocationModel> findByUserId(long userId);
 
-	@Query(value = "SELECT s FROM Alloc s WHERE s.user.userId =:userId and s.startDate <:date2 and s.endDate >:date1")
-	List<Alloc> findUsers(long userId, Date date1, Date date2);
+	@Query(value = "SELECT s FROM AllocationModel s WHERE s.user.userId =:userId and s.startDate <:date2 and s.endDate >:date1")
+	List<AllocationModel> findUsers(long userId, Date date1, Date date2);
 
-	@Query("SELECT s.allocId FROM Alloc s WHERE s.user.userId = ?2 and s.project.projectId = ?1")
+	@Query("SELECT s.allocId FROM AllocationModel s WHERE s.user.userId = ?2 and s.project.projectId = ?1")
 	Long getAllocationId(long projectId, long userId);
 
 	

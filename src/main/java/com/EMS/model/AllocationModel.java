@@ -12,9 +12,9 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
-@Table(name="Alloc")
+@Table(name="Allocation")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Alloc {
+public class AllocationModel {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
