@@ -12,4 +12,8 @@ public interface UserService {
 
 	UserModel getUser(Long deptId, Long userId);
 
+	List<UserModel> getprojectOwner();
+
+
+
 }

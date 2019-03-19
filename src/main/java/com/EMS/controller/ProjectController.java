@@ -251,7 +251,8 @@ public class ProjectController {
 			}
 
 			// Method invocation for getting users with role as owner
-			List<UserModel> users_owner = projectservice.getprojectOwner();
+			//List<UserModel> users_owner = projectservice.getprojectOwner();
+			List<UserModel> users_owner = userservice.getprojectOwner();
 
 			if (users_owner.isEmpty())
 				array.put("user_owner", userarray);
@@ -392,7 +393,8 @@ public class ProjectController {
 					UserModel userdata = null;
 					if (userid != null) {
 						// getting user details
-						userdata = projectservice.getuser(userid);
+						//userdata = projectservice.getuser(userid);
+						userdata = userservice.getUserDetailsById(userid);
 					}
 					
 					JSONObject userobj = new JSONObject();
