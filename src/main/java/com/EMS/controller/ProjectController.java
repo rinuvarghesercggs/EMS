@@ -58,12 +58,12 @@ public class ProjectController {
 				contractModel = projectservice.getContract(contractId);
 			project.setProjectDetails(requestdata.get("projectDetails").toString());
 
-//			Long clientid=Long.parseLong(requestdata.get("clientId").toString());
-//			ClientModel client=new ClientModel();
-//			if(clientid!=null)
-//				client=projectservice.getClientName(clientid);
-//			project.setClientName(client);
-//			project.setClientPointOfContact(requestdata.get("clientPointOfContact").toString());
+			Long clientid=Long.parseLong(requestdata.get("clientId").toString());
+			ClientModel client=new ClientModel();
+			if(clientid!=null)
+				client=projectservice.getClientName(clientid);
+			project.setClientName(client);
+			project.setClientPointOfContact(requestdata.get("clientPointOfContact").toString());
 
 			project.setProjectName(requestdata.get("projectName").toString());
 			project.setisBillable(Integer.parseInt(requestdata.get("isBillable").toString()));
@@ -205,12 +205,28 @@ public class ProjectController {
 		JSONArray contract_array = new JSONArray();
 		JSONArray department_array = new JSONArray();
 		JSONArray project_array = new JSONArray();
+		JSONArray client_array=new JSONArray();
 
 		// json object for storing records array
 		JSONObject array = new JSONObject();
 
 		try {
 
+			
+			//method invocation for getting client details
+			List<ClientModel> clientlist=projectservice.getClientList();
+			if(clientlist.isEmpty())
+				array.put("clientDetails", client_array);
+			else {
+				for(ClientModel client:clientlist) {
+					JSONObject clientobj=new JSONObject();
+					clientobj.put("clientId", client.getClientId());
+					clientobj.put("clientName", client.getClientName());
+					client_array.add(clientobj);
+				}
+				array.put("clientDetails", client_array);
+			}
+			
 			// method invocation for getting project details
 			List<ProjectModel> projectlist = projectservice.getProjectList();
 			if (projectlist.isEmpty())
@@ -355,20 +371,20 @@ public class ProjectController {
 					jsonobj.put("isPOC", obj.getisPOC());
 					jsonobj.put("projectStatus", obj.getprojectStatus());
 
-//					Long clientid=obj.getClientName().getClientId();
-//					ClientModel clientmodel=null;
-//					if(clientid!=null)
-//						clientmodel=projectservice.getClientName(clientid);
-//					JSONObject clientobj=new JSONObject();
-//					
-//					if(clientmodel==null)
-//						clientobj=null;
-//					else {
-//						clientobj.put("clientId", clientmodel.getClientId());
-//						clientobj.put("clientName", clientmodel.getClientName());
-//					}
-//					jsonobj.put("clientName", clientobj);
-//					jsonobj.put("clientPointOfContact", obj.getClientPointOfContact());
+					Long clientid=obj.getClientName().getClientId();
+					ClientModel clientmodel=null;
+					if(clientid!=null)
+						clientmodel=projectservice.getClientName(clientid);
+					JSONObject clientobj=new JSONObject();
+					
+					if(clientmodel==null)
+						clientobj=null;
+					else {
+						clientobj.put("clientId", clientmodel.getClientId());
+						clientobj.put("clientName", clientmodel.getClientName());
+					}
+					jsonobj.put("clientName", clientobj);
+					jsonobj.put("clientPointOfContact", obj.getClientPointOfContact());
 
 					// null checking contract type
 					Long contractId = obj.getContract().getContractTypeId();
