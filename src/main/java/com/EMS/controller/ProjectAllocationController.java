@@ -1,45 +1,36 @@
 package com.EMS.controller;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
-
 import javax.servlet.http.HttpServletResponse;
-import javax.websocket.server.PathParam;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.EMS.model.Alloc;
+import com.EMS.model.AllocationModel;
 import com.EMS.model.DepartmentModel;
 import com.EMS.model.ProjectModel;
 import com.EMS.model.UserModel;
 import com.EMS.service.ProjectService;
-import com.EMS.service.ResourceAllocationService;
+import com.EMS.service.ProjectAllocationService;
 import com.EMS.service.UserService;
 
 @RestController
-@RequestMapping(value = "/resource")
-public class ResourceAllocationController {
+@RequestMapping(value = "/project")
+public class ProjectAllocationController {
 
 	@Autowired
-	ResourceAllocationService resourceAllocation;
+	ProjectAllocationService projectAllocation;
 
 	@Autowired
 	ProjectService projectService;
@@ -57,9 +48,9 @@ public class ResourceAllocationController {
 		JSONObject jsonDataRes = new JSONObject();
 		try {
 			//Method invocation for getting user list
-			List<UserModel> userList = resourceAllocation.getUserList();
+			List<UserModel> userList = projectAllocation.getUserList();
 			//Method invocation for getting department list
-			List<DepartmentModel> departmentList = resourceAllocation.getDepartmentList();
+			List<DepartmentModel> departmentList = projectAllocation.getDepartmentList();
 			//Method invocation for getting project list
 			List<ProjectModel> projectList = projectService.getProjectList();
 
@@ -141,13 +132,13 @@ public class ResourceAllocationController {
 //				endDate = outputFormat.parse(date2);
 //			}
 			//Method invocation for getting allocation details
-			Alloc alloc = resourceAllocation.findDataById(Long.parseLong(id));
-			if (alloc != null) {
-				alloc.setAllocatedPerce(Double.parseDouble(allocatedVal));
+			AllocationModel allocationModel = projectAllocation.findDataById(Long.parseLong(id));
+			if (allocationModel != null) {
+				allocationModel.setAllocatedPerce(Double.parseDouble(allocatedVal));
 //				alloc.setStartDate(startDate);
 //				alloc.setEndDate(endDate);
                 //Updating allcation details
-				resourceAllocation.updateData(alloc);
+				projectAllocation.updateData(allocationModel);
 				jsonDataRes.put("status", "success");
 				jsonDataRes.put("code", httpstatus.getStatus());
 				jsonDataRes.put("message", "updated successfully");
@@ -171,7 +162,7 @@ public class ResourceAllocationController {
 	public JSONObject getAllocationListsBasedonProject(@PathVariable("projectId") Long projectId,
 			HttpServletResponse httpstatus) {
 		// Method invocation for getting allocation list based on the project
-		List<Alloc> alloc = resourceAllocation.getAllocationList(projectId);
+		List<AllocationModel> allocationModel = projectAllocation.getAllocationList(projectId);
 
 		String response = null;
 		JSONObject jsonData = new JSONObject();
@@ -180,8 +171,8 @@ public class ResourceAllocationController {
 		Date currentDate = new Date();
 
 		try {
-			if (!(alloc.isEmpty() && alloc.size() > 0)) {
-				for (Alloc item : alloc) {
+			if (!(allocationModel.isEmpty() && allocationModel.size() > 0)) {
+				for (AllocationModel item : allocationModel) {
 					if (item.getEndDate().compareTo(currentDate) > 0) {
 						JSONObject jsonObject = new JSONObject();
 						jsonObject.put("allocationId", item.getAllocId());
@@ -222,7 +213,7 @@ public class ResourceAllocationController {
 	@PostMapping("/saveAllocation")
 	public JSONObject saveAllocationDetails(@RequestBody JSONObject requestdata, HttpServletResponse httpstatus) {
 
-		Alloc alloc = new Alloc();
+		AllocationModel allocationModel = new AllocationModel();
 		JSONObject jsonDataRes = new JSONObject();
 		try {
            // Obtain the data from request data
@@ -248,26 +239,26 @@ public class ResourceAllocationController {
 			ProjectModel project = projectService.findById(Long.parseLong(projectId));
 			UserModel user = userService.getUserDetailsById(Long.parseLong(userId));
 			
-			alloc.setproject(project);
-			alloc.setuser(user);
-			alloc.setStartDate(startDate);
-			alloc.setEndDate(endDate);
-			alloc.setAllocatedPerce(Double.parseDouble(val));
+			allocationModel.setproject(project);
+			allocationModel.setuser(user);
+			allocationModel.setStartDate(startDate);
+			allocationModel.setEndDate(endDate);
+			allocationModel.setAllocatedPerce(Double.parseDouble(val));
 
-			Long allocId = resourceAllocation.getAllocId(Long.parseLong(projectId),Long.parseLong(userId));
+			Long allocId = projectAllocation.getAllocId(Long.parseLong(projectId),Long.parseLong(userId));
 			if(allocId != null) {
-				Alloc oldAlloc = resourceAllocation.findDataById(allocId);
+				AllocationModel oldAlloc = projectAllocation.findDataById(allocId);
 				if(oldAlloc != null) {
-					oldAlloc.setAllocatedPerce(alloc.getAllocatedPerce());
-					oldAlloc.setStartDate(alloc.getStartDate());
-					oldAlloc.setEndDate(alloc.getEndDate());
-					resourceAllocation.updateData(oldAlloc);
+					oldAlloc.setAllocatedPerce(allocationModel.getAllocatedPerce());
+					oldAlloc.setStartDate(allocationModel.getStartDate());
+					oldAlloc.setEndDate(allocationModel.getEndDate());
+					projectAllocation.updateData(oldAlloc);
 				}
 
 			}
 			else {
 				
-				resourceAllocation.save(alloc);
+				projectAllocation.save(allocationModel);
 
 			}
 		
@@ -290,7 +281,7 @@ public class ResourceAllocationController {
 	@PostMapping("/getListsByUserId")
 	public JSONObject getAllocationListBy(@RequestBody JSONObject requestData, HttpServletResponse httpstatus) {
 
-		List<Alloc> newList = new ArrayList<Alloc>();
+		List<AllocationModel> newList = new ArrayList<AllocationModel>();
 		JSONObject jsonData = new JSONObject();
 		JSONObject jsonDataRes = new JSONObject();
 		List<JSONObject> jsonArrayFiltered = new ArrayList<>();
@@ -313,10 +304,10 @@ public class ResourceAllocationController {
 			}
 
 			UserModel user = userService.getUserDetailsById(userId);
-			Boolean isExist = resourceAllocation.checkIsExist(userId);
+			Boolean isExist = projectAllocation.checkIsExist(userId);
 			if (isExist) {
-				List<Alloc> allocationList = resourceAllocation.getListByUser(userId);
-				for (Alloc item : allocationList) {
+				List<AllocationModel> allocationList = projectAllocation.getListByUser(userId);
+				for (AllocationModel item : allocationList) {
 					if ((item.getEndDate().compareTo(date1) > 0) && (item.getStartDate().compareTo(date2) < 0)) {
 						newList.add(item);
 					}
@@ -330,7 +321,7 @@ public class ResourceAllocationController {
 					jsonObject.put("userId", userId);
 					jsonObject.put("userName", user.getFirstName());
 					jsonObject.put("department", user.getdepartment());
-					for (Alloc item : newList) {
+					for (AllocationModel item : newList) {
 						JSONObject jsonObjectData = new JSONObject();
 						jsonObjectData.put("allocationId", item.getAllocId());
 						jsonObjectData.put("projectId", item.getproject().getProjectId());
@@ -414,12 +405,12 @@ public class ResourceAllocationController {
 
 			if (userList != null) {
 				for (UserModel user : userList) {
-					Boolean isExist = resourceAllocation.checkIsExist(user.getUserId());
-					List<Alloc> newList = new ArrayList<Alloc>();
+					Boolean isExist = projectAllocation.checkIsExist(user.getUserId());
+					List<AllocationModel> newList = new ArrayList<AllocationModel>();
 
 					if (isExist) {
-						List<Alloc> allocationList = resourceAllocation.getListByUser(user.getUserId());
-						for (Alloc item : allocationList) {
+						List<AllocationModel> allocationList = projectAllocation.getListByUser(user.getUserId());
+						for (AllocationModel item : allocationList) {
 							if ((item.getEndDate().compareTo(date1) > 0) && (item.getStartDate().compareTo(date2) < 0)) {
 								newList.add(item);
 							}
@@ -432,7 +423,7 @@ public class ResourceAllocationController {
 							jsonObject.put("userId", user.getUserId());
 							jsonObject.put("userName", user.getFirstName());
 							jsonObject.put("department", user.getdepartment());
-							for (Alloc item : newList) {
+							for (AllocationModel item : newList) {
 								JSONObject jsonObjectData = new JSONObject();
 								jsonObjectData.put("projectId", item.getproject().getProjectId());
 								jsonObjectData.put("allocationId", item.getAllocId());
@@ -580,7 +571,7 @@ public class ResourceAllocationController {
 //		List<Alloc> newUserList = new ArrayList<Alloc>();
 
 		// Checks whether the user has an entry on allocation table
-		Boolean isExist = resourceAllocation.checkIsExist(user.getUserId());
+		Boolean isExist = projectAllocation.checkIsExist(user.getUserId());
 		if (isExist) {
 
 			// find out the allocation lists of a user
@@ -594,7 +585,7 @@ public class ResourceAllocationController {
 //			}
 
 			// find out the allocation details based on the date passed as an argument
-			List<Alloc> newUserList = resourceAllocation.getUsersList(user.getUserId(),date1,date2);
+			List<AllocationModel> newUserList = projectAllocation.getUsersList(user.getUserId(),date1,date2);
 			
             
 
@@ -610,7 +601,7 @@ public class ResourceAllocationController {
 				jsonObject.put("lastName", user.getLastName());
 				jsonObject.put("role", user.getrole().getroleId());
 				jsonObject.put("department", user.getdepartment());
-				for (Alloc item : newUserList) {
+				for (AllocationModel item : newUserList) {
 					JSONObject jsonObjectData = new JSONObject();
 					jsonObjectData.put("allocationId", item.getAllocId());
 					jsonObjectData.put("projectId", item.getproject().getProjectId());

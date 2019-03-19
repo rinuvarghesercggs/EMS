@@ -1,5 +1,6 @@
 package com.EMS.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,5 +31,15 @@ public class UserServiceImpl implements UserService {
 		UserModel user = userRepository.getUser(userId, deptId);
 		return user;
 	}
+
+	@Override
+	public List<UserModel> getprojectOwner() {
+		List<UserModel> user_owner = new ArrayList<UserModel>();
+		user_owner = userRepository.getProjectOwners();
+
+		return user_owner;
+	}
+
+
 
 }

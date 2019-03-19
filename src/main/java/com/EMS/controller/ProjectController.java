@@ -251,7 +251,8 @@ public class ProjectController {
 			}
 
 			// Method invocation for getting users with role as owner
-			List<UserModel> users_owner = projectservice.getprojectOwner();
+			//List<UserModel> users_owner = projectservice.getprojectOwner();
+			List<UserModel> users_owner = userservice.getprojectOwner();
 
 			if (users_owner.isEmpty())
 				array.put("user_owner", userarray);
@@ -268,7 +269,8 @@ public class ProjectController {
 					UserModel user = itr.next();
 					object.put("firstName", user.getFirstName());
 					object.put("id", user.getUserId());
-
+					object.put("lastName", user.getLastName());
+					object.put("role", user.getrole().getroleId());
 					// adding records object to json array
 					userarray.add(object);
 				}
@@ -391,15 +393,20 @@ public class ProjectController {
 					UserModel userdata = null;
 					if (userid != null) {
 						// getting user details
-						userdata = projectservice.getuser(userid);
+						//userdata = projectservice.getuser(userid);
+						userdata = userservice.getUserDetailsById(userid);
 					}
+					
 					JSONObject userobj = new JSONObject();
 					// storing user values in jsonobject
 					if (userdata == null)
 						userobj = null;
 					else {
+						userobj.put("firstName", userdata.getFirstName());
+						userobj.put("lastName", userdata.getLastName());
+						userobj.put("role", userdata.getrole().getroleId());
 						userobj.put("userId", userdata.getUserId());
-						userobj.put("userName", userdata.getFirstName() + " " + userdata.getLastName());
+					
 						System.out.println("for sec4");
 					}
 					jsonobj.put("projectOwner", userobj);
@@ -489,7 +496,6 @@ public class ProjectController {
 				client=projectservice.getClientName(clientid);
 			project.setClientName(client);
 			project.setClientPointOfContact(requestdata.get("clientPointOfContact").toString());
-			System.out.println("client "+project.getClientPointOfContact()+project.getClientName().getClientName());
 			project.setProjectDetails(requestdata.get("projectDetails").toString());
 			project.setProjectName(requestdata.get("projectName").toString());
 			project.setisBillable(Integer.parseInt(requestdata.get("isBillable").toString()));
@@ -599,16 +605,20 @@ public class ProjectController {
 				responsedata.put("status", "success");
 				responsedata.put("code", httpstatus.getStatus());
 				responsedata.put("message", "Record Updated");
-				responsedata.put("payload", "");
+				
 			} else {
 				responsedata.put("status", "Failed");
 				responsedata.put("code", httpstatus.getStatus());
 				responsedata.put("message", "Updation failed due to invalid credientials");
-				responsedata.put("payload", "");
+				
 			}
 
 		} catch (Exception e) {
 			System.out.println("Exception : " + e);
+			responsedata.put("status", "Failed");
+			responsedata.put("code", httpstatus.getStatus());
+			responsedata.put("message", "Exception "+e);
+			
 		}
 
 		return responsedata;

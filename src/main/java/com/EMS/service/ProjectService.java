@@ -24,7 +24,7 @@ public interface ProjectService {
 		Long getProjectId(String projectName);
 
 //		method declaration for getting user details for project creation
-		List<UserModel> getprojectOwner();
+//		List<UserModel> getprojectOwner();
 
 
 	
@@ -52,7 +52,7 @@ public interface ProjectService {
 		//Get all details of all projects 
 		ArrayList<ProjectModel> getListofProjects();
 
-		UserModel getuser(Long userid);
+//		UserModel getuser(Long userid);
 		
 		//method for getting resource list
 		List<Resources> getResourceList(long projectId);
