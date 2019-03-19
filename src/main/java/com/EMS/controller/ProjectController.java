@@ -496,7 +496,6 @@ public class ProjectController {
 				client=projectservice.getClientName(clientid);
 			project.setClientName(client);
 			project.setClientPointOfContact(requestdata.get("clientPointOfContact").toString());
-			System.out.println("client "+project.getClientPointOfContact()+project.getClientName().getClientName());
 			project.setProjectDetails(requestdata.get("projectDetails").toString());
 			project.setProjectName(requestdata.get("projectName").toString());
 			project.setisBillable(Integer.parseInt(requestdata.get("isBillable").toString()));
@@ -606,16 +605,20 @@ public class ProjectController {
 				responsedata.put("status", "success");
 				responsedata.put("code", httpstatus.getStatus());
 				responsedata.put("message", "Record Updated");
-				responsedata.put("payload", "");
+				
 			} else {
 				responsedata.put("status", "Failed");
 				responsedata.put("code", httpstatus.getStatus());
 				responsedata.put("message", "Updation failed due to invalid credientials");
-				responsedata.put("payload", "");
+				
 			}
 
 		} catch (Exception e) {
 			System.out.println("Exception : " + e);
+			responsedata.put("status", "Failed");
+			responsedata.put("code", httpstatus.getStatus());
+			responsedata.put("message", "Exception "+e);
+			
 		}
 
 		return responsedata;
