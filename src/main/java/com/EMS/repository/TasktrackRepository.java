@@ -9,19 +9,20 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import com.EMS.model.AllocationModel;
 import com.EMS.model.ProjectModel;
 import com.EMS.model.Task;
 import com.EMS.model.Tasktrack;
 
 public interface TasktrackRepository extends JpaRepository<Tasktrack, Long> {
 
-	@Query("SELECT t FROM Tasktrack t WHERE t.date BETWEEN ?1 AND ?2 order by date(t.date) asc")
-	List<Tasktrack> getByDate(Date startDate,Date endDate, Long id);
+	@Query("SELECT t FROM Tasktrack t WHERE t.user.userId=?3 AND t.date BETWEEN ?1 AND ?2 order by date(t.date) asc")
+	List<Tasktrack> getByDate(Date startDate, Date endDate, Long id);
 
 	@Modifying
 	@Transactional
-	@Query("UPDATE Tasktrack t set t.description=?1,t.date=?3 where t.id=?2")
-	public void updateTaskById(String description, long id, Date date) throws Exception;
+	@Query("UPDATE Tasktrack t set t.description=?1,t.date=?3,t.hours=?4,t.project=?5,t.task=?6 where t.id=?2")
+	public void updateTaskById(String description, long id, Date date,double hours,ProjectModel projectModel,Task task) throws Exception;
 
 	@Modifying
 	@Transactional
@@ -36,12 +37,15 @@ public interface TasktrackRepository extends JpaRepository<Tasktrack, Long> {
 		}
 	}
 
-	@Query("SELECT p from ProjectModel p")
-	public List<ProjectModel> getProjectNames() throws Exception;
+	@Query("SELECT a from AllocationModel a where a.user.userId=?1")
+	public List<AllocationModel> getProjectNames(long uId) throws Exception;
 
 	@Query("SELECT c from Task c")
 	public List<Task> getTaskCategories() throws Exception;
 
+	@Query("from ProjectModel where projectId=?1")
+	public ProjectModel getProjectById(long id);
+	
 	@Query("SELECT tt from Tasktrack tt")
 	public List<Tasktrack> getTaskList() throws Exception;
 	/*
