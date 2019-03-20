@@ -173,7 +173,6 @@ public class ProjectModel {
 	}
 
 
-
 	public int getprojectType() {
 		return projectType;
 	}
