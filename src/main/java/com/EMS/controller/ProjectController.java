@@ -58,17 +58,17 @@ public class ProjectController {
 				contractModel = projectservice.getContract(contractId);
 			project.setProjectDetails(requestdata.get("projectDetails").toString());
 
-			Long clientid=Long.parseLong(requestdata.get("clientId").toString());
-			ClientModel client=new ClientModel();
-			if(clientid!=null)
-				client=projectservice.getClientName(clientid);
+			Long clientid = Long.parseLong(requestdata.get("clientId").toString());
+			ClientModel client = new ClientModel();
+			if (clientid != null)
+				client = projectservice.getClientName(clientid);
 			project.setClientName(client);
 			project.setClientPointOfContact(requestdata.get("clientPointOfContact").toString());
 
 			project.setProjectName(requestdata.get("projectName").toString());
 			project.setisBillable(Integer.parseInt(requestdata.get("isBillable").toString()));
 			project.setProjectCode(requestdata.get("projectCode").toString());
-			project.setprojectPhase(Integer.parseInt(requestdata.get("projectPhase").toString()));
+			// project.setprojectPhase(Integer.parseInt(requestdata.get("projectPhase").toString()));
 			project.setprojectType(Integer.parseInt(requestdata.get("projectType").toString()));
 			project.setprojectStatus(Integer.parseInt(requestdata.get("projectStatus").toString()));
 			project.setisPOC(Integer.parseInt(requestdata.get("isPOC").toString()));
@@ -108,8 +108,7 @@ public class ProjectController {
 					&& (!project.getProjectDetails().equals(" ")) && (project.getProjectName() != null)
 					&& (!project.getProjectName().equals(" ")) && (project.getProjectName().length() > 0)
 					&& (project.getProjectCode() != null)
-					&& (!project.getProjectCode().equals(" ") && (project.getProjectCode().length() > 0))
-					&& (project.getprojectPhase()) >= 1) {
+					&& (!project.getProjectCode().equals(" ")) && (project.getProjectCode().length() > 0)&& (!project.getClientName().equals(null))&&(!project.getContract().equals(null))&&(!project.getProjectOwner().equals(null))) {
 				// method invocation for checking duplicate entry for project name
 
 				int result = projectservice.duplicationchecking(project.getProjectName());
@@ -205,28 +204,27 @@ public class ProjectController {
 		JSONArray contract_array = new JSONArray();
 		JSONArray department_array = new JSONArray();
 		JSONArray project_array = new JSONArray();
-		JSONArray client_array=new JSONArray();
+		JSONArray client_array = new JSONArray();
 
 		// json object for storing records array
 		JSONObject array = new JSONObject();
 
 		try {
 
-			
-			//method invocation for getting client details
-			List<ClientModel> clientlist=projectservice.getClientList();
-			if(clientlist.isEmpty())
+			// method invocation for getting client details
+			List<ClientModel> clientlist = projectservice.getClientList();
+			if (clientlist.isEmpty())
 				array.put("clientDetails", client_array);
 			else {
-				for(ClientModel client:clientlist) {
-					JSONObject clientobj=new JSONObject();
+				for (ClientModel client : clientlist) {
+					JSONObject clientobj = new JSONObject();
 					clientobj.put("clientId", client.getClientId());
 					clientobj.put("clientName", client.getClientName());
 					client_array.add(clientobj);
 				}
 				array.put("clientDetails", client_array);
 			}
-			
+
 			// method invocation for getting project details
 			List<ProjectModel> projectlist = projectservice.getProjectList();
 			if (projectlist.isEmpty())
@@ -267,7 +265,7 @@ public class ProjectController {
 			}
 
 			// Method invocation for getting users with role as owner
-			//List<UserModel> users_owner = projectservice.getprojectOwner();
+			// List<UserModel> users_owner = projectservice.getprojectOwner();
 			List<UserModel> users_owner = userservice.getprojectOwner();
 
 			if (users_owner.isEmpty())
@@ -353,7 +351,14 @@ public class ProjectController {
 
 				// loop for getting projectwise details
 				for (ProjectModel obj : projectlist) {
-
+					
+					//Object declarations
+					ContractModel contract = null;
+					JSONObject contractobj = new JSONObject();
+					JSONObject clientobj = new JSONObject();
+					ClientModel clientmodel = null;
+					Long clientid=null;
+					
 					// storing projects details in json object
 					JSONObject jsonobj = new JSONObject();
 					jsonobj.put("projectId", obj.getProjectId());
@@ -364,21 +369,22 @@ public class ProjectController {
 					jsonobj.put("endDate", obj.getEndDate());
 					jsonobj.put("isBillable", obj.getisBillable());
 					jsonobj.put("projectCode", obj.getProjectCode());
-					jsonobj.put("projectPhase", obj.getprojectPhase());
+					// jsonobj.put("projectPhase", obj.getprojectPhase());
 					jsonobj.put("projectType", obj.getprojectType());
 					jsonobj.put("projectOwner", obj.getProjectOwner());
 					jsonobj.put("releasingDate", obj.getReleasingDate());
 					jsonobj.put("isPOC", obj.getisPOC());
 					jsonobj.put("projectStatus", obj.getprojectStatus());
-
-					Long clientid=obj.getClientName().getClientId();
-					ClientModel clientmodel=null;
-					if(clientid!=null)
-						clientmodel=projectservice.getClientName(clientid);
-					JSONObject clientobj=new JSONObject();
 					
-					if(clientmodel==null)
-						clientobj=null;
+					
+					if(obj.getClientName()!=null)
+						clientid = obj.getClientName().getClientId();
+					
+					if (clientid != null)
+						clientmodel = projectservice.getClientName(clientid);
+					
+					if (clientmodel == null)
+						clientobj = null;
 					else {
 						clientobj.put("clientId", clientmodel.getClientId());
 						clientobj.put("clientName", clientmodel.getClientName());
@@ -388,13 +394,12 @@ public class ProjectController {
 
 					// null checking contract type
 					Long contractId = obj.getContract().getContractTypeId();
-					ContractModel contract = null;
+					
 					if (contractId != null) {
 						// getting contract details
 						contract = projectservice.getContract(contractId);
 					}
 					// storing contract values in jsonobject
-					JSONObject contractobj = new JSONObject();
 					if (contract == null)
 						contractobj = null;
 					else {
@@ -409,10 +414,10 @@ public class ProjectController {
 					UserModel userdata = null;
 					if (userid != null) {
 						// getting user details
-						//userdata = projectservice.getuser(userid);
+						// userdata = projectservice.getuser(userid);
 						userdata = userservice.getUserDetailsById(userid);
 					}
-					
+
 					JSONObject userobj = new JSONObject();
 					// storing user values in jsonobject
 					if (userdata == null)
@@ -422,7 +427,7 @@ public class ProjectController {
 						userobj.put("lastName", userdata.getLastName());
 						userobj.put("role", userdata.getrole().getroleId());
 						userobj.put("userId", userdata.getUserId());
-					
+
 						System.out.println("for sec4");
 					}
 					jsonobj.put("projectOwner", userobj);
@@ -499,24 +504,24 @@ public class ProjectController {
 		try {
 
 			// setting values to object from json request
-			String projectid=requestdata.get("projectId").toString();
+			String projectid = requestdata.get("projectId").toString();
 			ProjectModel project = projectservice.findById(Long.parseLong(projectid));
 			String contract = requestdata.get("contractType").toString();
 			Long contractId = Long.parseLong(contract);
 			ContractModel contractModel = new ContractModel();
 			if ((contractId != null) && (!contractId.equals(" ")))
 				contractModel = projectservice.getContract(contractId);
-			Long clientid=Long.parseLong(requestdata.get("clientId").toString());
-			ClientModel client=new ClientModel();
-			if(clientid!=null)
-				client=projectservice.getClientName(clientid);
+			Long clientid = Long.parseLong(requestdata.get("clientId").toString());
+			ClientModel client = new ClientModel();
+			if (clientid != null)
+				client = projectservice.getClientName(clientid);
 			project.setClientName(client);
 			project.setClientPointOfContact(requestdata.get("clientPointOfContact").toString());
 			project.setProjectDetails(requestdata.get("projectDetails").toString());
 			project.setProjectName(requestdata.get("projectName").toString());
 			project.setisBillable(Integer.parseInt(requestdata.get("isBillable").toString()));
 			project.setProjectCode(requestdata.get("projectCode").toString());
-			project.setprojectPhase(Integer.parseInt(requestdata.get("projectPhase").toString()));
+			// project.setprojectPhase(Integer.parseInt(requestdata.get("projectPhase").toString()));
 			project.setprojectType(Integer.parseInt(requestdata.get("projectType").toString()));
 			project.setprojectStatus(Integer.parseInt(requestdata.get("projectStatus").toString()));
 			project.setisPOC(Integer.parseInt(requestdata.get("isPOC").toString()));
@@ -556,8 +561,7 @@ public class ProjectController {
 					&& (!project.getProjectDetails().equals(" ")) && (project.getProjectName() != null)
 					&& (!project.getProjectName().equals(" ")) && (project.getProjectName().length() > 0)
 					&& (project.getProjectCode() != null)
-					&& (!project.getProjectCode().equals(" ") && (project.getProjectCode().length() > 0))
-					&& (project.getprojectPhase()) >= 1) {
+					&& (!project.getProjectCode().equals(" ")) && (project.getProjectCode().length() > 0)) {
 				// method invocation for checking duplicate entry for project name
 
 				int result = projectservice.duplicationchecking(project.getProjectName());
@@ -594,7 +598,7 @@ public class ProjectController {
 
 						int count1 = jsonObject.getInt("resourceCount");
 						resou1.setresourceCount(count1);
-					
+
 						// checking resouce model values before storing
 						if ((resou1.getresourceCount() != 0) && (!resou1.getDepartment().equals(null))
 								&& (resou1.getProject() != null)) {
@@ -621,20 +625,20 @@ public class ProjectController {
 				responsedata.put("status", "success");
 				responsedata.put("code", httpstatus.getStatus());
 				responsedata.put("message", "Record Updated");
-				
+
 			} else {
 				responsedata.put("status", "Failed");
 				responsedata.put("code", httpstatus.getStatus());
 				responsedata.put("message", "Updation failed due to invalid credientials");
-				
+
 			}
 
 		} catch (Exception e) {
 			System.out.println("Exception : " + e);
 			responsedata.put("status", "Failed");
 			responsedata.put("code", httpstatus.getStatus());
-			responsedata.put("message", "Exception "+e);
-			
+			responsedata.put("message", "Exception " + e);
+
 		}
 
 		return responsedata;

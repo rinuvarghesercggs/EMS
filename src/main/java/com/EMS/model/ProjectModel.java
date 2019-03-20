@@ -172,7 +172,6 @@ public class ProjectModel {
 		this.projectCode = projectCode;
 	}
 
-
 	public int getprojectType() {
 		return projectType;
 	}
