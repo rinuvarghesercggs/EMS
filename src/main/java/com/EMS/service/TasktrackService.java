@@ -9,7 +9,7 @@ import com.EMS.model.Tasktrack;
 public interface TasktrackService {
 
 //	For Task track Model	
-	List<Tasktrack> getByDate(Date currentDate, Long uId);
+	List<Tasktrack> getByDate(Date startDate,Date toDate, Long uId);
 
 	Tasktrack saveTaskDetails(Tasktrack task);
 
