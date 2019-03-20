@@ -64,6 +64,9 @@ public interface ProjectService {
 		ClientModel getClientName(long parseLong);
 		//get resource details by ID
 		Resources getResourceById(long long1);
+		
+		//get client master details
+		List<ClientModel> getClientList();
 
 
 

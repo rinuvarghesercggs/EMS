@@ -171,6 +171,12 @@ public class ProjectServiceImpl implements ProjectService {
 		return resource;
 	}
 
+	@Override
+	public List<ClientModel> getClientList() {
+		List<ClientModel> list=client_repository.findAll();
+		return list;
+	}
+
 
 
 }
