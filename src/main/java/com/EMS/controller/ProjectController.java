@@ -72,7 +72,7 @@ public class ProjectController {
 			project.setprojectType(Integer.parseInt(requestdata.get("projectType").toString()));
 			project.setprojectStatus(Integer.parseInt(requestdata.get("projectStatus").toString()));
 			project.setisPOC(Integer.parseInt(requestdata.get("isPOC").toString()));
-
+			
 			Long userid = Long.parseLong(requestdata.get("projectOwner").toString());
 			UserModel pro_owner = new UserModel();
 
@@ -89,6 +89,7 @@ public class ProjectController {
 			project.setEstimatedHours(Integer.parseInt(requestdata.get("estimatedHours").toString()));
 			String startdate = requestdata.get("startDate").toString();
 			String enddate = requestdata.get("endDate").toString();
+			String releasingdate=requestdata.get("releasingDate").toString(); 
 
 			// Formatting the dates before storing
 			DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
@@ -102,6 +103,11 @@ public class ProjectController {
 				date2 = formatter.parse(enddate);
 				project.setEndDate(date2);
 
+			}
+			
+			if(!releasingdate.isEmpty()) {
+				releaseDate=formatter.parse(releasingdate);
+				project.setReleasingDate(releaseDate);
 			}
 
 			if ((project.getProjectDetails() != null) && (project.getProjectDetails().length() > 0)
@@ -375,7 +381,7 @@ public class ProjectController {
 					jsonobj.put("releasingDate", obj.getReleasingDate());
 					jsonobj.put("isPOC", obj.getisPOC());
 					jsonobj.put("projectStatus", obj.getprojectStatus());
-					
+					jsonobj.put("releasingDate", obj.getReleasingDate());
 					
 					if(obj.getClientName()!=null)
 						clientid = obj.getClientName().getClientId();
@@ -542,10 +548,12 @@ public class ProjectController {
 			project.setEstimatedHours(Integer.parseInt(requestdata.get("estimatedHours").toString()));
 			String startdate = requestdata.get("startDate").toString();
 			String enddate = requestdata.get("endDate").toString();
+			String releasingdate=requestdata.get("releasingDate").toString(); 
 
 			// Formatting the dates before storing
 			DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
 			Date date1 = null, date2 = null, releaseDate = null;
+			
 			if (!startdate.isEmpty()) {
 				date1 = formatter.parse(startdate);
 				project.setStartDate(date1);
@@ -556,6 +564,12 @@ public class ProjectController {
 				project.setEndDate(date2);
 
 			}
+			
+			if(!releasingdate.isEmpty()) {
+				releaseDate=formatter.parse(releasingdate);
+				project.setReleasingDate(releaseDate);
+			}
+			
 			if ((project.getProjectDetails() != null) && (project.getProjectDetails().length() > 0)
 					&& (!project.getProjectDetails().equals(" ")) && (project.getProjectName() != null)
 					&& (!project.getProjectName().equals(" ")) && (project.getProjectName().length() > 0)
