@@ -67,7 +67,7 @@ public class TasktrackController {
 		for (Tasktrack obj : list) {
 			if (taskDetails.get(sdf.format(obj.getDate())) != null) {
 				ObjectNode objectNode = objectMapper.createObjectNode();
-				objectNode.put("taskId",obj.getId());
+				objectNode.put("taskId", obj.getId());
 				objectNode.put("Project",
 						(obj.getProject().getProjectName() != null) ? obj.getProject().getProjectName() : null);
 				objectNode.put("taskType", (obj.getTask().getTaskName() != null) ? obj.getTask().getTaskName() : null);
@@ -79,17 +79,19 @@ public class TasktrackController {
 				taskDetails.set(sdf.format(obj.getDate()), arrayNode);
 			} else {
 				ArrayNode arrayNode = objectMapper.createArrayNode();
-				if(obj.getId()!=0) {
+				if (obj.getId() != 0) {
 					ObjectNode objectNode = objectMapper.createObjectNode();
-					objectNode.put("taskId",obj.getId());
-					objectNode.put("Project", (obj.getProject().getProjectName()!=null)?obj.getProject().getProjectName():null);
-					objectNode.put("taskType", (obj.getTask().getTaskName() != null) ? obj.getTask().getTaskName() : null);
+					objectNode.put("taskId", obj.getId());
+					objectNode.put("Project",
+							(obj.getProject().getProjectName() != null) ? obj.getProject().getProjectName() : null);
+					objectNode.put("taskType",
+							(obj.getTask().getTaskName() != null) ? obj.getTask().getTaskName() : null);
 					objectNode.put("taskSummary",
 							(obj.getDescription() != null) ? obj.getDescription() : obj.getDescription());
 					objectNode.put("hours", (obj.getHours() != null) ? obj.getHours() : null);
 					arrayNode.add(objectNode);
 				}
-				
+
 				taskDetails.set(sdf.format(obj.getDate()), arrayNode);
 			}
 		}
@@ -224,14 +226,27 @@ public class TasktrackController {
 	}
 
 	@PutMapping("/updateTaskById")
-	public JsonNode updateTaskById(@RequestBody Tasktrack task) {
+	public JsonNode updateTaskById(@RequestBody ObjectNode objectNode) {
 		ObjectNode node = objectMapper.createObjectNode();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		sdf.setTimeZone(TimeZone.getDefault());
+		System.out.println(TimeZone.getDefault().getDisplayName());
+		ProjectModel projectModel = tasktrackServiceImpl.getProjectModelById(objectNode.get("projectId").asLong());
+		Task taskCategory = tasktrackService.getTaskById(objectNode.get("taskTypeId").asLong());
+		Tasktrack tasktrack = new Tasktrack();
+		tasktrack.setTask(taskCategory);
+		tasktrack.setProject(projectModel);
+		tasktrack.setDescription(objectNode.get("taskSummary").asText());
+		tasktrack.setId(objectNode.get("id").asLong());
+		tasktrack.setHours(objectNode.get("hours").asDouble());
+		try {
+			tasktrack.setDate(sdf.parse(objectNode.get("date").asText()));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 
-		ProjectModel projectModel = tasktrackServiceImpl.getProjectModelById(task.getProjectId());
-		Task taskCategory = tasktrackService.getTaskById(task.getTaskTypeId());
-		task.setTask(taskCategory);
-		task.setProject(projectModel);
-		if (tasktrackServiceImpl.updateTaskById(task)) {
+		System.out.println(tasktrack.toString());
+		if (tasktrackServiceImpl.updateTaskById(tasktrack)) {
 			node.put("status", "success");
 		} else {
 			node.put("status", "failure");

@@ -5,9 +5,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,16 +34,20 @@ public class TasktrackServiceImpl implements TasktrackService {
 		LocalDate localStartDate = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		LocalDate localEndDate = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
-		for(LocalDate date = localStartDate;date.isBefore(localEndDate)|date.isEqual(localEndDate);date = date.plusDays(1)) {
+		for (LocalDate date = localStartDate; date.isBefore(localEndDate)
+				| date.isEqual(localEndDate); date = date.plusDays(1)) {
 			LocalDate locaDate = date;
-			Tasktrack obj = list.stream().filter(taskTrack->locaDate.equals(taskTrack.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate())).findAny().orElse(null);
-			if(obj==null) {
+			Tasktrack obj = list.stream()
+					.filter(taskTrack -> locaDate
+							.equals(taskTrack.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()))
+					.findAny().orElse(null);
+			if (obj == null) {
 				Tasktrack tasktrack = new Tasktrack();
 				tasktrack.setDate(Date.from(locaDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
 				list.add(tasktrack);
 			}
 		}
-		
+
 		Collections.sort(list);
 
 		return list;
@@ -80,7 +82,8 @@ public class TasktrackServiceImpl implements TasktrackService {
 	public boolean updateTaskById(Tasktrack task) {
 		boolean result = false;
 		try {
-			tasktrackRepository.updateTaskById(task.getDescription(), task.getId(), task.getDate(),task.getHours(),task.getProject(),task.getTask());
+			tasktrackRepository.updateTaskById(task.getDescription(), task.getId(), task.getDate(), task.getHours(),
+					task.getProject(), task.getTask());
 			result = true;
 		} catch (Exception exc) {
 			exc.printStackTrace();
@@ -129,7 +132,7 @@ public class TasktrackServiceImpl implements TasktrackService {
 			return new ArrayList<Task>();
 		}
 	}
-	
+
 	public ProjectModel getProjectModelById(long id) {
 		return tasktrackRepository.getProjectById(id);
 	}

@@ -121,6 +121,11 @@ public class Tasktrack implements Comparable<Tasktrack> {
 	}
 
 	@Override
+	public String toString() {
+		return this.project.getProjectId()+" | "+this.id+" | "+this.task.getId()+" | "+this.description+" | "+this.hours+" | "+this.date;
+	}
+	
+	@Override
 	public int hashCode() {
 		return this.getDate().hashCode();
 	}
