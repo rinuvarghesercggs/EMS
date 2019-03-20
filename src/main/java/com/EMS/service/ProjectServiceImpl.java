@@ -104,15 +104,7 @@ public class ProjectServiceImpl implements ProjectService {
 		ContractModel contract = contract_repository.getOne(id);
 		return contract;
 	}
-//
-//	@Override
-//	public List<UserModel> getprojectOwner() {
-//		List<UserModel> user_owner = new ArrayList<UserModel>();
-//		user_owner = user_repositary.getProjectOwners();
-//
-//		return user_owner;
-//
-//	}
+
 
 	@Override
 	public int duplicationchecking(String getprojectName) {
@@ -138,11 +130,7 @@ public class ProjectServiceImpl implements ProjectService {
 		return projectlist;
 	}
 
-//	@Override
-//	public UserModel getuser(Long userid) {
-//		UserModel user=user_repositary.getOne(userid);
-//		return user;
-//	}
+
 
 	@Override
 	public List<Resources> getResourceList(long projectId) {

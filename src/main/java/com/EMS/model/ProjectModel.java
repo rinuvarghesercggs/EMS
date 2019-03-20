@@ -28,7 +28,7 @@ public class ProjectModel {
 	private Date startDate,endDate,releasingDate;
 	private int isBillable;
 	private String projectCode;
-	private int projectPhase,projectType,isPOC,projectStatus;
+	private int projectType,isPOC,projectStatus;
 	private String clientPointOfContact;
 	
 	@ManyToOne
@@ -43,7 +43,7 @@ public class ProjectModel {
 	
 
 	public ProjectModel(long projectId, String projectName, String projectDetails, int estimatedHours, Date startDate,
-			Date endDate, int isBillable, String projectCode, int projectPhase, int projectType, UserModel projectOwner,
+			Date endDate, int isBillable, String projectCode,int projectType, UserModel projectOwner,
 			ContractModel contract) {
 		super();
 		this.projectId = projectId;
@@ -54,7 +54,6 @@ public class ProjectModel {
 		this.endDate = endDate;
 		this.isBillable = isBillable;
 		this.projectCode = projectCode;
-		this.projectPhase = projectPhase;
 		this.projectType = projectType;
 		this.projectOwner = projectOwner;
 		this.contract = contract;
@@ -173,13 +172,7 @@ public class ProjectModel {
 		this.projectCode = projectCode;
 	}
 
-	public int getprojectPhase() {
-		return projectPhase;
-	}
 
-	public void setprojectPhase(int projectPhase) {
-		this.projectPhase = projectPhase;
-	}
 
 	public int getprojectType() {
 		return projectType;
