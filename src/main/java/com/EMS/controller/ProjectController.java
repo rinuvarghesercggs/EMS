@@ -556,7 +556,6 @@ public class ProjectController {
 				project.setEndDate(date2);
 
 			}
-
 			if ((project.getProjectDetails() != null) && (project.getProjectDetails().length() > 0)
 					&& (!project.getProjectDetails().equals(" ")) && (project.getProjectName() != null)
 					&& (!project.getProjectName().equals(" ")) && (project.getProjectName().length() > 0)
