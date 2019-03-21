@@ -1,5 +1,7 @@
 package com.EMS.controller;
 
+import static org.hamcrest.CoreMatchers.nullValue;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -57,22 +59,24 @@ public class ProjectController {
 			if ((contractId != null) && (!contractId.equals(" ")))
 				contractModel = projectservice.getContract(contractId);
 			project.setProjectDetails(requestdata.get("projectDetails").toString());
+			project.setprojectType(Integer.parseInt(requestdata.get("projectType").toString()));
 
-			Long clientid = Long.parseLong(requestdata.get("clientId").toString());
-			ClientModel client = new ClientModel();
-			if (clientid != null)
-				client = projectservice.getClientName(clientid);
-			project.setClientName(client);
-			project.setClientPointOfContact(requestdata.get("clientPointOfContact").toString());
+			if (project.getprojectType() == 1) { // if the project type is external(value =1)
+				Long clientid = Long.parseLong(requestdata.get("clientId").toString());
+				ClientModel client = new ClientModel();
+				if (clientid != 0L) {
+					client = projectservice.getClientName(clientid);
+					project.setClientName(client);
+					project.setClientPointOfContact(requestdata.get("clientPointOfContact").toString());
+				}
+			}
 
 			project.setProjectName(requestdata.get("projectName").toString());
 			project.setisBillable(Integer.parseInt(requestdata.get("isBillable").toString()));
 			project.setProjectCode(requestdata.get("projectCode").toString());
 			// project.setprojectPhase(Integer.parseInt(requestdata.get("projectPhase").toString()));
-			project.setprojectType(Integer.parseInt(requestdata.get("projectType").toString()));
 			project.setprojectStatus(Integer.parseInt(requestdata.get("projectStatus").toString()));
 			project.setisPOC(Integer.parseInt(requestdata.get("isPOC").toString()));
-			
 			Long userid = Long.parseLong(requestdata.get("projectOwner").toString());
 			UserModel pro_owner = new UserModel();
 
@@ -89,8 +93,7 @@ public class ProjectController {
 			project.setEstimatedHours(Integer.parseInt(requestdata.get("estimatedHours").toString()));
 			String startdate = requestdata.get("startDate").toString();
 			String enddate = requestdata.get("endDate").toString();
-			String releasingdate=requestdata.get("releasingDate").toString(); 
-
+			String releasingdate = requestdata.get("releasingDate").toString();
 			// Formatting the dates before storing
 			DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
 			Date date1 = null, date2 = null, releaseDate = null;
@@ -104,22 +107,22 @@ public class ProjectController {
 				project.setEndDate(date2);
 
 			}
-			
-			if(!releasingdate.isEmpty()) {
-				releaseDate=formatter.parse(releasingdate);
+
+			if (!releasingdate.isEmpty()) {
+				releaseDate = formatter.parse(releasingdate);
 				project.setReleasingDate(releaseDate);
 			}
 
 			if ((project.getProjectDetails() != null) && (project.getProjectDetails().length() > 0)
 					&& (!project.getProjectDetails().equals(" ")) && (project.getProjectName() != null)
 					&& (!project.getProjectName().equals(" ")) && (project.getProjectName().length() > 0)
-					&& (project.getProjectCode() != null)
-					&& (!project.getProjectCode().equals(" ")) && (project.getProjectCode().length() > 0)&& (!project.getClientName().equals(null))&&(!project.getContract().equals(null))&&(!project.getProjectOwner().equals(null))) {
+					&& (project.getProjectCode() != null) && (!project.getProjectCode().equals(" "))
+					&& (project.getProjectCode().length() > 0)) {
 				// method invocation for checking duplicate entry for project name
-
 				int result = projectservice.duplicationchecking(project.getProjectName());
 				if (result == 0) {
 					// Method invocation for creating new project record
+
 					ProjectModel projectmodel = projectservice.save_project_record(project);
 					// method invocation for storing resouces of project created
 					String resource = requestdata.get("resources").toString();
@@ -357,50 +360,49 @@ public class ProjectController {
 
 				// loop for getting projectwise details
 				for (ProjectModel obj : projectlist) {
-					
-					//Object declarations
+
+					// Object declarations
 					ContractModel contract = null;
 					JSONObject contractobj = new JSONObject();
-					JSONObject clientobj = new JSONObject();
-					ClientModel clientmodel = null;
-					Long clientid=null;
-					
+//					JSONObject clientobj = new JSONObject();
+//					ClientModel clientmodel = null;
+//					Long clientid = null;
+
 					// storing projects details in json object
 					JSONObject jsonobj = new JSONObject();
 					jsonobj.put("projectId", obj.getProjectId());
 					jsonobj.put("projectName", obj.getProjectName());
-					jsonobj.put("projectDetails", obj.getProjectDetails());
-					jsonobj.put("estimatedHours", obj.getEstimatedHours());
-					jsonobj.put("startDate", obj.getStartDate());
-					jsonobj.put("endDate", obj.getEndDate());
 					jsonobj.put("isBillable", obj.getisBillable());
 					jsonobj.put("projectCode", obj.getProjectCode());
-					// jsonobj.put("projectPhase", obj.getprojectPhase());
 					jsonobj.put("projectType", obj.getprojectType());
-					jsonobj.put("projectOwner", obj.getProjectOwner());
-					jsonobj.put("releasingDate", obj.getReleasingDate());
-					jsonobj.put("isPOC", obj.getisPOC());
 					jsonobj.put("projectStatus", obj.getprojectStatus());
 					jsonobj.put("releasingDate", obj.getReleasingDate());
-					
-					if(obj.getClientName()!=null)
-						clientid = obj.getClientName().getClientId();
-					
-					if (clientid != null)
-						clientmodel = projectservice.getClientName(clientid);
-					
-					if (clientmodel == null)
-						clientobj = null;
-					else {
-						clientobj.put("clientId", clientmodel.getClientId());
-						clientobj.put("clientName", clientmodel.getClientName());
-					}
-					jsonobj.put("clientName", clientobj);
-					jsonobj.put("clientPointOfContact", obj.getClientPointOfContact());
+
+//					jsonobj.put("projectDetails", obj.getProjectDetails());
+//					jsonobj.put("estimatedHours", obj.getEstimatedHours());
+//					jsonobj.put("startDate", obj.getStartDate());
+//					jsonobj.put("endDate", obj.getEndDate());
+//					jsonobj.put("isPOC", obj.getisPOC());
+//					
+//
+//					if (obj.getClientName() != null)
+//						clientid = obj.getClientName().getClientId();
+//
+//					if (clientid != null)
+//						clientmodel = projectservice.getClientName(clientid);
+//
+//					if (clientmodel == null)
+//						clientobj = null;
+//					else {
+//						clientobj.put("clientId", clientmodel.getClientId());
+//						clientobj.put("clientName", clientmodel.getClientName());
+//					}
+//					jsonobj.put("clientName", clientobj);
+//					jsonobj.put("clientPointOfContact", obj.getClientPointOfContact());
 
 					// null checking contract type
 					Long contractId = obj.getContract().getContractTypeId();
-					
+
 					if (contractId != null) {
 						// getting contract details
 						contract = projectservice.getContract(contractId);
@@ -434,55 +436,54 @@ public class ProjectController {
 						userobj.put("role", userdata.getrole().getroleId());
 						userobj.put("userId", userdata.getUserId());
 
-						System.out.println("for sec4");
 					}
 					jsonobj.put("projectOwner", userobj);
 
 					// getting list of resources based on project
-					List<Resources> resourcelist = projectservice.getResourceList(obj.getProjectId());
-					JSONArray resourceArray = new JSONArray();
-
-					if (resourcelist.isEmpty())
-						jsonobj.put("resource", resourceArray);
-					else {
-
-						// resoucewise looping to store data in Json array
-						for (Resources resource : resourcelist) {
-
-							// setting resouce details in json object
-							JSONObject resourceobj = new JSONObject();
-							resourceobj.put("resourceId", resource.getResourceId());
-							resourceobj.put("resourceCount", resource.getresourceCount());
-
-							// getting projectdetails by ID
-							ProjectModel project = projectservice.getProjectId(resource.getProject().getProjectId());
-							JSONObject projectobj = new JSONObject();
-							if (project == null)
-								projectobj = null;
-							else {
-								projectobj.put("projectId", project.getProjectId());
-								projectobj.put("projectName", project.getProjectName());
-							}
-							resourceobj.put("project", projectobj);
-
-							// getting departmentdetails by ID
-							DepartmentModel department = projectservice
-									.getDepartmentDetails(resource.getDepartment().getDepartmentId());
-							JSONObject departmentobj = new JSONObject();
-
-							if (department == null)
-								departmentobj = null;
-							else {
-								departmentobj.put("departmentId", department.getDepartmentId());
-								departmentobj.put("departmentName", department.getdepartmentName());
-							}
-
-							resourceobj.put("department", departmentobj);
-							// setting resouce json object on resource json array
-							resourceArray.add(resourceobj);
-						}
-						jsonobj.put("resource", resourceArray);
-					}
+//					List<Resources> resourcelist = projectservice.getResourceList(obj.getProjectId());
+//					JSONArray resourceArray = new JSONArray();
+//
+//					if (resourcelist.isEmpty())
+//						jsonobj.put("resource", resourceArray);
+//					else {
+//
+//						// resoucewise looping to store data in Json array
+//						for (Resources resource : resourcelist) {
+//
+//							// setting resouce details in json object
+//							JSONObject resourceobj = new JSONObject();
+//							resourceobj.put("resourceId", resource.getResourceId());
+//							resourceobj.put("resourceCount", resource.getresourceCount());
+//
+//							// getting projectdetails by ID
+//							ProjectModel project = projectservice.getProjectId(resource.getProject().getProjectId());
+//							JSONObject projectobj = new JSONObject();
+//							if (project == null)
+//								projectobj = null;
+//							else {
+//								projectobj.put("projectId", project.getProjectId());
+//								projectobj.put("projectName", project.getProjectName());
+//							}
+//							resourceobj.put("project", projectobj);
+//
+//							// getting departmentdetails by ID
+//							DepartmentModel department = projectservice
+//									.getDepartmentDetails(resource.getDepartment().getDepartmentId());
+//							JSONObject departmentobj = new JSONObject();
+//
+//							if (department == null)
+//								departmentobj = null;
+//							else {
+//								departmentobj.put("departmentId", department.getDepartmentId());
+//								departmentobj.put("departmentName", department.getdepartmentName());
+//							}
+//
+//							resourceobj.put("department", departmentobj);
+//							// setting resouce json object on resource json array
+//							resourceArray.add(resourceobj);
+//						}
+//						jsonobj.put("resource", resourceArray);
+//					}
 
 					projectArray.add(jsonobj);
 				}
@@ -517,18 +518,22 @@ public class ProjectController {
 			ContractModel contractModel = new ContractModel();
 			if ((contractId != null) && (!contractId.equals(" ")))
 				contractModel = projectservice.getContract(contractId);
-			Long clientid = Long.parseLong(requestdata.get("clientId").toString());
-			ClientModel client = new ClientModel();
-			if (clientid != null)
-				client = projectservice.getClientName(clientid);
-			project.setClientName(client);
-			project.setClientPointOfContact(requestdata.get("clientPointOfContact").toString());
+			project.setprojectType(Integer.parseInt(requestdata.get("projectType").toString()));
+
+			if (project.getprojectType() == 1) { // if the project type is external(value =1)
+				Long clientid = Long.parseLong(requestdata.get("clientId").toString());
+				ClientModel client = new ClientModel();
+				if (clientid != 0L) {
+					client = projectservice.getClientName(clientid);
+					project.setClientName(client);
+					project.setClientPointOfContact(requestdata.get("clientPointOfContact").toString());
+				}
+			}
+
 			project.setProjectDetails(requestdata.get("projectDetails").toString());
 			project.setProjectName(requestdata.get("projectName").toString());
 			project.setisBillable(Integer.parseInt(requestdata.get("isBillable").toString()));
 			project.setProjectCode(requestdata.get("projectCode").toString());
-			// project.setprojectPhase(Integer.parseInt(requestdata.get("projectPhase").toString()));
-			project.setprojectType(Integer.parseInt(requestdata.get("projectType").toString()));
 			project.setprojectStatus(Integer.parseInt(requestdata.get("projectStatus").toString()));
 			project.setisPOC(Integer.parseInt(requestdata.get("isPOC").toString()));
 
@@ -548,12 +553,12 @@ public class ProjectController {
 			project.setEstimatedHours(Integer.parseInt(requestdata.get("estimatedHours").toString()));
 			String startdate = requestdata.get("startDate").toString();
 			String enddate = requestdata.get("endDate").toString();
-			String releasingdate=requestdata.get("releasingDate").toString(); 
+			String releasingdate = requestdata.get("releasingDate").toString();
 
 			// Formatting the dates before storing
 			DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
 			Date date1 = null, date2 = null, releaseDate = null;
-			
+
 			if (!startdate.isEmpty()) {
 				date1 = formatter.parse(startdate);
 				project.setStartDate(date1);
@@ -564,17 +569,17 @@ public class ProjectController {
 				project.setEndDate(date2);
 
 			}
-			
-			if(!releasingdate.isEmpty()) {
-				releaseDate=formatter.parse(releasingdate);
+
+			if (!releasingdate.isEmpty()) {
+				releaseDate = formatter.parse(releasingdate);
 				project.setReleasingDate(releaseDate);
 			}
-			
+
 			if ((project.getProjectDetails() != null) && (project.getProjectDetails().length() > 0)
 					&& (!project.getProjectDetails().equals(" ")) && (project.getProjectName() != null)
 					&& (!project.getProjectName().equals(" ")) && (project.getProjectName().length() > 0)
-					&& (project.getProjectCode() != null)
-					&& (!project.getProjectCode().equals(" ")) && (project.getProjectCode().length() > 0)) {
+					&& (project.getProjectCode() != null) && (!project.getProjectCode().equals(" "))
+					&& (project.getProjectCode().length() > 0)) {
 				// method invocation for checking duplicate entry for project name
 
 				int result = projectservice.duplicationchecking(project.getProjectName());
@@ -656,6 +661,161 @@ public class ProjectController {
 
 		return responsedata;
 
+	}
+
+	@PutMapping(value = "/getProjectDetails/{projectId}")
+	public JSONObject getProjectDetails(@PathVariable("projectId") Long projectId,
+			HttpServletResponse servletresponse) {
+		JSONObject responseData = new JSONObject();
+		JSONObject response = new JSONObject();
+		// Object declarations
+		ContractModel contract = null;
+		JSONObject contractobj = new JSONObject();
+		JSONObject clientobj = new JSONObject();
+		ClientModel clientmodel = null;
+		Long clientid = null;
+
+		try {
+
+			// method for getting project details by passing ID
+			ProjectModel project = projectservice.getProjectId(projectId);
+
+			if (project.equals(null)) {
+				response.put("status", "success");
+				response.put("payload", responseData);
+				response.put("message", "Data Not Available");
+				response.put("code", servletresponse.getStatus());
+			} else {
+
+				// assigning values on json object
+				responseData.put("projectId", project.getProjectId());
+				responseData.put("projectName", project.getProjectName());
+				responseData.put("projectDetails", project.getProjectDetails());
+				responseData.put("estimatedHours", project.getEstimatedHours());
+				responseData.put("startDate", project.getStartDate());
+				responseData.put("endDate", project.getEndDate());
+				responseData.put("isBillable", project.getisBillable());
+				responseData.put("projectCode", project.getProjectCode());
+				responseData.put("projectType", project.getprojectType());
+				responseData.put("projectOwner", project.getProjectOwner());
+				responseData.put("releasingDate", project.getReleasingDate());
+				responseData.put("isPOC", project.getisPOC());
+				responseData.put("projectStatus", project.getprojectStatus());
+				responseData.put("releasingDate", project.getReleasingDate());
+
+				if (project.getClientName() != null)
+					clientid = project.getClientName().getClientId();
+
+				if (clientid != null)
+					clientmodel = projectservice.getClientName(clientid);
+
+				if (clientmodel == null)
+					clientobj = null;
+				else {
+					clientobj.put("clientId", clientmodel.getClientId());
+					clientobj.put("clientName", clientmodel.getClientName());
+				}
+				responseData.put("clientName", clientobj);
+				responseData.put("clientPointOfContact", project.getClientPointOfContact());
+
+				// null checking contract type
+				Long contractId = project.getContract().getContractTypeId();
+
+				if (contractId != null) {
+					// getting contract details
+					contract = projectservice.getContract(contractId);
+				}
+				// storing contract values in jsonobject
+				if (contract == null)
+					contractobj = null;
+				else {
+
+					contractobj.put("contractTypeId", contract.getContractTypeId());
+					contractobj.put("contractTypeName", contract.getContractTypeName());
+				}
+				responseData.put("contractType", contractobj);
+
+				// null checking user ID
+				Long userid = project.getProjectOwner().getUserId();
+				UserModel userdata = null;
+				if (userid != null) {
+					// getting user details
+					// userdata = projectservice.getuser(userid);
+					userdata = userservice.getUserDetailsById(userid);
+				}
+
+				JSONObject userobj = new JSONObject();
+				// storing user values in jsonobject
+				if (userdata == null)
+					userobj = null;
+				else {
+					userobj.put("firstName", userdata.getFirstName());
+					userobj.put("lastName", userdata.getLastName());
+					userobj.put("role", userdata.getrole().getroleId());
+					userobj.put("userId", userdata.getUserId());
+
+				}
+				responseData.put("projectOwner", userobj);
+				// getting list of resources based on project
+				List<Resources> resourcelist = projectservice.getResourceList(project.getProjectId());
+				JSONArray resourceArray = new JSONArray();
+
+				if (resourcelist.isEmpty())
+					responseData.put("resource", resourceArray);
+				else {
+
+					// resoucewise looping to store data in Json array
+					for (Resources resource : resourcelist) {
+
+						// setting resouce details in json object
+						JSONObject resourceobj = new JSONObject();
+						resourceobj.put("resourceId", resource.getResourceId());
+						resourceobj.put("resourceCount", resource.getresourceCount());
+
+						// getting projectdetails by ID
+
+						JSONObject projectobj = new JSONObject();
+						if (project == null)
+							projectobj = null;
+						else {
+							projectobj.put("projectId", project.getProjectId());
+							projectobj.put("projectName", project.getProjectName());
+						}
+						resourceobj.put("project", projectobj);
+
+						// getting departmentdetails by ID
+						DepartmentModel department = projectservice
+								.getDepartmentDetails(resource.getDepartment().getDepartmentId());
+						JSONObject departmentobj = new JSONObject();
+
+						if (department == null)
+							departmentobj = null;
+						else {
+							departmentobj.put("departmentId", department.getDepartmentId());
+							departmentobj.put("departmentName", department.getdepartmentName());
+						}
+
+						resourceobj.put("department", departmentobj);
+						// setting resouce json object on resource json array
+						resourceArray.add(resourceobj);
+					}
+					responseData.put("resource", resourceArray);
+				}
+
+				response.put("status", "success");
+				response.put("payload", responseData);
+				response.put("message", "success");
+				response.put("code", servletresponse.getStatus());
+			}
+
+		} catch (Exception e) {
+			System.out.println("Exception " + e);
+			response.put("status", "Failed");
+			response.put("message", "Exception " + e);
+			response.put("code", servletresponse.getStatus());
+		}
+
+		return response;
 	}
 
 }

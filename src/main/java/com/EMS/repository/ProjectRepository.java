@@ -25,6 +25,4 @@ public interface ProjectRepository extends JpaRepository<ProjectModel, Long> {
 
 	
 
-	
-
 }

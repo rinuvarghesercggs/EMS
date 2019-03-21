@@ -141,9 +141,17 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Override
 	public ProjectModel getProjectId(long projectId) {
-
-		ProjectModel project=project_repositary.getOne(projectId);
-		return project;
+		
+		ProjectModel project=new ProjectModel();
+		try {
+			project=project_repositary.getOne(projectId);
+			return project;
+		}catch(Exception e) {
+			System.out.println("Exception "+e);
+			return project;
+		}
+		
+		
 	}
 
 	@Override
@@ -164,6 +172,8 @@ public class ProjectServiceImpl implements ProjectService {
 		List<ClientModel> list=client_repository.findAll();
 		return list;
 	}
+
+
 
 
 
