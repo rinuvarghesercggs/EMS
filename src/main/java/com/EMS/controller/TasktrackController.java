@@ -228,29 +228,29 @@ public class TasktrackController {
 	@PutMapping("/updateTaskById")
 	public JsonNode updateTaskById(@RequestBody ObjectNode objectNode) {
 		ObjectNode node = objectMapper.createObjectNode();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		sdf.setTimeZone(TimeZone.getDefault());
-		System.out.println(TimeZone.getDefault().getDisplayName());
-		ProjectModel projectModel = tasktrackServiceImpl.getProjectModelById(objectNode.get("projectId").asLong());
-		Task taskCategory = tasktrackService.getTaskById(objectNode.get("taskTypeId").asLong());
-		Tasktrack tasktrack = new Tasktrack();
-		tasktrack.setTask(taskCategory);
-		tasktrack.setProject(projectModel);
-		tasktrack.setDescription(objectNode.get("taskSummary").asText());
-		tasktrack.setId(objectNode.get("id").asLong());
-		tasktrack.setHours(objectNode.get("hours").asDouble());
 		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			sdf.setTimeZone(TimeZone.getDefault());
+			ProjectModel projectModel = tasktrackServiceImpl.getProjectModelById(objectNode.get("projectId").asLong());
+			Task taskCategory = tasktrackService.getTaskById(objectNode.get("taskTypeId").asLong());
+			Tasktrack tasktrack = new Tasktrack();
+			tasktrack.setTask(taskCategory);
+			tasktrack.setProject(projectModel);
+			tasktrack.setDescription(objectNode.get("taskSummary").asText());
+			tasktrack.setId(objectNode.get("taskId").asLong());
+			tasktrack.setHours(objectNode.get("hours").asDouble());
 			tasktrack.setDate(sdf.parse(objectNode.get("date").asText()));
-		} catch (ParseException e) {
+			if (tasktrackServiceImpl.updateTaskById(tasktrack)) {
+				node.put("status", "success");
+			} else {
+				node.put("status", "failure");
+			}
+		} catch (Exception e) {
 			e.printStackTrace();
+			node.put("status","failure");
 		}
 
-		System.out.println(tasktrack.toString());
-		if (tasktrackServiceImpl.updateTaskById(tasktrack)) {
-			node.put("status", "success");
-		} else {
-			node.put("status", "failure");
-		}
+		
 
 		return node;
 	}
