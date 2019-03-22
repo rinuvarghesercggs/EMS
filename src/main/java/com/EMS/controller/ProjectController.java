@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -94,7 +96,10 @@ public class ProjectController {
 			String enddate = requestdata.get("endDate").toString();
 			String releasingdate = requestdata.get("releasingDate").toString();
 			// Formatting the dates before storing
-			DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
+			TimeZone zone = TimeZone.getTimeZone("MST");
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+			formatter.setTimeZone(zone);
+	
 			Date date1 = null, date2 = null, releaseDate = null;
 			if (!startdate.isEmpty()) {
 				date1 = formatter.parse(startdate);
@@ -555,7 +560,9 @@ public class ProjectController {
 			String releasingdate = requestdata.get("releasingDate").toString();
 
 			// Formatting the dates before storing
-			DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
+			TimeZone zone = TimeZone.getTimeZone("MST");
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+			formatter.setTimeZone(zone);
 			Date date1 = null, date2 = null, releaseDate = null;
 
 			if (!startdate.isEmpty()) {
