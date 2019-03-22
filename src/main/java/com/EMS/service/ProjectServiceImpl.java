@@ -145,6 +145,7 @@ public class ProjectServiceImpl implements ProjectService {
 		ProjectModel project=new ProjectModel();
 		try {
 			project=project_repositary.getOne(projectId);
+			System.out.println("project "+project.getProjectId());
 			return project;
 		}catch(Exception e) {
 			System.out.println("Exception "+e);

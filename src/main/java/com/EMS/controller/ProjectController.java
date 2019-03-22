@@ -375,7 +375,7 @@ public class ProjectController {
 					jsonobj.put("projectCode", obj.getProjectCode());
 					jsonobj.put("projectType", obj.getprojectType());
 					jsonobj.put("projectStatus", obj.getprojectStatus());
-					jsonobj.put("releasingDate", obj.getReleasingDate());
+					jsonobj.put("releasingDate", obj.getReleasingDate().toString());
 
 //					jsonobj.put("projectDetails", obj.getProjectDetails());
 //					jsonobj.put("estimatedHours", obj.getEstimatedHours());
@@ -691,17 +691,16 @@ public class ProjectController {
 				responseData.put("projectName", project.getProjectName());
 				responseData.put("projectDetails", project.getProjectDetails());
 				responseData.put("estimatedHours", project.getEstimatedHours());
-				responseData.put("startDate", project.getStartDate());
-				responseData.put("endDate", project.getEndDate());
+				responseData.put("startDate", project.getStartDate().toString());
+				responseData.put("endDate", project.getEndDate().toString());
 				responseData.put("isBillable", project.getisBillable());
 				responseData.put("projectCode", project.getProjectCode());
 				responseData.put("projectType", project.getprojectType());
 				responseData.put("projectOwner", project.getProjectOwner());
-				responseData.put("releasingDate", project.getReleasingDate());
+				responseData.put("releasingDate", project.getReleasingDate().toString());
 				responseData.put("isPOC", project.getisPOC());
 				responseData.put("projectStatus", project.getprojectStatus());
-				responseData.put("releasingDate", project.getReleasingDate());
-
+				System.out.println("pro"+project.getProjectId());
 				if (project.getClientName() != null)
 					clientid = project.getClientName().getClientId();
 
@@ -716,7 +715,7 @@ public class ProjectController {
 				}
 				responseData.put("clientName", clientobj);
 				responseData.put("clientPointOfContact", project.getClientPointOfContact());
-
+				System.out.println("sec 1");
 				// null checking contract type
 				Long contractId = project.getContract().getContractTypeId();
 
@@ -733,7 +732,7 @@ public class ProjectController {
 					contractobj.put("contractTypeName", contract.getContractTypeName());
 				}
 				responseData.put("contractType", contractobj);
-
+				System.out.println("sec 2");
 				// null checking user ID
 				Long userid = project.getProjectOwner().getUserId();
 				UserModel userdata = null;
@@ -754,6 +753,7 @@ public class ProjectController {
 					userobj.put("userId", userdata.getUserId());
 
 				}
+				System.out.println("sec 4");
 				responseData.put("projectOwner", userobj);
 				// getting list of resources based on project
 				List<Resources> resourcelist = projectservice.getResourceList(project.getProjectId());
