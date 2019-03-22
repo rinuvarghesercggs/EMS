@@ -61,7 +61,7 @@ public class ProjectController {
 			project.setProjectDetails(requestdata.get("projectDetails").toString());
 			project.setprojectType(Integer.parseInt(requestdata.get("projectType").toString()));
 
-			if (project.getprojectType() == 0) { // if the project type is external(value =1)
+			if (project.getprojectType() == 0) { // if the project type is external(value =0)
 				Long clientid = Long.parseLong(requestdata.get("clientId").toString());
 				ClientModel client = new ClientModel();
 				if (clientid != 0L) {
@@ -70,7 +70,6 @@ public class ProjectController {
 					project.setClientPointOfContact(requestdata.get("clientPointOfContact").toString());
 				}
 			}
-System.out.println("sec1");
 			project.setProjectName(requestdata.get("projectName").toString());
 			project.setisBillable(Integer.parseInt(requestdata.get("isBillable").toString()));
 			project.setProjectCode(requestdata.get("projectCode").toString());
@@ -79,7 +78,7 @@ System.out.println("sec1");
 			project.setisPOC(Integer.parseInt(requestdata.get("isPOC").toString()));
 			Long userid = Long.parseLong(requestdata.get("projectOwner").toString());
 			UserModel pro_owner = new UserModel();
-			System.out.println("sec1");
+		
 			// method for getting userdetails using ID
 			if (userid != null)
 				pro_owner = userservice.getUserDetailsById(userid);
@@ -89,14 +88,11 @@ System.out.println("sec1");
 
 			if (contractModel != null)
 				project.setContract(contractModel);
-			System.out.println("sec1");
+			
 			project.setEstimatedHours(Integer.parseInt(requestdata.get("estimatedHours").toString()));
 			String startdate = requestdata.get("startDate").toString();
-			System.out.println("sec1"+startdate);
 			String enddate = requestdata.get("endDate").toString();
-			System.out.println("sec1"+enddate);
 			String releasingdate = requestdata.get("releasingDate").toString();
-			System.out.println("sec1"+releasingdate);
 			// Formatting the dates before storing
 			DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
 			Date date1 = null, date2 = null, releaseDate = null;
@@ -115,7 +111,6 @@ System.out.println("sec1");
 				releaseDate = formatter.parse(releasingdate);
 				project.setReleasingDate(releaseDate);
 			}
-			System.out.println("sec1");
 
 			if ((project.getProjectDetails() != null) && (project.getProjectDetails().length() > 0)
 					&& (!project.getProjectDetails().equals(" ")) && (project.getProjectName() != null)
@@ -524,7 +519,7 @@ System.out.println("sec1");
 				contractModel = projectservice.getContract(contractId);
 			project.setprojectType(Integer.parseInt(requestdata.get("projectType").toString()));
 
-			if (project.getprojectType() == 0) { // if the project type is external(value =1)
+			if (project.getprojectType() == 0) { // if the project type is external(value =0)
 				Long clientid = Long.parseLong(requestdata.get("clientId").toString());
 				ClientModel client = new ClientModel();
 				if (clientid != 0L) {
@@ -587,7 +582,7 @@ System.out.println("sec1");
 				// method invocation for checking duplicate entry for project name
 
 				int result = projectservice.duplicationchecking(project.getProjectName());
-				if (result == 0) {
+				if (result <=1) {
 					// Method invocation for creating new project record
 					ProjectModel projectmodel = projectservice.save_project_record(project);
 
