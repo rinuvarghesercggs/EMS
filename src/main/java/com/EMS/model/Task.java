@@ -19,6 +19,9 @@ public class Task {
 	@Column(name = "taskName")
 	private String taskName;
 
+	@Column(name = "taskCategory")
+	private String taskCategory;
+	
 	public long getId() {
 		return id;
 	}
@@ -34,8 +37,13 @@ public class Task {
 	public void setTaskName(String taskName) {
 		this.taskName = taskName;
 	}
-	
-	
-	
+
+	public String getTaskCategory() {
+		return taskCategory;
+	}
+
+	public void setTaskCategory(String taskCategory) {
+		this.taskCategory = taskCategory;
+	}
 
 }

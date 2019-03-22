@@ -40,8 +40,8 @@ public interface TasktrackRepository extends JpaRepository<Tasktrack, Long> {
 	@Query("SELECT a from AllocationModel a where a.user.userId=?1")
 	public List<AllocationModel> getProjectNames(long uId) throws Exception;
 
-	@Query("SELECT c from Task c")
-	public List<Task> getTaskCategories() throws Exception;
+	@Query("SELECT utc.taskCategory.task from UserTaskCategory utc where utc.user.userId = ?1")
+	public List<Task> getTaskCategories(long uId) throws Exception;
 
 	@Query("from ProjectModel where projectId=?1")
 	public ProjectModel getProjectById(long id);

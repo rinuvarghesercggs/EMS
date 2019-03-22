@@ -124,9 +124,9 @@ public class TasktrackServiceImpl implements TasktrackService {
 		}
 	}
 
-	public List<Task> getTaskCategory() {
+	public List<Task> getTaskCategory(long uId) {
 		try {
-			return tasktrackRepository.getTaskCategories();
+			return tasktrackRepository.getTaskCategories(uId);
 		} catch (Exception exc) {
 			exc.printStackTrace();
 			return new ArrayList<Task>();

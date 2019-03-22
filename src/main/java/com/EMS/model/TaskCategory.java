@@ -1,10 +1,15 @@
 package com.EMS.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cascade;
@@ -24,6 +29,10 @@ public class TaskCategory {
 
 	@Column(name = "`description`")
 	private String description;
+	
+	@OneToMany
+	@JoinColumn(name = "taskCategory")
+	private List<Task> task = new ArrayList<Task>();
 
 	public long getId() {
 		return id;
@@ -47,6 +56,14 @@ public class TaskCategory {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public List<Task> getTask() {
+		return task;
+	}
+
+	public void setTask(List<Task> task) {
+		this.task = task;
 	}
 
 }

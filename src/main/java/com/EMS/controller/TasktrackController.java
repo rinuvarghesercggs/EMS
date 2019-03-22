@@ -305,9 +305,9 @@ public class TasktrackController {
 	}
 
 	@GetMapping("/getTaskCategories")
-	public JsonNode getTaskCategories() {
+	public JsonNode getTaskCategories(@RequestParam("uId") int uId) {
 		ArrayNode taskTypes = objectMapper.createArrayNode();
-		for (Task category : tasktrackServiceImpl.getTaskCategory()) {
+		for (Task category : tasktrackServiceImpl.getTaskCategory(uId)) {
 			ObjectNode node = objectMapper.createObjectNode();
 			node.put("id", category.getId());
 			node.put("value", category.getTaskName());
