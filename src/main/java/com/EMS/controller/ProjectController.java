@@ -80,7 +80,7 @@ public class ProjectController {
 			project.setisPOC(Integer.parseInt(requestdata.get("isPOC").toString()));
 			Long userid = Long.parseLong(requestdata.get("projectOwner").toString());
 			UserModel pro_owner = new UserModel();
-		
+
 			// method for getting userdetails using ID
 			if (userid != null)
 				pro_owner = userservice.getUserDetailsById(userid);
@@ -90,7 +90,7 @@ public class ProjectController {
 
 			if (contractModel != null)
 				project.setContract(contractModel);
-			
+
 			project.setEstimatedHours(Integer.parseInt(requestdata.get("estimatedHours").toString()));
 			String startdate = requestdata.get("startDate").toString();
 			String enddate = requestdata.get("endDate").toString();
@@ -99,7 +99,7 @@ public class ProjectController {
 			TimeZone zone = TimeZone.getTimeZone("MST");
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 			formatter.setTimeZone(zone);
-	
+
 			Date date1 = null, date2 = null, releaseDate = null;
 			if (!startdate.isEmpty()) {
 				date1 = formatter.parse(startdate);
@@ -589,7 +589,7 @@ public class ProjectController {
 				// method invocation for checking duplicate entry for project name
 
 				int result = projectservice.duplicationchecking(project.getProjectName());
-				if (result <=1) {
+				if (result <= 1) {
 					// Method invocation for creating new project record
 					ProjectModel projectmodel = projectservice.save_project_record(project);
 
@@ -707,7 +707,7 @@ public class ProjectController {
 				responseData.put("releasingDate", project.getReleasingDate().toString());
 				responseData.put("isPOC", project.getisPOC());
 				responseData.put("projectStatus", project.getprojectStatus());
-				System.out.println("pro"+project.getProjectId());
+				System.out.println("pro" + project.getProjectId());
 				if (project.getClientName() != null)
 					clientid = project.getClientName().getClientId();
 
