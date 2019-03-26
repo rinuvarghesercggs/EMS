@@ -11,12 +11,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "leave")
+@Table(name = "user_leave")
 public class LeaveModel {
-
 	
 	@Id
-	@Column(name = "leaveId")
+	@Column(name = "userLeaveId")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long leaveId;
 	
@@ -26,9 +25,9 @@ public class LeaveModel {
 	private Double CL;
 	private Double SL;
 	private Double compensatoryOff;
+	private Double LOP;
 	private Date leaveFrom;
 	private Date leaveTo;
-	
 	
 	
 	public long getLeaveId() {
@@ -52,7 +51,7 @@ public class LeaveModel {
 	}
 	
 	public void setCL(Double cL) {
-		this.CL = cL;
+		CL = cL;
 	}
 	
 	public Double getSL() {
@@ -60,7 +59,7 @@ public class LeaveModel {
 	}
 	
 	public void setSL(Double sL) {
-		this.SL = sL;
+		SL = sL;
 	}
 	
 	public Double getCompensatoryOff() {
@@ -69,6 +68,14 @@ public class LeaveModel {
 	
 	public void setCompensatoryOff(Double compensatoryOff) {
 		this.compensatoryOff = compensatoryOff;
+	}
+	
+	public Double getLOP() {
+		return LOP;
+	}
+	
+	public void setLOP(Double lOP) {
+		this.LOP = lOP;
 	}
 	
 	public Date getLeaveFrom() {
