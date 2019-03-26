@@ -2,7 +2,6 @@ package com.EMS.model;
 
 
 import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -43,6 +42,7 @@ public class UserModel {
 	private Date joiningDate;
 	private String bloodGroup;
 	private String qualification;
+	private String employmentType;
 
 //	private Address address;
 	
@@ -158,13 +158,21 @@ public class UserModel {
 	public void setContact(long contact) {
 		this.contact = contact;
 	}
+	
+	public String getEmploymentType() {
+		return employmentType;
+	}
+
+	public void setEmploymentType(String employmentType) {
+		this.employmentType = employmentType;
+	}
 
 	public UserModel() {
 
 	}
 
 	public UserModel(long userId, String firstName, String lastName, String userName, String password, String email,
-			long contact,long empId) {
+			long contact,long empId, String employmentType) {
 		super();
 		this.userId = userId;
 		this.firstName = firstName;
@@ -174,6 +182,9 @@ public class UserModel {
 		this.password = password;
 		this.email = email;
 		this.contact = contact;
+		this.employmentType = employmentType;
 	}
+
+	
 
 }

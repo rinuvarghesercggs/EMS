@@ -504,9 +504,10 @@ public class ProjectAllocationController {
 
 			String uId = requestData.get("userId").toString();
 			String dId = requestData.get("deptId").toString();
+			System.out.println("uid : "+ uId);
 
-			// Obtain the user list only if the department id is available and user id is not available
-			if ((dId != null || dId != "") && (uId == null || uId == "")) {
+			// Obtain the user list only if the department id is available and user id is not available or if the user id is 0.
+			if ((dId != null || dId != "") && (uId == null || uId == "" || uId.equals("0"))) {
 				Long deptId = Long.parseLong(dId);
 
 				// Obtain the user list based on the department
@@ -523,7 +524,7 @@ public class ProjectAllocationController {
 			}
 
 			// Obtain the user list only if the user id is available and department id is not available
-			else if ((uId != null && uId != "") && (dId == null || dId == "")) {
+			else if ((uId != null && uId != "" && !uId.equals("0")) && (dId == null || dId == "") ) {
 
 				Long userId = Long.parseLong(uId);
 				UserModel user = userService.getUserDetailsById(userId);
@@ -538,7 +539,7 @@ public class ProjectAllocationController {
 
 			// Obtain the user list if both department id and user id are available
 
-			else if ((uId != null && uId != "") && (dId != null || dId != "")) {
+			else if ((uId != null && uId != "" && !uId.equals("0")) && (dId != null || dId != "")) {
 				Long deptId = Long.parseLong(dId);
 				Long userId = Long.parseLong(uId);
 
@@ -549,6 +550,7 @@ public class ProjectAllocationController {
 					getUserAllocationList(user, date1, date2, jsonArrayFiltered);
 				}
 			}
+			
 
 			jsonData.put("user", jsonArrayFiltered);
 			jsonDataRes.put("data", jsonData);
@@ -610,10 +612,6 @@ public class ProjectAllocationController {
 					jsonObjectData.put("allocationStartDate", item.getStartDate().toString());
 					jsonObjectData.put("allocationEndDate", item.getEndDate().toString());
 					freeAlloc-= item.getAllocatedPerce();
-					
-					
-					
-					
 					jsonArray.add(jsonObjectData);
 
 				}
