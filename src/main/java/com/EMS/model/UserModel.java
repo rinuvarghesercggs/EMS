@@ -43,9 +43,20 @@ public class UserModel {
 	private String bloodGroup;
 	private String qualification;
 	private String employmentType;
+	private int gender;
+	
+	
 
 //	private Address address;
 	
+
+	public int getGender() {
+		return gender;
+	}
+
+	public void setGender(int gender) {
+		this.gender = gender;
+	}
 
 	public Date getDob() {
 		return dob;

@@ -102,6 +102,8 @@ public class LoginController {
 			user.setContact(Long.parseLong(requestdata.get("contact").toString()));
 			user.setUserName(requestdata.get("userName").toString());
 			user.setBloodGroup(requestdata.get("bloodGroup").toString());
+			user.setGender(Integer.parseInt(requestdata.get("gender").toString()));
+			user.setEmploymentType(requestdata.get("employment").toString());
 
 			Long departId=Long.parseLong(requestdata.get("department").toString());
 			DepartmentModel department=null;
