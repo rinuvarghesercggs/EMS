@@ -30,6 +30,7 @@ public class AllocationModel {
 //	private Double freeAllocation;
 	private Date startDate;
 	private Date endDate;
+	private Boolean isBillable;
 
 	
 	
@@ -37,6 +38,7 @@ public class AllocationModel {
 	public long getAllocId() {
 		return allocId;
 	}
+	
 	public void setAllocId(long allocId) {
 		this.allocId = allocId;
 	}
@@ -44,47 +46,49 @@ public class AllocationModel {
 	public ProjectModel getproject() {
 		return project;
 	}
+	
 	public void setproject(ProjectModel project) {
 		this.project = project;
 	}
 	
-	
 	public Double getAllocatedPerce() {
 		return allocatedPerce;
 	}
+	
 	public Date getStartDate() {
 		return startDate;
 	}
 	
-	
 	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
 	}
+	
 	public Date getEndDate() {
 		return endDate;
 	}
 	
-	
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
+	
 	public void setAllocatedPerce(Double allocatedPerce) {
 		this.allocatedPerce = allocatedPerce;
-	}
-	
-	
-	/*
-	 * public Double getFreeAllocation() { return freeAllocation; } public void
-	 * setFreeAllocation(Double freeAllocation) { this.freeAllocation =
-	 * freeAllocation; }
-	 */
-	
+	}	
 	
 	public UserModel getuser() {
 		return user;
 	}
+	
 	public void setuser(UserModel user) {
 		this.user = user;
+	}
+	
+	public Boolean getIsBillable() {
+		return isBillable;
+	}
+	
+	public void setIsBillable(Boolean isBillable) {
+		this.isBillable = isBillable;
 	}
 	
 	

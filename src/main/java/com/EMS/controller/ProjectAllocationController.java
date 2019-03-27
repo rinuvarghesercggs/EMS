@@ -119,24 +119,17 @@ public class ProjectAllocationController {
 		try {
 			String id = requestdata.get("id").toString();
 			String allocatedVal = requestdata.get("allocatedPerce").toString();
-//			String date1 = requestdata.get("startDate").toString();
-//			String date2 = requestdata.get("endDate").toString();
-//			TimeZone zone = TimeZone.getTimeZone("MST");
-//			SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-//			outputFormat.setTimeZone(zone);
-//			Date startDate = null, endDate = null;
-//			if (!date1.isEmpty()) {
-//				startDate = outputFormat.parse(date1);
-//			}
-//			if (!date2.isEmpty()) {
-//				endDate = outputFormat.parse(date2);
-//			}
+			String isBillable = requestdata.get("isBillable").toString();
+
+			System.out.println("isBillable : " + isBillable);
+
 			//Method invocation for getting allocation details
 			AllocationModel allocationModel = projectAllocation.findDataById(Long.parseLong(id));
 			if (allocationModel != null) {
 				allocationModel.setAllocatedPerce(Double.parseDouble(allocatedVal));
-//				alloc.setStartDate(startDate);
-//				alloc.setEndDate(endDate);
+                allocationModel.setIsBillable(Boolean.parseBoolean(isBillable));
+    			System.out.println("isBillable : " + Boolean.parseBoolean(isBillable));
+
                 //Updating allcation details
 				projectAllocation.updateData(allocationModel);
 				jsonDataRes.put("status", "success");
@@ -184,6 +177,7 @@ public class ProjectAllocationController {
 							jsonObject.put("role", item.getuser().getrole().getroleId());
 						}
 						jsonObject.put("allocatedVal", item.getAllocatedPerce());
+						jsonObject.put("isBillable", item.getIsBillable());
 
 						if (item.getuser() != null && item.getuser().getdepartment() != null)
 							jsonObject.put("departmentName", item.getuser().getdepartment().getdepartmentName());
@@ -235,6 +229,7 @@ public class ProjectAllocationController {
 			String val = requestdata.get("allocatedPerce").toString();
 			String projectId = requestdata.get("projectId").toString();
 			String userId = requestdata.get("userId").toString();
+			String isBillable = requestdata.get("isBillable").toString();
 			
 			ProjectModel project = projectService.findById(Long.parseLong(projectId));
 			UserModel user = userService.getUserDetailsById(Long.parseLong(userId));
@@ -244,7 +239,9 @@ public class ProjectAllocationController {
 			allocationModel.setStartDate(startDate);
 			allocationModel.setEndDate(endDate);
 			allocationModel.setAllocatedPerce(Double.parseDouble(val));
+			allocationModel.setIsBillable(Boolean.parseBoolean(isBillable));
 
+			// Check whether the user is already allocated to the project.If so update the previous entry of the user otherwise new entry is created.
 			Long allocId = projectAllocation.getAllocId(Long.parseLong(projectId),Long.parseLong(userId));
 			if(allocId != null) {
 				AllocationModel oldAlloc = projectAllocation.findDataById(allocId);
@@ -252,6 +249,7 @@ public class ProjectAllocationController {
 					oldAlloc.setAllocatedPerce(allocationModel.getAllocatedPerce());
 					oldAlloc.setStartDate(allocationModel.getStartDate());
 					oldAlloc.setEndDate(allocationModel.getEndDate());
+					oldAlloc.setIsBillable(allocationModel.getIsBillable());
 					projectAllocation.updateData(oldAlloc);
 				}
 
@@ -611,6 +609,7 @@ public class ProjectAllocationController {
 					jsonObjectData.put("allocationPercentage", item.getAllocatedPerce());
 					jsonObjectData.put("allocationStartDate", item.getStartDate().toString());
 					jsonObjectData.put("allocationEndDate", item.getEndDate().toString());
+					jsonObjectData.put("isBillable", item.getIsBillable());
 					freeAlloc-= item.getAllocatedPerce();
 					jsonArray.add(jsonObjectData);
 
