@@ -22,7 +22,7 @@ public class ProjectModel {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Cascade(CascadeType.ALL)
 	private long projectId;
-	
+	private int projectCategory;
 	private String projectName,projectDetails;
 	private int estimatedHours;
 	private Date startDate,endDate,releasingDate;
@@ -62,6 +62,14 @@ public class ProjectModel {
 	
 	
 	
+	public int getProjectCategory() {
+		return projectCategory;
+	}
+
+	public void setProjectCategory(int projectCategory) {
+		this.projectCategory = projectCategory;
+	}
+
 	public String getClientPointOfContact() {
 		return clientPointOfContact;
 	}
@@ -77,9 +85,6 @@ public class ProjectModel {
 	public void setClientName(ClientModel clientName) {
 		this.clientName = clientName;
 	}
-
-
-
 
 	public Date getReleasingDate() {
 		return releasingDate;

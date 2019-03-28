@@ -72,6 +72,7 @@ public class ProjectController {
 					project.setClientPointOfContact(requestdata.get("clientPointOfContact").toString());
 				}
 			}
+			project.setProjectCategory(Integer.parseInt(requestdata.get("projectCategory").toString()));
 			project.setProjectName(requestdata.get("projectName").toString());
 			project.setisBillable(Integer.parseInt(requestdata.get("isBillable").toString()));
 			project.setProjectCode(requestdata.get("projectCode").toString());
@@ -131,53 +132,70 @@ public class ProjectController {
 					// method invocation for storing resouces of project created
 					String resource = requestdata.get("resources").toString();
 
-					// json array for storing json array from request data
-					org.json.JSONArray jsonArray = new org.json.JSONArray(resource);
+					if (projectmodel == null) {
+						responseflag = 1;
+						responsedata.put("message", "Project record creation failed");
+					} else {
 
-					// get totalCount of all jsonObjects
-					int count = jsonArray.length();
-					for (int i = 0; i < count; i++) {
+						// json array for storing json array from request data
+						org.json.JSONArray jsonArray = new org.json.JSONArray(resource);
 
-						org.json.JSONObject jsonObject = jsonArray.getJSONObject(i); // get jsonObject @ i position
-
-						// setting values on resource object
-						Resources resou1 = new Resources();
-						if (projectmodel != null)
-							resou1.setProject(projectmodel);
-
-						Long depart = jsonObject.getLong("department");
-						DepartmentModel department = new DepartmentModel();
-
-						// method for getting department details
-						if (depart != null)
-							department = projectservice.getDepartmentDetails(depart);
-
-						if (department != null)
-							resou1.setDepartment(department);
-
-						int count1 = jsonObject.getInt("resourceCount");
-						resou1.setresourceCount(count1);
-
-						// checking resouce model values before storing
-						if ((resou1.getresourceCount() != 0) && (!resou1.getDepartment().equals(null))
-								&& (resou1.getProject() != null)) {
-
-							// method invocation for storing resource details
-							Resources resourcevalue = projectservice.addprojectresouce(resou1);
-
-							if (resourcevalue == null)
-								responseflag = 1;
-						} else
+						if (jsonArray.equals(null)) {
 							responseflag = 1;
+							responsedata.put("message", "Failed due to project record with empty resource array");
+						} else {
+							// get totalCount of all jsonObjects
+							int count = jsonArray.length();
+							for (int i = 0; i < count; i++) {
+
+								org.json.JSONObject jsonObject = jsonArray.getJSONObject(i); // get jsonObject @ i
+																								// position
+
+								// setting values on resource object
+								Resources resou1 = new Resources();
+								if (projectmodel != null)
+									resou1.setProject(projectmodel);
+
+								Long depart = jsonObject.getLong("department");
+								DepartmentModel department = new DepartmentModel();
+
+								// method for getting department details
+								if (depart != null)
+									department = projectservice.getDepartmentDetails(depart);
+
+								if (department != null)
+									resou1.setDepartment(department);
+
+								int count1 = jsonObject.getInt("resourceCount");
+								resou1.setresourceCount(count1);
+
+								// checking resouce model values before storing
+								if ((resou1.getresourceCount() != 0) && (!resou1.getDepartment().equals(null))
+										&& (resou1.getProject() != null)) {
+
+									// method invocation for storing resource details
+									Resources resourcevalue = projectservice.addprojectresouce(resou1);
+
+									if (resourcevalue == null)
+										responseflag = 1;
+								} else {
+									responseflag = 1;
+									responsedata.put("message",
+											"Insertion failed due to invalid credientials for project resource");
+								}
+							}
+						}
 
 					}
 
 				} else {
 					responseflag = 1;
+					responsedata.put("message", "Insertion failed due to duplicate entry");
 				}
 
 			} else {
 				responseflag = 1;
+				responsedata.put("message", "Insertion failed due to invalid credientials for project");
 			}
 
 			// setting values on response json
@@ -189,7 +207,6 @@ public class ProjectController {
 			} else {
 				responsedata.put("status", "Failed");
 				responsedata.put("code", httpstatus.getStatus());
-				responsedata.put("message", "Insertion failed due to invalid credientials");
 				responsedata.put("payload", "");
 			}
 
@@ -534,6 +551,7 @@ public class ProjectController {
 				}
 			}
 
+			project.setProjectCategory(Integer.parseInt(requestdata.get("projectCategory").toString()));
 			project.setProjectDetails(requestdata.get("projectDetails").toString());
 			project.setProjectName(requestdata.get("projectName").toString());
 			project.setisBillable(Integer.parseInt(requestdata.get("isBillable").toString()));
@@ -701,6 +719,7 @@ public class ProjectController {
 				responseData.put("startDate", project.getStartDate().toString());
 				responseData.put("endDate", project.getEndDate().toString());
 				responseData.put("isBillable", project.getisBillable());
+				responseData.put("projectCategory", project.getProjectCategory());
 				responseData.put("projectCode", project.getProjectCode());
 				responseData.put("projectType", project.getprojectType());
 				responseData.put("projectOwner", project.getProjectOwner());
