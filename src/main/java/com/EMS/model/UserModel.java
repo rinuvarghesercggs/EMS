@@ -44,11 +44,23 @@ public class UserModel {
 	private String qualification;
 	private String employmentType;
 	private int gender;
+	private boolean active;
+	
+	
+	
 	
 	
 
 //	private Address address;
 	
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
 
 	public int getGender() {
 		return gender;
