@@ -29,7 +29,7 @@ public class UserTechnology {
 	
 	@ManyToOne
 	private Technology technology;
-	private double experience;
+	private Double experience;
 	
 	public UserTechnology() {
 		
@@ -57,10 +57,10 @@ public class UserTechnology {
 	public void setTechnology(Technology technology) {
 		this.technology = technology;
 	}
-	public double getExperience() {
+	public Double getExperience() {
 		return experience;
 	}
-	public void setExperience(double experience) {
+	public void setExperience(Double experience) {
 		this.experience = experience;
 	}
 	

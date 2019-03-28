@@ -106,24 +106,23 @@ public class LoginController {
 			user.setEmploymentType(requestdata.get("employment").toString());
 			user.setActive(Boolean.parseBoolean(requestdata.get("active").toString()));
 
-			Long departId=Long.parseLong(requestdata.get("department").toString());
-			DepartmentModel department=null;
-			if(departId!=null)
+			Long departId = Long.parseLong(requestdata.get("department").toString());
+			DepartmentModel department = null;
+			if (departId != null)
 				department = login_service.getDepartment(departId);
-			
-			
+
 			if (department != null)
 				user.setdepartment(department);
 			else
 				responseflag = 1;
-			
-			Long roleId=Long.parseLong(requestdata.get("role").toString());
-			RoleModel role=null;
-			if(roleId!=null)
+
+			Long roleId = Long.parseLong(requestdata.get("role").toString());
+			RoleModel role = null;
+			if (roleId != null)
 				role = login_service.getRole(roleId);
-			if (role != null) 
+			if (role != null)
 				user.setrole(role);
-			
+
 			String dob = requestdata.get("dob").toString();
 			String joindate = requestdata.get("joiningDate").toString();
 
@@ -148,38 +147,52 @@ public class LoginController {
 			user.setQualification(requestdata.get("qualification").toString());
 			UserModel userdata = login_service.adduser(user);
 
-			if (userdata == null)
+			if (userdata == null) {
 				responseflag = 1;
+				responsedata.put("message", "user record insertion failed");
+			}else {
 
-			// adding details in user technology
-			String usertechnology = requestdata.get("userTechnology").toString();
-			org.json.JSONArray usertecharray = new org.json.JSONArray(usertechnology);
-			int length = usertecharray.length();
-			for (int i = 0; i < length; i++) {
-				
-				org.json.JSONObject technologyobj = usertecharray.getJSONObject(i);
-				// checking for technology using ID
-
-				Long techId = Long.parseLong(technologyobj.get("technology").toString());
-				Technology technology = null;
-
-				if (techId != null)
-					technology = login_service.findtechnology(techId);
-				else
+				// adding details in user technology
+				String usertechnology = requestdata.get("userTechnology").toString();
+				org.json.JSONArray usertecharray = new org.json.JSONArray(usertechnology);
+				int length = usertecharray.length();
+				System.out.println("technology array length : " + length);
+				if (usertecharray.equals(null)) {
 					responseflag = 1;
+					responsedata.put("message", "Technology insertion failed");
+				}else {
+					for (int i = 0; i < length; i++) {
 
-				UserTechnology usertech = new UserTechnology();
-				if (technology != null) 
-					usertech.setTechnology(technology);
-				 else
-					responseflag = 1;
-				
+						org.json.JSONObject technologyobj = usertecharray.getJSONObject(i);
+						// checking for technology using ID
 
-				usertech.setUser(userdata);
-				usertech.setExperience(Double.parseDouble(technologyobj.get("experience").toString()));
-				UserTechnology userTechnology = login_service.addusertechnology(usertech);
-				if (userTechnology == null)
-					responseflag = 1;
+						Long techId = Long.parseLong(technologyobj.get("technology").toString());
+						Technology technology = null;
+
+						if (techId != null)
+							technology = login_service.findtechnology(techId);
+						else {
+							responseflag = 1;
+							responsedata.put("message", "Technology not found");
+						}
+						UserTechnology usertech = new UserTechnology();
+						if (technology != null)
+							usertech.setTechnology(technology);
+						else {
+							responseflag = 1;
+							responsedata.put("message", "user technology insertion failed due to missing technology value");
+						}
+						usertech.setUser(userdata);
+						System.out.println(
+								"experience : " + Double.parseDouble(technologyobj.get("experience").toString()));
+						usertech.setExperience(Double.parseDouble(technologyobj.get("experience").toString()));
+						UserTechnology userTechnology = login_service.addusertechnology(usertech);
+//						if (userTechnology == null) 
+//							responseflag = 1;
+					}
+
+				}
+
 			}
 
 			if (responseflag == 0) {
@@ -188,7 +201,6 @@ public class LoginController {
 				responsedata.put("code", servletresponse.getStatus());
 			} else {
 				responsedata.put("status", "Failed");
-				responsedata.put("message", "record insertion failed");
 				responsedata.put("code", servletresponse.getStatus());
 			}
 
