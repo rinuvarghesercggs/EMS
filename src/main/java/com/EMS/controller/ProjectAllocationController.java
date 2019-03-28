@@ -169,8 +169,10 @@ public class ProjectAllocationController {
 					if (item.getEndDate().compareTo(currentDate) > 0) {
 						JSONObject jsonObject = new JSONObject();
 						jsonObject.put("allocationId", item.getAllocId());
-						if (item.getproject() != null)
+						if (item.getproject() != null) {
 							jsonObject.put("projectTitle", item.getproject().getProjectName());
+							jsonObject.put("projectCategory", item.getproject().getProjectCategory());
+						}
 						if (item.getuser() != null) {
 							jsonObject.put("firstName", item.getuser().getFirstName());
 							jsonObject.put("lastName", item.getuser().getLastName());
@@ -606,6 +608,7 @@ public class ProjectAllocationController {
 					jsonObjectData.put("allocationId", item.getAllocId());
 					jsonObjectData.put("projectId", item.getproject().getProjectId());
 					jsonObjectData.put("projectName", item.getproject().getProjectName());
+					jsonObjectData.put("projectCategory", item.getproject().getProjectCategory());
 					jsonObjectData.put("allocationPercentage", item.getAllocatedPerce());
 					jsonObjectData.put("allocationStartDate", item.getStartDate().toString());
 					jsonObjectData.put("allocationEndDate", item.getEndDate().toString());
