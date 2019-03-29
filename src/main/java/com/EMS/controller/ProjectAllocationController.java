@@ -619,6 +619,7 @@ public class ProjectAllocationController {
 			if (newUserList != null && newUserList.size() > 0) {
 				JSONObject jsonObject = new JSONObject();
 				int freeAlloc = 100;
+				int totAlloc = 0;
 				List<JSONObject> jsonArray = new ArrayList<>();
 				jsonObject.put("userId", user.getUserId());
 				jsonObject.put("firstName", user.getFirstName());
@@ -635,10 +636,13 @@ public class ProjectAllocationController {
 					jsonObjectData.put("allocationStartDate", item.getStartDate().toString());
 					jsonObjectData.put("allocationEndDate", item.getEndDate().toString());
 					jsonObjectData.put("isBillable", item.getIsBillable());
+					totAlloc += item.getAllocatedPerce();
 					freeAlloc-= item.getAllocatedPerce();
 					jsonArray.add(jsonObjectData);
 
 				}
+				System.out.println("total : "+totAlloc);
+				jsonObject.put("totalAllocation", totAlloc);
 				jsonObject.put("freeAlloc", freeAlloc);
 				jsonObject.put("project", jsonArray);
 				jsonArrayFiltered.add(jsonObject);
@@ -652,6 +656,7 @@ public class ProjectAllocationController {
 				jsonObject.put("department", user.getdepartment());
 				jsonObject.put("project", jsonArray);
 				jsonObject.put("freeAlloc", 100);
+				jsonObject.put("totalAllocation", 0);
 				jsonArrayFiltered.add(jsonObject);
 			}
 
@@ -668,6 +673,7 @@ public class ProjectAllocationController {
 			jsonObject.put("department", user.getdepartment());
 			jsonObject.put("project", jsonArray);
 			jsonObject.put("freeAlloc", 100);
+			jsonObject.put("totalAllocation", 0);
 			jsonArrayFiltered.add(jsonObject);
 		}
 		
