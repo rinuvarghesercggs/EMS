@@ -144,80 +144,6 @@ public class TasktrackController {
 		return returnData;
 	}
 
-	@PostMapping(value = "/addTask", headers = "Accept=application/json")
-	public JSONObject updateData(@RequestBody JSONObject taskData) throws JSONException, ParseException {
-		JSONObject jsonDataRes = new JSONObject();
-		String taskListString = taskData.get("addTask").toString();
-		String userId = taskData.get("uId").toString();
-		Long uId = Long.parseLong(userId);
-		org.json.JSONArray newArray = new org.json.JSONArray(taskListString);
-		try {
-			if (!userId.isEmpty() && uId != null) {
-				UserModel user = userService.getUserDetailsById(uId);
-				int count = newArray.length();
-				Boolean saveFail = false;
-				for (int i = 0; i < count; i++) {
-					org.json.JSONObject jsonObject = newArray.getJSONObject(i);
-					Tasktrack newTask = new Tasktrack();
-					Long projectId = jsonObject.getLong("projectId");
-					if (projectId != null) {
-						ProjectModel proj = projectService.findById(projectId);
-						if (proj != null) {
-							newTask.setProject(proj);
-						}
-					} else {
-						saveFail = true;
-					}
-					if (!jsonObject.getString("date").isEmpty()) {
-						String dateNew = jsonObject.getString("date");
-						TimeZone zone = TimeZone.getTimeZone("MST");
-						SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-						outputFormat.setTimeZone(zone);
-						Date date1 = outputFormat.parse(dateNew);
-						if (date1 != null) {
-							newTask.setDate(date1);
-						} else {
-							saveFail = true;
-						}
-					} else {
-						saveFail = true;
-					}
-
-					Long taskId = jsonObject.getLong("taskTypeId");
-					if (taskId != null) {
-						Task task = tasktrackService.getTaskById(taskId);
-						newTask.setTask(task);
-					} else {
-						saveFail = true;
-					}
-					if (!jsonObject.getString("taskSummary").isEmpty()) {
-						newTask.setDescription(jsonObject.getString("taskSummary"));
-					} else {
-						saveFail = true;
-					}
-					newTask.setHours(jsonObject.getDouble("hours"));
-					newTask.setUser(user);
-					if (!saveFail) {
-						tasktrackService.saveTaskDetails(newTask);
-					}
-				}
-				if (!saveFail) {
-					jsonDataRes.put("status", "success");
-				} else {
-					jsonDataRes.put("status", "failure");
-				}
-			} else {
-				jsonDataRes.put("status", "failure");
-			}
-		} catch (Exception e) {
-			jsonDataRes.put("status", "failure");
-			System.out.println("Exception " + e);
-		}
-
-		return jsonDataRes;
-
-	}
-
 	@GetMapping("/getTaskList")
 	public ArrayNode getTasks() {
 		ArrayNode node = objectMapper.convertValue(tasktrackService.getTasks(), ArrayNode.class);
@@ -247,10 +173,8 @@ public class TasktrackController {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			node.put("status","failure");
+			node.put("status", "failure");
 		}
-
-		
 
 		return node;
 	}
@@ -320,5 +244,91 @@ public class TasktrackController {
 		node.put("status", "success");
 		node.set("data", dataNode);
 		return node;
+	}
+
+	@PostMapping(value = "/addTask", headers = "Accept=application/json")
+	public JsonNode updateData(@RequestBody JsonNode taskData) throws JSONException, ParseException {
+		ObjectNode dataResponse = objectMapper.createObjectNode();
+
+		try {
+			Long uId = taskData.get("uId").asLong();
+//			Boolean saveFailure = false;
+			int responseflag=0;
+			
+			if (!uId.equals(null)) {
+
+				ArrayNode arrayNode = (ArrayNode) taskData.get("addTask");
+				UserModel user = userService.getUserDetailsById(uId);
+				arrayNode.forEach((jsonNode) -> {
+					
+					Tasktrack tasktrack = new Tasktrack();
+					Long taskId = jsonNode.get("taskTypeId").asLong();
+					if (taskId != null) {
+						Task task = tasktrackService.getTaskById(taskId);
+						tasktrack.setTask(task);
+					}
+//					else 
+//						saveFailure=true;
+					tasktrack.setHours(jsonNode.get("hours").asDouble());
+
+					Long projectId = jsonNode.get("projectId").asLong();
+					if (projectId != 0L) {
+						ProjectModel proj = projectService.findById(projectId);
+						if (proj != null)
+							tasktrack.setProject(proj);
+
+					} 
+//					else
+//						saveFail = true;
+
+					if (!jsonNode.get("taskSummary").equals(null))
+						tasktrack.setDescription(jsonNode.get("taskSummary").asText());
+//					else
+//						saveFail = true;
+
+					if (!user.equals(null))
+						tasktrack.setUser(user);
+//					else
+//						saveFail = true;
+
+					if (!jsonNode.get("date").equals(null)) {
+						String dateNew = jsonNode.get("date").asText();
+						TimeZone zone = TimeZone.getTimeZone("MST");
+						SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+						outputFormat.setTimeZone(zone);
+						Date date1;
+						try {
+							date1 = outputFormat.parse(dateNew);
+							if (date1 != null)
+								tasktrack.setDate(date1);
+//							else
+//								saveFail = true;
+
+						} catch (ParseException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+					} 
+//					else
+//						saveFail = true;
+					
+//					if (!saveFail) {
+						tasktrackService.saveTaskDetails(tasktrack);
+						dataResponse.put("status", "success");
+//					}
+					
+				});
+
+			} else {
+				dataResponse.put("status", "user id is missing");
+			}
+
+		} catch (Exception e) {
+			dataResponse.put("status", "failure");
+			System.out.println("Exception " + e);
+		}
+
+		return dataResponse;
 	}
 }
