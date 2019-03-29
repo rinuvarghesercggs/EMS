@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.json.JSONException;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -247,85 +250,104 @@ public class TasktrackController {
 	}
 
 	@PostMapping(value = "/addTask", headers = "Accept=application/json")
-	public JsonNode updateData(@RequestBody JsonNode taskData) throws JSONException, ParseException {
+	public JsonNode updateData(@RequestBody JsonNode taskData, HttpServletResponse status)
+			throws JSONException, ParseException {
 		ObjectNode dataResponse = objectMapper.createObjectNode();
 
 		try {
 			Long uId = taskData.get("uId").asLong();
-//			Boolean saveFailure = false;
-			int responseflag=0;
-			
+			Boolean saveFailed = false;
+
 			if (!uId.equals(null)) {
 
 				ArrayNode arrayNode = (ArrayNode) taskData.get("addTask");
 				UserModel user = userService.getUserDetailsById(uId);
-				arrayNode.forEach((jsonNode) -> {
-					
-					Tasktrack tasktrack = new Tasktrack();
-					Long taskId = jsonNode.get("taskTypeId").asLong();
-					if (taskId != null) {
-						Task task = tasktrackService.getTaskById(taskId);
-						tasktrack.setTask(task);
-					}
-//					else 
-//						saveFailure=true;
-					tasktrack.setHours(jsonNode.get("hours").asDouble());
 
-					Long projectId = jsonNode.get("projectId").asLong();
-					if (projectId != 0L) {
-						ProjectModel proj = projectService.findById(projectId);
-						if (proj != null)
-							tasktrack.setProject(proj);
+				if (!user.equals(null)) {
 
-					} 
-//					else
-//						saveFail = true;
-
-					if (!jsonNode.get("taskSummary").equals(null))
-						tasktrack.setDescription(jsonNode.get("taskSummary").asText());
-//					else
-//						saveFail = true;
-
-					if (!user.equals(null))
+					for (JsonNode node : arrayNode) {
+						Tasktrack tasktrack = new Tasktrack();
 						tasktrack.setUser(user);
-//					else
-//						saveFail = true;
+						Long taskId = node.get("taskTypeId").asLong();
+						if (taskId != 0L) {
+							Task task = tasktrackService.getTaskById(taskId);
+							if (task != null)
+								tasktrack.setTask(task);
+							else {
+								saveFailed = true;
+								dataResponse.put("message", "Process failed due to invalid task Id");
+							}
+						} else {
+							saveFailed = true;
+							dataResponse.put("message", "Process failed due to empty task Id");
+						}
 
-					if (!jsonNode.get("date").equals(null)) {
-						String dateNew = jsonNode.get("date").asText();
-						TimeZone zone = TimeZone.getTimeZone("MST");
-						SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-						outputFormat.setTimeZone(zone);
-						Date date1;
-						try {
+						tasktrack.setHours(node.get("hours").asDouble());
+
+						Long projectId = node.get("projectId").asLong();
+						if (projectId != 0L) {
+							ProjectModel proj = projectService.findById(projectId);
+							if (proj != null)
+								tasktrack.setProject(proj);
+							else {
+								saveFailed = true;
+								dataResponse.put("message", "Process failed due to invalid project Id");
+							}
+						} else {
+							saveFailed = true;
+							dataResponse.put("message", "Process failed due to empty project Id");
+						}
+
+						if (!(node.get("taskSummary").asText().isEmpty()))
+							tasktrack.setDescription(node.get("taskSummary").asText());
+						else {
+							saveFailed = true;
+							dataResponse.put("message", "Process failed due to invalid summary ");
+						}
+						if (!(node.get("date").asText().isEmpty())) {
+							String dateNew = node.get("date").asText();
+							TimeZone zone = TimeZone.getTimeZone("MST");
+							SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+							outputFormat.setTimeZone(zone);
+							Date date1;
+
 							date1 = outputFormat.parse(dateNew);
 							if (date1 != null)
 								tasktrack.setDate(date1);
-//							else
-//								saveFail = true;
-
-						} catch (ParseException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+							else {
+								saveFailed = true;
+								dataResponse.put("message", "Process failed due to invalid date ");
+							}
+						} else {
+							saveFailed = true;
+							dataResponse.put("message", "Process failed due to empty date value ");
 						}
-						
-					} 
-//					else
-//						saveFail = true;
-					
-//					if (!saveFail) {
-						tasktrackService.saveTaskDetails(tasktrack);
-						dataResponse.put("status", "success");
-//					}
-					
-				});
+						if (!saveFailed) {
+							tasktrackService.saveTaskDetails(tasktrack);
+							dataResponse.put("message", "success");
 
+						}
+
+					}
+
+				} else {
+					saveFailed = true;
+					dataResponse.put("message", "Not a valid user Id");
+				}
 			} else {
-				dataResponse.put("status", "user id is missing");
+				saveFailed = true;
+				dataResponse.put("message", "user id is missing");
 			}
+
+			if (saveFailed)
+				dataResponse.put("status", "Failed");
+			else
+				dataResponse.put("status", "success");
+			dataResponse.put("code", status.getStatus());
 
 		} catch (Exception e) {
 			dataResponse.put("status", "failure");
+			dataResponse.put("message", "Exception : "+e);
 			System.out.println("Exception " + e);
 		}
 
