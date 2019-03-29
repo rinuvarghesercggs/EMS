@@ -40,6 +40,12 @@ public class UserServiceImpl implements UserService {
 		return user_owner;
 	}
 
+	@Override
+	public List<UserModel> getAllUsers() {
+		List<UserModel> users = userRepository.getUser();
+		return users;
+	}
+
 
 
 }

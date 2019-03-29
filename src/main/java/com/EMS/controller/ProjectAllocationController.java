@@ -115,13 +115,17 @@ public class ProjectAllocationController {
 	public JSONObject updateData(@RequestBody JSONObject requestdata, HttpServletResponse httpstatus) {
 
 		JSONObject jsonDataRes = new JSONObject();
-
+		
+		String id =null,allocatedVal = null,isBillable = null;
+		
 		try {
-			String id = requestdata.get("id").toString();
-			String allocatedVal = requestdata.get("allocatedPerce").toString();
-			String isBillable = requestdata.get("isBillable").toString();
+			if(!requestdata.get("id").toString().isEmpty() && requestdata.get("id").toString() != null)
+				id = requestdata.get("id").toString();
+			if(!requestdata.get("allocatedPerce").toString().isEmpty() && requestdata.get("allocatedPerce").toString() != null)
+				allocatedVal = requestdata.get("allocatedPerce").toString();
+			if(!requestdata.get("isBillable").toString().isEmpty() && requestdata.get("isBillable").toString() != null)
+				isBillable = requestdata.get("isBillable").toString();
 
-			System.out.println("isBillable : " + isBillable);
 
 			//Method invocation for getting allocation details
 			AllocationModel allocationModel = projectAllocation.findDataById(Long.parseLong(id));
@@ -211,6 +215,7 @@ public class ProjectAllocationController {
 
 		AllocationModel allocationModel = new AllocationModel();
 		JSONObject jsonDataRes = new JSONObject();
+
 		try {
            // Obtain the data from request data
 			String date1 = requestdata.get("startDate").toString();
@@ -486,28 +491,56 @@ public class ProjectAllocationController {
 		SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 		outputFormat.setTimeZone(zone);
 		java.util.Date date1 = null, date2 = null;
+		String uId = null,dId = null,startDate = null, endDate = null;
 		try {
 
-			String startDate = requestData.get("startDate").toString();
-			String endDate = requestData.get("endDate").toString();
+			if (!requestData.get("startDate").toString().isEmpty() && requestData.get("startDate").toString() != null) {
+				startDate = requestData.get("startDate").toString();
+				if (!startDate.isEmpty()) {
+					date1 = outputFormat.parse(startDate);
+					System.out.println("date1 : " + date1);
 
-			if (!startDate.isEmpty()) {
-				date1 = outputFormat.parse(startDate);
-				System.out.println("date1 : " + date1);
-
+				}
 			}
-			if (!endDate.isEmpty()) {
-				date2 = outputFormat.parse(endDate);
-				System.out.println("date2 : " + date2);
+			if (!requestData.get("endDate").toString().isEmpty() && requestData.get("endDate").toString() != null) {
+				endDate = requestData.get("endDate").toString();
+				if (!endDate.isEmpty()) {
+					date2 = outputFormat.parse(endDate);
+					System.out.println("date2 : " + date2);
 
+				}
 			}
+               
 
-			String uId = requestData.get("userId").toString();
-			String dId = requestData.get("deptId").toString();
+			if(!requestData.get("userId").toString().isEmpty() && requestData.get("userId").toString() != null)
+				uId = requestData.get("userId").toString();
+			if(!requestData.get("deptId").toString().isEmpty() && requestData.get("deptId").toString() != null)
+			    dId = requestData.get("deptId").toString();
+			 
 			System.out.println("uid : "+ uId);
+			System.out.println("did : "+ dId);
+
+			
+			// Obtain the user list if both department id and user id are not available
+
+			if ((uId == null || uId == "") && (dId == null || dId == "")) {
+
+				List<UserModel> userList = userService.getAllUsers();
+
+				// Invoc getUserAllocationList() to findout the allocation details of the user
+				if (userList != null) {
+					for (UserModel user : userList) {
+
+						// Invoc getUserAllocationList() to findout the allocation details of the user
+						getUserAllocationList(user, date1, date2, jsonArrayFiltered);
+
+					}
+				}
+			}
 
 			// Obtain the user list only if the department id is available and user id is not available or if the user id is 0.
-			if ((dId != null || dId != "") && (uId == null || uId == "" || uId.equals("0"))) {
+			
+			else if ((dId != null || dId != "") && (uId == null || uId == "" || uId.equals("0"))) {
 				Long deptId = Long.parseLong(dId);
 
 				// Obtain the user list based on the department
@@ -515,7 +548,7 @@ public class ProjectAllocationController {
 
 				if (userList != null) {
 					for (UserModel user : userList) {
-						
+
 						// Invoc getUserAllocationList() to findout the allocation details of the user
 						getUserAllocationList(user, date1, date2, jsonArrayFiltered);
 
@@ -524,7 +557,8 @@ public class ProjectAllocationController {
 			}
 
 			// Obtain the user list only if the user id is available and department id is not available
-			else if ((uId != null && uId != "" && !uId.equals("0")) && (dId == null || dId == "") ) {
+			
+			else if ((uId != null && uId != "" && !uId.equals("0")) && (dId == null || dId == "")) {
 
 				Long userId = Long.parseLong(uId);
 				UserModel user = userService.getUserDetailsById(userId);
@@ -570,21 +604,9 @@ public class ProjectAllocationController {
 
 	private void getUserAllocationList(UserModel user, Date date1, Date date2, List<JSONObject> jsonArrayFiltered) {
 
-//		List<Alloc> newUserList = new ArrayList<Alloc>();
-
 		// Checks whether the user has an entry on allocation table
 		Boolean isExist = projectAllocation.checkIsExist(user.getUserId());
 		if (isExist) {
-
-			// find out the allocation lists of a user
-//			List<Alloc> allocationList = resourceAllocation.getListByUser(user.getUserId());
-//			for (Alloc item : allocationList) {
-//
-//				// find out the allocation details based on the date passed as an argument and added to a new list
-//				if ((item.getEndDate().compareTo(date1) > 0) && (item.getStartDate().compareTo(date2) < 0)) {
-//					newUserList.add(item);
-//				}
-//			}
 
 			// find out the allocation details based on the date passed as an argument
 			List<AllocationModel> newUserList = projectAllocation.getUsersList(user.getUserId(),date1,date2);

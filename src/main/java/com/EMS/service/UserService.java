@@ -14,6 +14,8 @@ public interface UserService {
 
 	List<UserModel> getprojectOwner();
 
+	List<UserModel> getAllUsers();
+
 
 
 }
