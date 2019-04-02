@@ -233,6 +233,7 @@ public class LoginController {
 		JSONObject responsedata = new JSONObject();
 		
 		try {
+			
 			String userId = requestdata.get("userId").toString();			
 			String password = requestdata.get("password").toString();		
 			String newPassword = requestdata.get("newPassword").toString();		
