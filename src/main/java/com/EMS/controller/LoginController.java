@@ -239,6 +239,7 @@ public class LoginController {
 			MessageDigest md = MessageDigest.getInstance("MD5");
 			md.update(password.getBytes());
 			byte[] digest = md.digest();
+			
 			String oldPassword = DatatypeConverter.printHexBinary(digest).toUpperCase();
 			UserModel usercheck = login_service.changePasswordAuthentication(Long.parseLong(userId), oldPassword);
 					
