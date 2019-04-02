@@ -230,8 +230,7 @@ public class LoginController {
 	
 	@PostMapping(value="/change_password")
 	public JSONObject changePassword(@RequestBody JSONObject requestdata, HttpServletResponse httpstatus) throws NoSuchAlgorithmException {
-		//  String hash = "35454B055CC325EA1AF2126E27707052";
-		JSONObject responsedata = new JSONObject();//827CCB0EEA8A706C4C34A16891F84E7B
+		JSONObject responsedata = new JSONObject();
 		try {
 			String userId = requestdata.get("userId").toString();			
 			String password = requestdata.get("password").toString();		
