@@ -262,7 +262,6 @@ public class LoginController {
 			responsedata.put("message", "Exception : " + e);
 			responsedata.put("code", httpstatus.getStatus());
 		}
-
 		return responsedata;
 	}
 
