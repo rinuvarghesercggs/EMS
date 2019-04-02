@@ -3,9 +3,11 @@ package com.EMS.controller;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,6 +25,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import javax.xml.bind.DatatypeConverter;
 
 @RestController
 @RequestMapping(value = "/login")
@@ -30,8 +33,6 @@ public class LoginController {
 
 	@Autowired
 	LoginService login_service;
-
-
 
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -41,7 +42,7 @@ public class LoginController {
 	@PostMapping(value = "/getLoginCredentials")
 	@ResponseBody
 	public JsonNode adminLogin(@RequestBody ObjectNode requestdata, HttpServletResponse httpstatus) {
-		
+
 		ObjectNode response = objectMapper.createObjectNode();
 		ObjectNode data = objectMapper.createObjectNode();
 
@@ -51,11 +52,16 @@ public class LoginController {
 
 		try {
 
-			if ((username != null) && (username.length() > 0) && (!username.equals(" ")) && (password != null)
-					&& (password.length() > 0)) {
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			md.update(password.getBytes());
+			byte[] digest = md.digest();
+			String encPassword = DatatypeConverter.printHexBinary(digest).toUpperCase();
+
+			if ((username != null) && (username.length() > 0) && (!username.equals(" ")) && (encPassword != null)
+					&& (encPassword.length() > 0)) {
 
 				// Invoking user authentication method
-				UserModel usercheck = login_service.login_authentication(username, password);
+				UserModel usercheck = login_service.login_authentication(username, encPassword);
 
 				if (usercheck == null) {
 					// Setting status on json object
@@ -151,7 +157,14 @@ public class LoginController {
 
 			user.setEmpId(requestdata.get("empId").asLong());
 			user.setEmail(requestdata.get("email").asText());
-			user.setPassword(requestdata.get("password").asText());
+			
+			 String password = requestdata.get("password").toString();
+			 MessageDigest md = MessageDigest.getInstance("MD5");
+			 md.update(password.getBytes());
+			 byte[] digest = md.digest();
+			 String encPassword = DatatypeConverter.printHexBinary(digest).toUpperCase();
+			 user.setPassword(encPassword);  
+			
 			user.setQualification(requestdata.get("qualification").asText());
 			UserModel userdata = login_service.adduser(user);
 
@@ -163,7 +176,7 @@ public class LoginController {
 				// adding details in user technology
 				ArrayNode usertechnology = (ArrayNode) requestdata.get("userTechnology");
 				if (usertechnology.equals(null)) {
-					
+
 					responseflag = 1;
 					responsedata.put("message", "Technology insertion failed");
 				} else {
@@ -176,7 +189,7 @@ public class LoginController {
 
 						if (techId != null)
 							technology = login_service.findtechnology(techId);
-						
+
 						UserTechnology usertech = new UserTechnology();
 						if (technology != null)
 							usertech.setTechnology(technology);
@@ -188,7 +201,7 @@ public class LoginController {
 						usertech.setUser(userdata);
 						usertech.setExperience(node.get("experience").asDouble());
 						UserTechnology userTechnology = login_service.addusertechnology(usertech);
-						if (userTechnology == null) 
+						if (userTechnology == null)
 							responseflag = 1;
 					}
 
@@ -213,7 +226,47 @@ public class LoginController {
 
 		return responsedata;
 	}
+	
+	
+	@PostMapping(value="/change_password")
+	public JSONObject changePassword(@RequestBody JSONObject requestdata, HttpServletResponse httpstatus) throws NoSuchAlgorithmException {
+		//  String hash = "35454B055CC325EA1AF2126E27707052";
+		JSONObject responsedata = new JSONObject();//827CCB0EEA8A706C4C34A16891F84E7B
+		try {
+			String userId = requestdata.get("userId").toString();			
+			String password = requestdata.get("password").toString();		
+			String newPassword = requestdata.get("newPassword").toString();		
+			
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			md.update(password.getBytes());
+			byte[] digest = md.digest();
+			String oldPassword = DatatypeConverter.printHexBinary(digest).toUpperCase();
+			
+			UserModel usercheck = login_service.changePasswordAuthentication(Long.parseLong(userId), oldPassword);
+					
+			if (usercheck!= null) {			
+				md.update(newPassword.getBytes());
+				digest = md.digest();
+				String encPassword = DatatypeConverter.printHexBinary(digest).toUpperCase();
+				usercheck.setPassword(encPassword);
+				login_service.adduser(usercheck);
+				responsedata.put("status", "success");
+				responsedata.put("message", "Password Updated");
+				responsedata.put("code", httpstatus.getStatus());
+			}
+			else {
+				responsedata.put("status", "Failed");
+				responsedata.put("message", "Password Not Matching");
+				responsedata.put("code", httpstatus.getStatus());
+			}	
+			
+		} catch (Exception e) {
+			responsedata.put("status", "Failed");
+			responsedata.put("message", "Exception : " + e);
+			responsedata.put("code", httpstatus.getStatus());
+		}
 
-
+		return responsedata;
+	}
 
 }

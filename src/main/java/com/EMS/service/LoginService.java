@@ -31,6 +31,8 @@ public interface LoginService {
 	//find role by given ID
 	RoleModel getRole(long parseLong);
 
+	UserModel changePasswordAuthentication(long parseLong, String oldPassword);
+
 	
 
 }

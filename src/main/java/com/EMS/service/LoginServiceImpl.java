@@ -103,6 +103,22 @@ public class LoginServiceImpl implements LoginService {
 		return role;
 	}
 
+
+	@Override
+	public UserModel changePasswordAuthentication(long userId, String password) {
+		//Initializing usermodel for returning		
+				UserModel checkuserid = null;
+				try {
+
+				//calling sql query by passing parameters			
+					checkuserid = user_repositary.getUserByUserId(userId, password);
+					return checkuserid;
+				} catch (Exception e) {
+					System.out.println("Exception : " + e);
+					return checkuserid;
+				}
+	}
+
 	
 
 }

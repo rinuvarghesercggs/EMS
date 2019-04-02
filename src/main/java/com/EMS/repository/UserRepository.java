@@ -36,4 +36,7 @@ public interface UserRepository extends JpaRepository<UserModel, Long>{
 	//authentication based query
 	@Query("SELECT u FROM UserModel u WHERE u.userName=:username")
 	UserModel getUser(String username);
+
+	@Query("SELECT u FROM UserModel u WHERE u.userId=?1 AND u.password=?2") 
+	UserModel getUserByUserId(Long userId, String password);
 }
