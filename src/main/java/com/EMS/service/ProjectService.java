@@ -22,11 +22,6 @@ public interface ProjectService {
 
 
 		Long getProjectId(String projectName);
-
-//		method declaration for getting user details for project creation
-//		List<UserModel> getprojectOwner();
-
-
 	
 //		method declaration for getting contract type details for project creation
 		ArrayList<ContractModel> getcontractType();

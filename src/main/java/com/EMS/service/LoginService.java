@@ -16,9 +16,6 @@ public interface LoginService {
 
 //		abstract method declaration for user login authentication
 	UserModel login_authentication(String userName, String password);
-	
-	//adstract method declaration for user view
-//	ArrayList<UserModel> getAllUser();
 
 	UserModel adduser(UserModel requestdata);
 
@@ -33,6 +30,7 @@ public interface LoginService {
 	
 	//find role by given ID
 	RoleModel getRole(long parseLong);
+
 	
 
 }

@@ -9,16 +9,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
-import javax.validation.constraints.Size;
+
 
 
 
 @Entity
 @Table(name = "User")
-public class UserModel {
+public class UserModel{
 
 	@Id
 	@Column(name = "userId")

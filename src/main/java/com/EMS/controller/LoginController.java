@@ -6,7 +6,6 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +19,10 @@ import com.EMS.model.Technology;
 import com.EMS.model.UserModel;
 import com.EMS.model.UserTechnology;
 import com.EMS.service.LoginService;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @RestController
 @RequestMapping(value = "/login")
@@ -28,18 +31,23 @@ public class LoginController {
 	@Autowired
 	LoginService login_service;
 
+
+
+	@Autowired
+	private ObjectMapper objectMapper;
+
 	// api call for admin login
 
 	@PostMapping(value = "/getLoginCredentials")
 	@ResponseBody
-	public JSONObject adminLogin(@RequestBody JSONObject requestdata, HttpServletResponse httpstatus) {
-
-		JSONObject response = new JSONObject();
-		JSONObject data = new JSONObject();
+	public JsonNode adminLogin(@RequestBody ObjectNode requestdata, HttpServletResponse httpstatus) {
+		
+		ObjectNode response = objectMapper.createObjectNode();
+		ObjectNode data = objectMapper.createObjectNode();
 
 		// getting string value from json request
-		String username = requestdata.get("username").toString();
-		String password = requestdata.get("password").toString();
+		String username = requestdata.get("username").asText();
+		String password = requestdata.get("password").asText();
 
 		try {
 
@@ -48,7 +56,7 @@ public class LoginController {
 
 				// Invoking user authentication method
 				UserModel usercheck = login_service.login_authentication(username, password);
-				System.out.print("user :" + usercheck.getUserId());
+
 				if (usercheck == null) {
 					// Setting status on json object
 					response.put("status", "Failed");
@@ -56,7 +64,7 @@ public class LoginController {
 					response.put("message", "Invalid user");
 					response.put("payload", "");
 				} else {
-					// Setting status on json object
+
 					response.put("status", "success");
 					response.put("code", httpstatus.getStatus());
 					response.put("message", "Valid user");
@@ -64,9 +72,9 @@ public class LoginController {
 					data.put("userId", usercheck.getUserId());
 					data.put("roleId", usercheck.getrole().getroleId());
 					data.put("roleName", usercheck.getrole().getroleName());
+					// Setting data on json object
+					response.set("payload", data);
 				}
-				// Setting data on json object
-				response.put("payload", data);
 
 			} else {
 				response.put("status", "Failed");
@@ -88,25 +96,25 @@ public class LoginController {
 
 //	//api call for registering new user
 	@PostMapping(value = "/adduser")
-	public JSONObject adduser(@RequestBody JSONObject requestdata, HttpServletResponse servletresponse) {
+	public JsonNode adduser(@RequestBody ObjectNode requestdata, HttpServletResponse servletresponse) {
 
-		JSONObject responsedata = new JSONObject();
+		ObjectNode responsedata = objectMapper.createObjectNode();
 		int responseflag = 0;
 		// setting values to usermodel
 		UserModel user = new UserModel();
 
 		try {
 
-			user.setFirstName(requestdata.get("firstName").toString());
-			user.setLastName(requestdata.get("lastName").toString());
-			user.setContact(Long.parseLong(requestdata.get("contact").toString()));
-			user.setUserName(requestdata.get("userName").toString());
-			user.setBloodGroup(requestdata.get("bloodGroup").toString());
-			user.setGender(Integer.parseInt(requestdata.get("gender").toString()));
-			user.setEmploymentType(requestdata.get("employment").toString());
-			user.setActive(Boolean.parseBoolean(requestdata.get("active").toString()));
+			user.setFirstName(requestdata.get("firstName").asText());
+			user.setLastName(requestdata.get("lastName").asText());
+			user.setContact(requestdata.get("contact").asLong());
+			user.setUserName(requestdata.get("userName").asText());
+			user.setBloodGroup(requestdata.get("bloodGroup").asText());
+			user.setGender(requestdata.get("gender").asInt());
+			user.setEmploymentType(requestdata.get("employment").asText());
+			user.setActive(requestdata.get("active").asBoolean());
 
-			Long departId = Long.parseLong(requestdata.get("department").toString());
+			Long departId = requestdata.get("department").asLong();
 			DepartmentModel department = null;
 			if (departId != null)
 				department = login_service.getDepartment(departId);
@@ -116,15 +124,15 @@ public class LoginController {
 			else
 				responseflag = 1;
 
-			Long roleId = Long.parseLong(requestdata.get("role").toString());
+			Long roleId = requestdata.get("role").asLong();
 			RoleModel role = null;
 			if (roleId != null)
 				role = login_service.getRole(roleId);
 			if (role != null)
 				user.setrole(role);
 
-			String dob = requestdata.get("dob").toString();
-			String joindate = requestdata.get("joiningDate").toString();
+			String dob = requestdata.get("dob").asText();
+			String joindate = requestdata.get("joiningDate").asText();
 
 			// Formatting the dates before storing
 			DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
@@ -141,54 +149,47 @@ public class LoginController {
 
 			}
 
-			user.setEmpId(Integer.parseInt(requestdata.get("empId").toString()));
-			user.setEmail(requestdata.get("email").toString());
-			user.setPassword(requestdata.get("password").toString());
-			user.setQualification(requestdata.get("qualification").toString());
+			user.setEmpId(requestdata.get("empId").asLong());
+			user.setEmail(requestdata.get("email").asText());
+			user.setPassword(requestdata.get("password").asText());
+			user.setQualification(requestdata.get("qualification").asText());
 			UserModel userdata = login_service.adduser(user);
 
 			if (userdata == null) {
 				responseflag = 1;
 				responsedata.put("message", "user record insertion failed");
-			}else {
+			} else {
 
 				// adding details in user technology
-				String usertechnology = requestdata.get("userTechnology").toString();
-				org.json.JSONArray usertecharray = new org.json.JSONArray(usertechnology);
-				int length = usertecharray.length();
-				System.out.println("technology array length : " + length);
-				if (usertecharray.equals(null)) {
+				ArrayNode usertechnology = (ArrayNode) requestdata.get("userTechnology");
+				if (usertechnology.equals(null)) {
+					
 					responseflag = 1;
 					responsedata.put("message", "Technology insertion failed");
-				}else {
-					for (int i = 0; i < length; i++) {
+				} else {
+					for (JsonNode node : usertechnology) {
 
-						org.json.JSONObject technologyobj = usertecharray.getJSONObject(i);
 						// checking for technology using ID
 
-						Long techId = Long.parseLong(technologyobj.get("technology").toString());
+						Long techId = node.get("technology").asLong();
 						Technology technology = null;
 
 						if (techId != null)
 							technology = login_service.findtechnology(techId);
-						else {
-							responseflag = 1;
-							responsedata.put("message", "Technology not found");
-						}
+						
 						UserTechnology usertech = new UserTechnology();
 						if (technology != null)
 							usertech.setTechnology(technology);
 						else {
 							responseflag = 1;
-							responsedata.put("message", "user technology insertion failed due to missing technology value");
+							responsedata.put("message",
+									"user technology insertion failed due to missing technology value");
 						}
 						usertech.setUser(userdata);
-						System.out.println(
-								"experience : " + Double.parseDouble(technologyobj.get("experience").toString()));
-						usertech.setExperience(Double.parseDouble(technologyobj.get("experience").toString()));
+						usertech.setExperience(node.get("experience").asDouble());
 						UserTechnology userTechnology = login_service.addusertechnology(usertech);
-//						if (userTechnology == null) 
-//							responseflag = 1;
+						if (userTechnology == null) 
+							responseflag = 1;
 					}
 
 				}
@@ -213,20 +214,6 @@ public class LoginController {
 		return responsedata;
 	}
 
-	// api for user view
-//	@GetMapping(value="/viewuser")
-//	public ArrayList<UserModel> viewAllUser() {
-//		JSONObject responsedata=new JSONObject();
-//		JSONArray userjsonarray=new JSONArray();
-//		
-//		ArrayList<UserModel> userarray=login_service.getAllUser();
-//		
-//		for(UserModel user:userarray) {
-//			JSONObject userobject=new JSONObject();
-//			
-//		}
-//		
-//		return userarray;
-//	}
+
 
 }

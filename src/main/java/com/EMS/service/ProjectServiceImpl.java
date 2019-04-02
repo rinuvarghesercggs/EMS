@@ -81,7 +81,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 			return contract;
 		} catch (Exception e) {
-			System.out.println("contract 1 Exception : " + e);
+			System.out.println("Exception : " + e);
 			return contract;
 		}
 
@@ -145,7 +145,6 @@ public class ProjectServiceImpl implements ProjectService {
 		ProjectModel project=new ProjectModel();
 		try {
 			project=project_repositary.getOne(projectId);
-			System.out.println("project "+project.getProjectId());
 			return project;
 		}catch(Exception e) {
 			System.out.println("Exception "+e);

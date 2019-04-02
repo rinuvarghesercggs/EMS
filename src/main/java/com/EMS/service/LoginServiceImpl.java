@@ -1,7 +1,5 @@
 package com.EMS.service;
 
-import java.util.ArrayList;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +10,7 @@ import com.EMS.model.Technology;
 import com.EMS.model.UserModel;
 import com.EMS.model.UserTechnology;
 import com.EMS.repository.UserTechnologyRepository;
+
 import com.EMS.repository.DepartmentRepository;
 import com.EMS.repository.RoleRepository;
 import com.EMS.repository.TechnologyRepository;
@@ -46,8 +45,9 @@ public class LoginServiceImpl implements LoginService {
 		
 		try {
 			
-//			calling sql query by passing parameters			
+//			calling sql query by passing parameters	
 			checkuserid = user_repositary.getUserdetails(userName, password);
+
 			return checkuserid;
 		} catch (Exception e) {
 			System.out.println("Exception : " + e);
@@ -55,21 +55,14 @@ public class LoginServiceImpl implements LoginService {
 		}
 	}
 
-//	@Override
-//	public ArrayList<UserModel> getAllUser() {
-//		ArrayList<UserModel> userarray=(ArrayList<UserModel>) user_repositary.findAll();
-//		return userarray;
-//	}
-
 	
 	// method for creating user record
 	@Override
 	public UserModel adduser(UserModel requestdata) {
 		UserModel user=null;
 		try {
-			System.out.println("start");
+
 			user=user_repositary.save(requestdata);
-			System.out.println("completed");
 			return user;
 		}catch(Exception e) {
 			System.out.println("Exception : "+e);
@@ -83,7 +76,6 @@ public class LoginServiceImpl implements LoginService {
 	public UserTechnology addusertechnology(UserTechnology usertech) {
 		
 		UserTechnology usertechno=usertechnology_repository.save(usertech);
-		
 		return usertechno;
 	}
 
@@ -110,5 +102,7 @@ public class LoginServiceImpl implements LoginService {
 		RoleModel role=role_repository.getOne(id);
 		return role;
 	}
+
+	
 
 }

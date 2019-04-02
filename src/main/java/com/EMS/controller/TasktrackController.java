@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONException;
@@ -248,6 +247,8 @@ public class TasktrackController {
 		node.set("data", dataNode);
 		return node;
 	}
+	
+	
 
 	@PostMapping(value = "/addTask", headers = "Accept=application/json")
 	public JsonNode updateData(@RequestBody JsonNode taskData, HttpServletResponse status)

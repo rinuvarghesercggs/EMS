@@ -12,6 +12,7 @@ public interface UserRepository extends JpaRepository<UserModel, Long>{
 	
 	
 	@Query("SELECT u FROM UserModel u WHERE u.userName=?1 AND u.password=?2 AND u.active = true") //Query for checking username and password are matching or not
+//	@Query("SELECT u FROM UserModel u WHERE u.userName=?1 AND u.active = true") 
 	UserModel getUserdetails(String userName, String password);
 
 	@Query("SELECT u FROM UserModel u WHERE u.role = 2")//for getting user details with role as owner by providing role
@@ -32,5 +33,7 @@ public interface UserRepository extends JpaRepository<UserModel, Long>{
 	@Query("SELECT u FROM UserModel u WHERE u.userId = ?1 AND u.active = true")
 	UserModel getActiveUser(Long id);
 	
-	
+	//authentication based query
+	@Query("SELECT u FROM UserModel u WHERE u.userName=:username")
+	UserModel getUser(String username);
 }
