@@ -24,6 +24,9 @@ import com.EMS.model.UserModel;
 import com.EMS.service.ProjectService;
 import com.EMS.service.ProjectAllocationService;
 import com.EMS.service.UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @RestController
 @RequestMapping(value = "/project")
@@ -38,14 +41,15 @@ public class ProjectAllocationController {
 	@Autowired
 	UserService userService;
 	
-	
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	// To get user, department and project list
 
 	@GetMapping(value = "/getPreResourceData")
-	public JSONObject getUsernameList(HttpServletResponse httpstatus) {
-		JSONObject jsonData = new JSONObject();
-		JSONObject jsonDataRes = new JSONObject();
+	public ObjectNode getUsernameList(HttpServletResponse httpstatus) {
+		ObjectNode jsonData = objectMapper.createObjectNode();
+		ObjectNode jsonDataRes = objectMapper.createObjectNode();
 		try {
 			//Method invocation for getting user list
 			List<UserModel> userList = projectAllocation.getUserList();
@@ -54,48 +58,53 @@ public class ProjectAllocationController {
 			//Method invocation for getting project list
 			List<ProjectModel> projectList = projectService.getProjectList();
 
-			List<JSONObject> jsonArray = new ArrayList<>();
-			List<JSONObject> jsonProjectArray = new ArrayList<>();
-			List<JSONObject> jsonDepartmentArray = new ArrayList<>();
+			ArrayNode jsonArray = objectMapper.createArrayNode();
+			ArrayNode jsonProjectArray = objectMapper.createArrayNode();
+			ArrayNode jsonDepartmentArray = objectMapper.createArrayNode();
 
 			// Add user list to json object
 			if (!(userList).isEmpty() && userList.size() > 0) {
 				for (UserModel user : userList) {
-					JSONObject jsonObject = new JSONObject();
+					ObjectNode jsonObject = objectMapper.createObjectNode();
 					jsonObject.put("userId", user.getUserId());
 					jsonObject.put("firstName", user.getFirstName());
 					jsonObject.put("lastName", user.getLastName());
 					jsonObject.put("role", user.getrole().getroleId());
-					jsonObject.put("department", user.getdepartment());
+					DepartmentModel departmentModel = user.getdepartment();
+					ObjectNode depNode = objectMapper.createObjectNode();
+					depNode.put("departmentId",departmentModel.getDepartmentId());
+					depNode.put("departmentName", departmentModel.getdepartmentName());
+
+					jsonObject.set("department", depNode);
 					jsonArray.add(jsonObject);
 				}
-				jsonData.put("userList", jsonArray);
+				jsonData.set("userList", jsonArray);
 			}
 
 			// Add project list to json object
 			if (!(projectList).isEmpty() && projectList.size() > 0) {
 				for (ProjectModel project : projectList) {
-					JSONObject jsonObject = new JSONObject();
+					ObjectNode jsonObject = objectMapper.createObjectNode();
 					jsonObject.put("projectId", project.getProjectId());
 					jsonObject.put("projectName", project.getProjectName());
 					jsonProjectArray.add(jsonObject);
 				}
-				jsonData.put("projectList", jsonProjectArray);
+				jsonData.set("projectList", jsonProjectArray);
 			}
 			
 			// Add department list to json object
 			if (!(departmentList).isEmpty() && departmentList.size() > 0) {
 				for (DepartmentModel department : departmentList) {
-					JSONObject jsonObject = new JSONObject();
+					ObjectNode jsonObject = objectMapper.createObjectNode();
 					jsonObject.put("departmentId", department.getDepartmentId());
 					jsonObject.put("departmentName", department.getdepartmentName());
 					jsonDepartmentArray.add(jsonObject);
 				}
-				jsonData.put("departmentList", jsonDepartmentArray);
+				jsonData.set("departmentList", jsonDepartmentArray);
 			}
 			
 			
-			jsonDataRes.put("data", jsonData);
+			jsonDataRes.set("data", jsonData);
 			jsonDataRes.put("status", "success");
 			jsonDataRes.put("code", httpstatus.getStatus());
 			jsonDataRes.put("message", "success");
@@ -112,27 +121,21 @@ public class ProjectAllocationController {
 	// To update resource allocation data
 
 	@PutMapping(value = "/editAllocation")
-	public JSONObject updateData(@RequestBody JSONObject requestdata, HttpServletResponse httpstatus) {
+	public ObjectNode updateData(@RequestBody ObjectNode requestdata, HttpServletResponse httpstatus) {
 
-		JSONObject jsonDataRes = new JSONObject();
-		
-		String id =null,allocatedVal = null,isBillable = null;
+		ObjectNode jsonDataRes = objectMapper.createObjectNode();
 		
 		try {
-			if(!requestdata.get("id").toString().isEmpty() && requestdata.get("id").toString() != null)
-				id = requestdata.get("id").toString();
-			if(!requestdata.get("allocatedPerce").toString().isEmpty() && requestdata.get("allocatedPerce").toString() != null)
-				allocatedVal = requestdata.get("allocatedPerce").toString();
-			if(!requestdata.get("isBillable").toString().isEmpty() && requestdata.get("isBillable").toString() != null)
-				isBillable = requestdata.get("isBillable").toString();
+				Long id = requestdata.get("id").asLong();
+				Double allocatedVal = requestdata.get("allocatedPerce").asDouble();
+				Boolean isBillable = requestdata.get("isBillable").asBoolean();
 
 
 			//Method invocation for getting allocation details
-			AllocationModel allocationModel = projectAllocation.findDataById(Long.parseLong(id));
+			AllocationModel allocationModel = projectAllocation.findDataById(id);
 			if (allocationModel != null) {
-				allocationModel.setAllocatedPerce(Double.parseDouble(allocatedVal));
-                allocationModel.setIsBillable(Boolean.parseBoolean(isBillable));
-    			System.out.println("isBillable : " + Boolean.parseBoolean(isBillable));
+				allocationModel.setAllocatedPerce(allocatedVal);
+                allocationModel.setIsBillable(isBillable);
 
                 //Updating allcation details
 				projectAllocation.updateData(allocationModel);
@@ -156,22 +159,21 @@ public class ProjectAllocationController {
 	// To get the allocation list
 
 	@GetMapping(value = "/getResourceListBasedonProject/{projectId}")
-	public JSONObject getAllocationListsBasedonProject(@PathVariable("projectId") Long projectId,
+	public ObjectNode getAllocationListsBasedonProject(@PathVariable("projectId") Long projectId,
 			HttpServletResponse httpstatus) {
 		// Method invocation for getting allocation list based on the project
 		List<AllocationModel> allocationModel = projectAllocation.getAllocationList(projectId);
-
-		String response = null;
-		JSONObject jsonData = new JSONObject();
-		JSONObject jsonDataRes = new JSONObject();
-		List<JSONObject> jsonArray = new ArrayList<>();
+		
+		ArrayNode jsonArray = objectMapper.createArrayNode();
+		ObjectNode jsonData = objectMapper.createObjectNode();
+		ObjectNode jsonDataRes = objectMapper.createObjectNode();
 		Date currentDate = new Date();
 
 		try {
 			if (!(allocationModel.isEmpty() && allocationModel.size() > 0)) {
 				for (AllocationModel item : allocationModel) {
 					if (item.getEndDate().compareTo(currentDate) > 0) {
-						JSONObject jsonObject = new JSONObject();
+						ObjectNode jsonObject = objectMapper.createObjectNode();
 						jsonObject.put("allocationId", item.getAllocId());
 						if (item.getproject() != null) {
 							jsonObject.put("projectTitle", item.getproject().getProjectName());
@@ -190,12 +192,12 @@ public class ProjectAllocationController {
 						jsonArray.add(jsonObject);
 					}
 				}
-				jsonData.put("resourceList", jsonArray);
+				jsonData.set("resourceList", jsonArray);
 			}
 			jsonDataRes.put("status", "success");
 			jsonDataRes.put("code", httpstatus.getStatus());
 			jsonDataRes.put("message", "success ");
-			jsonDataRes.put("data", jsonData);
+			jsonDataRes.set("data", jsonData);
 
 		} catch (Exception e) {
 			jsonDataRes.put("status", "failure");
@@ -211,15 +213,15 @@ public class ProjectAllocationController {
 	// saving allocation details
 
 	@PostMapping("/saveAllocation")
-	public JSONObject saveAllocationDetails(@RequestBody JSONObject requestdata, HttpServletResponse httpstatus) {
+	public ObjectNode saveAllocationDetails(@RequestBody ObjectNode requestdata, HttpServletResponse httpstatus) {
 
 		AllocationModel allocationModel = new AllocationModel();
-		JSONObject jsonDataRes = new JSONObject();
+		ObjectNode jsonDataRes = objectMapper.createObjectNode();
 
 		try {
            // Obtain the data from request data
-			String date1 = requestdata.get("startDate").toString();
-			String date2 = requestdata.get("endDate").toString();
+			String date1 = requestdata.get("startDate").asText();
+			String date2 = requestdata.get("endDate").asText();
 			TimeZone zone = TimeZone.getTimeZone("MST");
 			SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 			outputFormat.setTimeZone(zone);
@@ -233,23 +235,23 @@ public class ProjectAllocationController {
 				endDate = outputFormat.parse(date2);
 			}
 			// Setting values to Allocation model object
-			String val = requestdata.get("allocatedPerce").toString();
-			String projectId = requestdata.get("projectId").toString();
-			String userId = requestdata.get("userId").toString();
-			String isBillable = requestdata.get("isBillable").toString();
+			Double val = requestdata.get("allocatedPerce").asDouble();
+			Long projectId = requestdata.get("projectId").asLong();
+			Long userId = requestdata.get("userId").asLong();
+			Boolean isBillable = requestdata.get("isBillable").asBoolean();
 			
-			ProjectModel project = projectService.findById(Long.parseLong(projectId));
-			UserModel user = userService.getUserDetailsById(Long.parseLong(userId));
+			ProjectModel project = projectService.findById(projectId);
+			UserModel user = userService.getUserDetailsById(userId);
 			
 			allocationModel.setproject(project);
 			allocationModel.setuser(user);
 			allocationModel.setStartDate(startDate);
 			allocationModel.setEndDate(endDate);
-			allocationModel.setAllocatedPerce(Double.parseDouble(val));
-			allocationModel.setIsBillable(Boolean.parseBoolean(isBillable));
+			allocationModel.setAllocatedPerce(val);
+			allocationModel.setIsBillable(isBillable);
 
 			// Check whether the user is already allocated to the project.If so update the previous entry of the user otherwise new entry is created.
-			Long allocId = projectAllocation.getAllocId(Long.parseLong(projectId),Long.parseLong(userId));
+			Long allocId = projectAllocation.getAllocId(projectId,userId);
 			if(allocId != null) {
 				AllocationModel oldAlloc = projectAllocation.findDataById(allocId);
 				if(oldAlloc != null) {
@@ -279,14 +281,7 @@ public class ProjectAllocationController {
 	}
 		
 	
-		
 
-	
-	
-	
-	
-	
-	
 	
 	@PostMapping("/getUserData")
 	public JSONObject getAllocationList(@RequestBody JSONObject requestData, HttpServletResponse httpstatus) {
@@ -305,7 +300,6 @@ public class ProjectAllocationController {
 				startDate = requestData.get("startDate").toString();
 				if (!startDate.isEmpty()) {
 					date1 = outputFormat.parse(startDate);
-					System.out.println("date1 : " + date1);
 
 				}
 			}
@@ -313,7 +307,6 @@ public class ProjectAllocationController {
 				endDate = requestData.get("endDate").toString();
 				if (!endDate.isEmpty()) {
 					date2 = outputFormat.parse(endDate);
-					System.out.println("date2 : " + date2);
 
 				}
 			}
@@ -324,9 +317,7 @@ public class ProjectAllocationController {
 			if(!requestData.get("deptId").toString().isEmpty() && requestData.get("deptId").toString() != null)
 			    dId = requestData.get("deptId").toString();
 			 
-			System.out.println("uid : "+ uId);
-			System.out.println("did : "+ dId);
-
+			
 			
 			// Obtain the user list if both department id and user id are not available
 
@@ -400,6 +391,7 @@ public class ProjectAllocationController {
 			jsonDataRes.put("message", "success. ");
 
 		} catch (Exception e) {
+			System.out.println("start failed");
 			jsonDataRes.put("status", "failure");
 			jsonDataRes.put("code", httpstatus.getStatus());
 			jsonDataRes.put("message", "failed. " + e);
@@ -419,9 +411,6 @@ public class ProjectAllocationController {
 			List<AllocationModel> newUserList = projectAllocation.getUsersList(user.getUserId(),date1,date2);
 			
             
-
-			System.out.println("size : " + newUserList.size());
-
 			// Add user and project alocation details to the json object
 			if (newUserList != null && newUserList.size() > 0) {
 				JSONObject jsonObject = new JSONObject();
