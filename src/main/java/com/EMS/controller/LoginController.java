@@ -235,8 +235,7 @@ public class LoginController {
 			String userId = requestdata.get("userId").toString();			
 			String password = requestdata.get("password").toString();		
 			String newPassword = requestdata.get("newPassword").toString();		
-			
-			
+					
 			MessageDigest md = MessageDigest.getInstance("MD5");
 			md.update(password.getBytes());
 			byte[] digest = md.digest();
