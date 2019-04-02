@@ -240,6 +240,7 @@ public class LoginController {
 			md.update(password.getBytes());
 			byte[] digest = md.digest();
 			String oldPassword = DatatypeConverter.printHexBinary(digest).toUpperCase();
+			
 			UserModel usercheck = login_service.changePasswordAuthentication(Long.parseLong(userId), oldPassword);
 					
 			if (usercheck!= null) {			
@@ -256,8 +257,7 @@ public class LoginController {
 				responsedata.put("status", "Failed");
 				responsedata.put("message", "Password Not Matching");
 				responsedata.put("code", httpstatus.getStatus());
-			}	
-			
+			}			
 		} catch (Exception e) {
 			responsedata.put("status", "Failed");
 			responsedata.put("message", "Exception : " + e);
