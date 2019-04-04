@@ -10,6 +10,8 @@ public class Taskdetails {
 	private Date taskDate;
 	private Date fromDate;
 	private Date toDate;
+	private Long projectId;
+	
 	public Date getFromDate() {
 		return fromDate;
 	}
@@ -48,6 +50,12 @@ public class Taskdetails {
 	}
 	public void setDescription(List<String> description) {
 		this.description = description;
+	}
+	public Long getProjectId() {
+		return projectId;
+	}
+	public void setProjectId(Long projectId) {
+		this.projectId = projectId;
 	}
 	
 
