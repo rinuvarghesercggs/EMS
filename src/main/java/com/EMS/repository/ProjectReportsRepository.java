@@ -26,9 +26,16 @@ public class ProjectReportsRepository extends DbConnectionUtility {
 	}
 	*/
 	public List<ProjectReportModel> GenerateProjectReports (long projectId,Date fromDate, Date toDate){
-		String sql = "SELECT CONCAT(u.first_name,' ',u.last_name) AS users ,  a.is_billable, a.allocated_perce, p.project_name FROM allocation a LEFT JOIN `user` u ON u.user_id = a. user_user_id LEFT JOIN project p ON p.project_id = a.project_project_id WHERE p.project_id = ? AND CAST(a.start_date  AS DATE) >= ? AND CAST(a.end_date  AS DATE)  <=  ? ";
-		List<ProjectReportModel> list = jdbcTemplate.query(sql, new ReportRowMapper(), new Object[] {projectId,fromDate,toDate});
-	
+		String sql ="";
+		List<ProjectReportModel> list = null;
+		if(projectId == 0) {
+			sql = "SELECT CONCAT(u.first_name,' ',u.last_name) AS users ,  a.is_billable, a.allocated_perce, p.project_name FROM allocation a LEFT JOIN `user` u ON u.user_id = a. user_user_id LEFT JOIN project p ON p.project_id = a.project_project_id WHERE CAST(a.start_date  AS DATE) >= ? AND CAST(a.end_date  AS DATE)  <=  ? order by project_name ";
+			list = jdbcTemplate.query(sql, new ReportRowMapper(), new Object[] {fromDate,toDate});
+		}
+		else {
+		sql = "SELECT CONCAT(u.first_name,' ',u.last_name) AS users ,  a.is_billable, a.allocated_perce, p.project_name FROM allocation a LEFT JOIN `user` u ON u.user_id = a. user_user_id LEFT JOIN project p ON p.project_id = a.project_project_id WHERE p.project_id = ? AND CAST(a.start_date  AS DATE) >= ? AND CAST(a.end_date  AS DATE)  <=  ? order by project_name";
+		list = jdbcTemplate.query(sql, new ReportRowMapper(), new Object[] {projectId,fromDate,toDate});
+		}
 		return list;
 	}
 	public List<BenchProjectReportModel> GenerateBenchProjectReports (Long uId,Date fromDate, Date toDate){
