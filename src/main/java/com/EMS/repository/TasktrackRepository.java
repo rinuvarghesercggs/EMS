@@ -53,4 +53,9 @@ public interface TasktrackRepository extends JpaRepository<Tasktrack, Long> {
 	 * 
 	 * }
 	 */
+	@Query("SELECT count(*) > 0 FROM Tasktrack s WHERE s.user.userId = ?1")
+	Boolean existsByUser(Long id);
+
+	@Query("SELECT count(*) > 0 FROM Tasktrack s WHERE s.user.userId = ?2 and s.project.projectId = ?1")
+	Boolean checkExistanceOfUser(Long projectId, Long userId);
 }

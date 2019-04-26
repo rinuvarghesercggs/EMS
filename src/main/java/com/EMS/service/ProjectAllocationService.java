@@ -23,6 +23,13 @@ public interface ProjectAllocationService {
 	public Boolean checkIsExist(long userId);
 	public List<AllocationModel> getListByUser(long userId);
 	public List<AllocationModel> getUsersList(long userId, Date date1, Date date2);
-	public Long getAllocId(long parseLong, long parseLong2);	
+	public Long getAllocId(long parseLong, long parseLong2);
+//	public List<Object[]> getUserIdByProject(Long projectId, Long pageSize, Long limit);
+	public List<Object[]> getUserIdByProject(Long projectId);
+	public Long getUserCount(Long projectId);
+	public Boolean getIsBillable(Long id);	
+//	public List<Object[]> getIsBillable(Long id);
 
 }
+
+

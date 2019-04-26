@@ -35,7 +35,25 @@ public interface ProjectAllocationRepository extends JpaRepository<AllocationMod
 
 	@Query("SELECT s.allocId FROM AllocationModel s WHERE s.user.userId = ?2 and s.project.projectId = ?1")
 	Long getAllocationId(long projectId, long userId);
+	
 
+//	@Query("select u.user.userId from AllocationModel u where u.project.projectId = ?1")
+//	List<Object[]> getUserIdByProject(Long projectId, Long pageSize, Long limit);
+	
+//	@Query(value ="SELECT EMS.allocation.user_user_id FROM EMS.allocation where EMS.allocation.project_project_id = ?1 LIMIT ?3,?2",nativeQuery = true)
+//	List<Object[]> getUserIdByProject(Long projectId, Long pageSize, Long limit);
+	
+	@Query("select u.user.userId from AllocationModel u where u.project.projectId = ?1")
+	List<Object[]> getUserIdByProject(Long projectId);
+
+	@Query(value = "SELECT COUNT(EMS.allocation.user_user_id) FROM EMS.allocation where EMS.allocation.project_project_id = ?1",nativeQuery = true)
+	Long getUserCount(Long projectId);
+	
+	@Query("SELECT a.isBillable FROM AllocationModel a where a.user.userId = ?1")
+	Boolean getIsBillable(Long id);
+	
+//	@Query("SELECT a.isBillable FROM AllocationModel a where a.user.userId = ?1")
+//	List<Object[]> getIsBillable(Long id);
 	
 //	@Query(value = "SELECT * FROM EMS.alloc where  EMS.alloc.user_user_id = ?1 and EMS.alloc.end_date < ?3 or EMS.alloc.start_date > ?1", nativeQuery = true)
 //	List<Alloc> findUsers(long userId, Date date1, Date date2);

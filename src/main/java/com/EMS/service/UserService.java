@@ -16,6 +16,15 @@ public interface UserService {
 
 	List<UserModel> getAllUsers();
 
+//	List<Object[]> getUserIdLists(Long pageSize, Long startingIndex);
+	List<Object[]> getUserIdLists();
+
+	String getUserName(Long id);
+
+	Long getCount();
+
+
+
 
 
 }
