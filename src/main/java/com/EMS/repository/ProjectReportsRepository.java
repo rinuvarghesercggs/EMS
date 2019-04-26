@@ -44,7 +44,7 @@ public class ProjectReportsRepository extends DbConnectionUtility {
 		String sql ="";
 		List<BenchProjectReportModel> list = null;
 
-		sql = "SELECT CONCAT(u.first_name,' ',u.last_name) AS users ,u.user_id, a.is_billable, a.allocated_perce, p.project_name, d.department_id, d.department_name FROM allocation a LEFT JOIN `user` u ON u.user_id = a. user_user_id LEFT JOIN project p ON p.project_id = a.project_project_id LEFT JOIN department d ON d.department_id = u.department_department_id WHERE p.project_code = 'BP' AND u.user_id=? AND			 CAST(a.start_date  AS DATE) >= ? AND CAST(a.end_date  AS DATE)  <=  ? ";
+		sql = "SELECT CONCAT(u.first_name,' ',u.last_name) AS users ,u.user_id, a.is_billable, a.allocated_perce, p.project_name, d.department_id, d.department_name FROM allocation a LEFT JOIN `user` u ON u.user_id = a. user_user_id LEFT JOIN project p ON p.project_id = a.project_project_id LEFT JOIN department d ON d.department_id = u.department_department_id WHERE p.project_code = 'BP' AND u.user_id=? AND			 CAST(a.start_date  AS DATE) >= ? AND CAST(a.end_date  AS DATE)  <=  ? order by users";
 		list = jdbcTemplate.query(sql, new BenchReportRowMapper(), new Object[] {uId,fromDate,toDate});
 
 		return list;
@@ -53,7 +53,7 @@ public class ProjectReportsRepository extends DbConnectionUtility {
 		String sql ="";
 		List<BenchProjectReportModel> list = null;
 
-		sql = "SELECT CONCAT(u.first_name,' ',u.last_name) AS users ,u.user_id, a.is_billable, a.allocated_perce, p.project_name, d.department_id, d.department_name FROM allocation a LEFT JOIN `user` u ON u.user_id = a. user_user_id LEFT JOIN project p ON p.project_id = a.project_project_id LEFT JOIN department d ON d.department_id = u.department_department_id WHERE p.project_code = 'BP' AND			 CAST(a.start_date  AS DATE) >= ? AND CAST(a.end_date  AS DATE)  <=  ? ";
+		sql = "SELECT CONCAT(u.first_name,' ',u.last_name) AS users ,u.user_id, a.is_billable, a.allocated_perce, p.project_name, d.department_id, d.department_name FROM allocation a LEFT JOIN `user` u ON u.user_id = a. user_user_id LEFT JOIN project p ON p.project_id = a.project_project_id LEFT JOIN department d ON d.department_id = u.department_department_id WHERE p.project_code = 'BP' AND			 CAST(a.start_date  AS DATE) >= ? AND CAST(a.end_date  AS DATE)  <=  ? order by users";
 		list = jdbcTemplate.query(sql, new BenchReportRowMapper(), new Object[] {fromDate,toDate});	
 
 		return list;

@@ -30,7 +30,7 @@ public interface ProjectAllocationRepository extends JpaRepository<AllocationMod
 	@Query("SELECT s FROM AllocationModel s WHERE s.user.userId = ?1")
 	List<AllocationModel> findByUserId(long userId);
 
-	@Query(value = "SELECT s FROM AllocationModel s WHERE s.user.userId =:userId and s.startDate <:date2 and s.endDate >:date1")
+	@Query(value = "SELECT s FROM AllocationModel s WHERE s.user.userId =:userId and s.startDate <:date2 and s.endDate >:date1 order by user.firstName")
 	List<AllocationModel> findUsers(long userId, Date date1, Date date2);
 
 	@Query("SELECT s.allocId FROM AllocationModel s WHERE s.user.userId = ?2 and s.project.projectId = ?1")

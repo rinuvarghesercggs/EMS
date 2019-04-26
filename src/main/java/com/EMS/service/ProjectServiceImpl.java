@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.EMS.model.ClientModel;
@@ -11,7 +12,6 @@ import com.EMS.model.ContractModel;
 import com.EMS.model.DepartmentModel;
 import com.EMS.model.ProjectModel;
 import com.EMS.model.Resources;
-import com.EMS.model.UserModel;
 import com.EMS.repository.ClientRepository;
 import com.EMS.repository.ContractRepository;
 import com.EMS.repository.DepartmentRepository;
@@ -120,16 +120,18 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Override
 	public List<ProjectModel> getProjectList() {
-		List<ProjectModel> project = project_repositary.findAll();
+		List<ProjectModel> project = project_repositary.findAll(sortByIdAsc());
 		return project;
 	}
 
 	@Override
 	public ArrayList<ProjectModel> getListofProjects() {
-		ArrayList<ProjectModel> projectlist=(ArrayList<ProjectModel>) project_repositary.findAll();
+		ArrayList<ProjectModel> projectlist=(ArrayList<ProjectModel>) project_repositary.findAll(sortByIdAsc());
 		return projectlist;
 	}
-
+	private Sort sortByIdAsc() {
+        return new Sort(Sort.Direction.ASC, "projectName");
+    }
 
 
 	@Override
