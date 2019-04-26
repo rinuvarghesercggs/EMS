@@ -38,4 +38,19 @@ public interface UserRepository extends JpaRepository<UserModel, Long>{
 
 	@Query("SELECT u FROM UserModel u WHERE u.userId=?1 AND u.password=?2") 
 	UserModel getUserByUserId(Long userId, String password);
+	
+//	@Query(value = "SELECT user_id FROM EMS.user LIMIT ?2,?1",nativeQuery = true)
+//	List<Object[]> getUserIdLists(Long pageSize, Long startingIndex);
+	
+	@Query("select u.userId from UserModel u")
+	List<Object[]> getUserIdLists();
+
+	@Query(value = "SELECT first_name,last_name FROM EMS.user where EMS.user.user_id = ?1",nativeQuery = true)
+	String getUserName(Long id);
+
+	@Query(value = "SELECT COUNT(user_id) FROM EMS.user",nativeQuery = true)
+	Long getUserCount();
+
+	
+
 }

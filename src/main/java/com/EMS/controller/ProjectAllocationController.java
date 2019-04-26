@@ -180,6 +180,7 @@ public class ProjectAllocationController {
 							jsonObject.put("projectCategory", item.getproject().getProjectCategory());
 						}
 						if (item.getuser() != null) {
+							jsonObject.put("userId",item.getuser().getUserId());
 							jsonObject.put("firstName", item.getuser().getFirstName());
 							jsonObject.put("lastName", item.getuser().getLastName());
 							jsonObject.put("role", item.getuser().getrole().getroleId());

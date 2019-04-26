@@ -47,5 +47,31 @@ public class UserServiceImpl implements UserService {
 	}
 
 
+	@Override
+	public String getUserName(Long id) {
+		String name = userRepository.getUserName(id);
+		return name;
+	}
+
+//	@Override
+//	public List<Object[]> getUserIdLists(Long pageSize, Long startingIndex) {
+//		List<Object[]> userIdList = userRepository.getUserIdLists(pageSize,startingIndex);
+//		return userIdList;
+//	}
+	@Override
+	public List<Object[]> getUserIdLists() {
+		List<Object[]> userIdList = userRepository.getUserIdLists();
+		return userIdList;
+	}
+
+	@Override
+	public Long getCount() {
+		Long count = userRepository.getUserCount();
+		return count;
+	}
+
+	
+
+
 
 }

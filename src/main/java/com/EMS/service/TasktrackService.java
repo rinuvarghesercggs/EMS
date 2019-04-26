@@ -3,8 +3,13 @@ package com.EMS.service;
 import java.util.Date;
 import java.util.List;
 
+import org.json.simple.JSONObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.EMS.model.Task;
 import com.EMS.model.Tasktrack;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 public interface TasktrackService {
 
@@ -19,4 +24,25 @@ public interface TasktrackService {
 	Task getTaskById(Long taskId);
 
 	public List<Tasktrack> getTasks();
+
+	List<Object[]> getUserList(Long userId, Date startDate, Date endDate);
+
+	List<Object[]> getUserListByProjectId(Long projectId, Date startDate, Date endDate);
+
+	List<Object[]> getUserListByDate(Date startDate, Date endDate);
+
+	List<Object[]> getUserListNew(Long userId, Date startDate, Date endDate, Long pageSize, Long startingIndex);
+
+	Boolean checkIsUserExists(Long id);
+
+	Object getUserName(Long id);
+
+	Boolean checkExistanceOfUser(Long projectId, Long userId);
+
+	List<JSONObject> getUserTaskDetails(Long id, Date startDate, Date endDate, List<Object[]> userList,
+			List<JSONObject> jsonArray, List<JSONObject> jsonDataRes1, Boolean isExist);
+
+	List<Object[]> getUserTaskList(Long id, Date startDate, Date endDate);
+
 }
+

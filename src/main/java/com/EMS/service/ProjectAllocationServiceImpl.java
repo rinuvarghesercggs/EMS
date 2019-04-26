@@ -113,6 +113,35 @@ public class ProjectAllocationServiceImpl implements ProjectAllocationService{
 		return id;
 	}
 
+
+//	@Override
+//	public List<Object[]> getUserIdByProject(Long projectId, Long pageSize, Long limit) {
+//		List<Object[]> userIdList = projectAllocationRepository.getUserIdByProject(projectId,pageSize,limit);
+//		return userIdList;
+//	}
 	
+	@Override
+	public List<Object[]> getUserIdByProject(Long projectId) {
+		List<Object[]> userIdList = projectAllocationRepository.getUserIdByProject(projectId);
+		return userIdList;
+	}
+
+	@Override
+	public Long getUserCount(Long projectId) {
+		Long count = projectAllocationRepository.getUserCount(projectId);
+		return count;
+	}
+
+//	@Override
+//	public List<Object[]> getIsBillable(Long id) {
+//		List<Object[]> isBillable = projectAllocationRepository.getIsBillable(id);	
+//		return isBillable;
+//	}
+
+	@Override
+	public Boolean getIsBillable(Long id) {
+		Boolean isBillable = projectAllocationRepository.getIsBillable(id);
+		return isBillable;
+	}
 	
 }
