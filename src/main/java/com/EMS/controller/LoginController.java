@@ -2,7 +2,9 @@ package com.EMS.controller;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import javax.servlet.http.HttpServletResponse;
@@ -15,12 +17,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.EMS.model.AllocationModel;
 import com.EMS.model.DepartmentModel;
+import com.EMS.model.PageRule;
 import com.EMS.model.RoleModel;
+import com.EMS.model.Tasktrack;
 import com.EMS.model.Technology;
 import com.EMS.model.UserModel;
 import com.EMS.model.UserTechnology;
 import com.EMS.service.LoginService;
+import com.EMS.service.PageRuleService;
+import com.EMS.service.TasktrackService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -35,8 +42,13 @@ public class LoginController {
 	LoginService login_service;
 
 	@Autowired
+	PageRuleService pageruleService;
+	
+	@Autowired
 	private ObjectMapper objectMapper;
 
+
+	
 	// api call for admin login
 
 	@PostMapping(value = "/getLoginCredentials")
@@ -49,7 +61,7 @@ public class LoginController {
 		// getting string value from json request
 		String username = requestdata.get("username").asText();
 		String password = requestdata.get("password").asText();
-
+		
 		try {
 
 			MessageDigest md = MessageDigest.getInstance("MD5");
@@ -78,6 +90,13 @@ public class LoginController {
 					data.put("userId", usercheck.getUserId());
 					data.put("roleId", usercheck.getrole().getroleId());
 					data.put("roleName", usercheck.getrole().getroleName());
+					Long roleid=usercheck.getrole().getroleId();
+					//data.put("blockedPages", objectMapper.writeValueAsString(getBlockedPageList(usercheck.getrole().getroleId())));
+						
+					ObjectMapper mapper = new ObjectMapper();
+					ArrayNode array = mapper.valueToTree(getBlockedPageList(usercheck.getrole().getroleId()));
+					data.putArray("blockedPages").addAll(array);
+
 					// Setting data on json object
 					response.set("payload", data);
 				}
@@ -266,6 +285,11 @@ public class LoginController {
 			responsedata.put("code", httpstatus.getStatus());
 		}
 		return responsedata;
+	}
+	private List<PageRule> getBlockedPageList(long roleid) {
+
+			List<PageRule> blockedPageList = pageruleService.getBlockedPageList(roleid);
+			return blockedPageList;		
 	}
 
 }
