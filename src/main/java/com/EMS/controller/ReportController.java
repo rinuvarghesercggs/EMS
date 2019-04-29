@@ -265,8 +265,7 @@ public class ReportController {
 				Long id = (Long) userItem;
 				System.out.println("id : "+id);
 
-				isBillable = projectAllocationService.getIsBillable(id);
-//				List<Object[]> isBillable = projectAllocationService.getIsBillable(id);
+				isBillable = projectAllocationService.getIsBillable(id,projectId);
 				System.out.println("isBillable : "+isBillable);
 
 				if(isBillable)
@@ -287,14 +286,14 @@ public class ReportController {
 					for(Object[] listItem : userList) {
 						ObjectNode taskItemObject = objectMapper.createObjectNode();
 
-						String name = (String) listItem[2]+" "+listItem[3];
+						String name = (String) listItem[2];
 						Double totalHours = (Double) listItem[0];
-						String taskName = (String) listItem[4];
+						String taskName = (String) listItem[3];
 						
-						taskItemObject.put("userName",name);
-						taskItemObject.put("isBillable",billable);
-						taskItemObject.put("totalHours",totalHours);
-						taskItemObject.put("taskName",taskName);
+						taskItemObject.put("User",name);
+						taskItemObject.put("Billable",billable);
+						taskItemObject.put("Hours",totalHours);
+						taskItemObject.put("Task Type",taskName);
 						jsonArray.add(taskItemObject);
 
 

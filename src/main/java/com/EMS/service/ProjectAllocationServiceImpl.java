@@ -132,15 +132,10 @@ public class ProjectAllocationServiceImpl implements ProjectAllocationService{
 		return count;
 	}
 
-//	@Override
-//	public List<Object[]> getIsBillable(Long id) {
-//		List<Object[]> isBillable = projectAllocationRepository.getIsBillable(id);	
-//		return isBillable;
-//	}
 
 	@Override
-	public Boolean getIsBillable(Long id) {
-		Boolean isBillable = projectAllocationRepository.getIsBillable(id);
+	public Boolean getIsBillable(Long id,Long projectId) {
+		Boolean isBillable = projectAllocationRepository.getIsBillable(id,projectId);
 		return isBillable;
 	}
 	

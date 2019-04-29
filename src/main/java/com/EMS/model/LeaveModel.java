@@ -28,6 +28,8 @@ public class LeaveModel {
 	private Double LOP;
 	private Date leaveFrom;
 	private Date leaveTo;
+	private String leaveReason;
+	private String status;
 	
 	
 	public long getLeaveId() {
@@ -92,6 +94,22 @@ public class LeaveModel {
 	
 	public void setLeaveTo(Date leaveTo) {
 		this.leaveTo = leaveTo;
+	}
+
+	public String getLeaveReason() {
+		return leaveReason;
+	}
+
+	public void setLeaveReason(String leaveReason) {
+		this.leaveReason = leaveReason;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 	
 	
