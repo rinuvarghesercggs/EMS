@@ -27,9 +27,9 @@ public interface ProjectAllocationService {
 //	public List<Object[]> getUserIdByProject(Long projectId, Long pageSize, Long limit);
 	public List<Object[]> getUserIdByProject(Long projectId);
 	public Long getUserCount(Long projectId);
-	public Boolean getIsBillable(Long id);	
-//	public List<Object[]> getIsBillable(Long id);
+	public Boolean getIsBillable(Long id, Long projectId);	
 
+	
 }
 
 
