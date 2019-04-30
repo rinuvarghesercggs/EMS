@@ -1,15 +1,18 @@
 package com.EMS.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import com.EMS.model.HolidayModel;
-import com.EMS.model.LeaveModel;
 
 public interface AttendanceService {
-	
+
 	public List<HolidayModel> getHolidayList();
 
-	public List<LeaveModel> getUserLeaveList(Long userId);
+//	public List<Object[]> getUserLeaveList(Long userId);
 
+	public List<Object[]> getUserLeaveList(Long userId, LocalDate firstDayOfYear, LocalDate lastDayOfYear);
+
+//	public Object getUserLeaveBalance(Long userId, LocalDate firstDayOfYear, LocalDate lastDayOfYear);
 
 }

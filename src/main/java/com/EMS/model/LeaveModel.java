@@ -24,12 +24,14 @@ public class LeaveModel {
 	
 	private Double CL;
 	private Double SL;
-	private Double compensatoryOff;
+	private Double EL;
 	private Double LOP;
 	private Date leaveFrom;
 	private Date leaveTo;
 	private String leaveReason;
 	private String status;
+	private Date appliedDate;
+	private Date approvedDate;
 	
 	
 	public long getLeaveId() {
@@ -64,12 +66,12 @@ public class LeaveModel {
 		SL = sL;
 	}
 	
-	public Double getCompensatoryOff() {
-		return compensatoryOff;
+	public Double getEL() {
+		return EL;
 	}
 	
-	public void setCompensatoryOff(Double compensatoryOff) {
-		this.compensatoryOff = compensatoryOff;
+	public void setEL(Double EL) {
+		this.EL = EL;
 	}
 	
 	public Double getLOP() {
@@ -110,6 +112,22 @@ public class LeaveModel {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public Date getAppliedDate() {
+		return appliedDate;
+	}
+
+	public void setAppliedDate(Date appliedDate) {
+		this.appliedDate = appliedDate;
+	}
+
+	public Date getApprovedDate() {
+		return approvedDate;
+	}
+
+	public void setApprovedDate(Date approvedDate) {
+		this.approvedDate = approvedDate;
 	}
 	
 	
