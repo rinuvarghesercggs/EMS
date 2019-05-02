@@ -3,6 +3,7 @@ package com.EMS.service;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.EMS.model.DepartmentModel;
 import com.EMS.model.RoleModel;
@@ -34,6 +35,8 @@ public interface LoginService {
 	UserModel changePasswordAuthentication(long parseLong, String oldPassword);
 
 	Boolean checkUsernameDuplication(String userName);
+
+	List<Technology> getTechnology();
 
 	
 

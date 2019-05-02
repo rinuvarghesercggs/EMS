@@ -356,5 +356,29 @@ public class LoginController {
 
 	}
 
-	
+	@GetMapping("/technology")
+	public JsonNode getTechnology(HttpServletResponse httpstatus) {
+		ObjectNode responseData=objectMapper.createObjectNode();
+		
+		List<Technology> techList=login_service.getTechnology();
+		ArrayNode techarray=objectMapper.createArrayNode();
+		
+		if (!techList.isEmpty()) {
+		
+			for (Technology tech : techList) {
+				ObjectNode clientobj = objectMapper.createObjectNode();
+				clientobj.put("TechnologyId", tech.getTechnologyId());
+				clientobj.put("TechnologyName", tech.getTechnologyName());
+				techarray.add(clientobj);
+			}
+		}
+		responseData.put("status", "success");
+		responseData.put("message", "Password Updated");
+		responseData.put("code", httpstatus.getStatus());
+		responseData.set("payload", techarray);
+		
+		return responseData;
+		
+	}
+
 }

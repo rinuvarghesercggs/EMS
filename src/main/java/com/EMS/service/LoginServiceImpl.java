@@ -1,6 +1,8 @@
 package com.EMS.service;
 
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -124,6 +126,13 @@ public class LoginServiceImpl implements LoginService {
 	public Boolean checkUsernameDuplication(String userName) {
 		Boolean isUsernameExist = user_repositary.checkExistanceOfUserName(userName);
 		return isUsernameExist;
+	}
+
+
+	@Override
+	public List<Technology> getTechnology() {
+		List<Technology> techlist=technology_repository.findAll();
+		return techlist;
 	}
 
 	
