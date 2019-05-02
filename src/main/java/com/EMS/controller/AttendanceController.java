@@ -1,8 +1,14 @@
 package com.EMS.controller;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -14,11 +20,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.EMS.model.HolidayModel;
+import com.EMS.model.LeaveModel;
+import com.EMS.model.UserModel;
 import com.EMS.service.AttendanceService;
+import com.EMS.service.UserService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import ch.qos.logback.core.pattern.parser.Node;
 
 @RestController
 @RequestMapping(value = "/attendance")
@@ -30,6 +41,8 @@ public class AttendanceController {
 	@Autowired
 	private AttendanceService attendanceService;
 	
+	@Autowired
+	private UserService userservice;
 	
 	@GetMapping("/getHolidayList")
 	public ObjectNode getHolidayList(HttpServletResponse httpstatus) {
@@ -125,5 +138,146 @@ public class AttendanceController {
 		}
 
 		return jsonDataRes;
+	}
+	
+	@PostMapping("/getWeeklyLeaveList")
+	public JsonNode getweeklyLeeveList(@RequestBody JsonNode requestdata,HttpServletResponse response) {
+		ObjectNode responseData=objectMapper.createObjectNode();
+		
+		String startDate=requestdata.get("startdate").asText();
+		String endDate=requestdata.get("endDate").asText();
+		
+		
+		try {
+			
+			LocalDate start = LocalDate.parse(startDate);
+			LocalDate end = LocalDate.parse(endDate);
+			
+			while (!start.isAfter(end)) {
+
+			    System.out.println("dates :"+start);
+			    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+			    String stgdate=String.valueOf(start);
+			    Date date1 =formatter.parse(stgdate);	
+			   
+			    List<LeaveModel> leavelist=attendanceService.getWeeklyLeavelist(date1);
+				ArrayNode leaverecord=objectMapper.createArrayNode();	
+					
+					for(LeaveModel leave:leavelist) {
+					
+						ObjectNode node=objectMapper.createObjectNode();
+						System.out.println("userid :"+leave.getUser().getUserId());
+						String username=userservice.getUserName(leave.getUser().getUserId());
+						System.out.println("username:"+username);
+						
+						node.put("username", username);
+						node.put("startDate", leave.getLeaveFrom().toString());
+//						node.put("endDate", leave.getLeaveTo().toString());
+						if(leave.getCL()!=null) {
+							node.put("Leave Type", "CL");
+							node.put("Leave Count", leave.getCL());
+						}
+						if(leave.getEL()!=null) {
+							node.put("Leave Type", "EL");
+//							node.put("Leave Count", leave.getEL());
+						}
+						if(leave.getLOP()!=null) {
+							node.put("Leave Type", "LOP");
+//							node.put("Leave Count", leave.getLOP());
+						}	
+						
+						if(leave.getSL()!=null) {
+							node.put("Leave Type", "SL");
+//							node.put("Leave Count", leave.getSL());
+						}
+						leaverecord.add(node);
+					}
+					responseData.put("status", "success");
+					responseData.put("code", response.getStatus());
+					responseData.put("message", "success");
+					responseData.set(stgdate, leaverecord);
+					start = start.plusDays(1);
+
+			}
+	
+			
+		}catch(Exception e) {
+			
+			responseData.put("status", "Failed");
+			responseData.put("code", response.getStatus());
+			responseData.put("message", "Exception:"+e);
+			e.printStackTrace();
+			e.printStackTrace();
+		}
+		
+		return responseData;
+	}
+	
+	@PostMapping("/getYearlyLeaveList")
+	public JsonNode getYearlyLeeveList(@RequestBody JsonNode requestdata,HttpServletResponse response) {
+		ObjectNode responseData=objectMapper.createObjectNode();
+		
+		String startDate=requestdata.get("startdate").asText();
+		String endDate=requestdata.get("endDate").asText();
+		
+		try {
+
+			    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);	    
+			    Date startDate1=formatter.parse(startDate);
+			    Date endDate1=formatter.parse(endDate);
+			    
+			    ArrayNode userleaverecord=objectMapper.createArrayNode();
+			    List<UserModel> userlist=userservice.getAllUsers();
+			    if(!userlist.isEmpty()) {
+			    	System.out.println("array size :"+userlist.size());
+			    	for(UserModel user:userlist) {
+			    		
+			    		ObjectNode node=objectMapper.createObjectNode();
+			    		node.put("Employee ID", user.getEmpId());
+			    		node.put("Employee Name", user.getFirstName()+" "+user.getLastName());
+			    		
+						System.out.println("userid :"+user.getUserId());
+						List<LeaveModel> leavelist=attendanceService.getYearlyLeavelist(user.getUserId(),startDate1,endDate1);
+				    	int clCount=0,elCount=0,lopCount=0,slCount=0;
+				    	
+				    	for(LeaveModel leave:leavelist) {
+										    		
+							if(leave.getCL()!=null)
+								clCount++;
+							
+							if(leave.getEL()!=null)
+								elCount++;
+							
+							if(leave.getLOP()!=null) 
+								lopCount++;
+						
+							if(leave.getSL()!=null)
+								slCount++;
+							
+						}
+				    	node.put("Casual Leave", clCount);
+			    		node.put("Earned Leave", elCount);
+			    		node.put("LOP", lopCount);
+			    		node.put("Sick Leave", slCount);
+			    		
+				    	userleaverecord.add(node);	
+			    	}
+			    	
+			    }
+					
+					responseData.put("status", "success");
+					responseData.put("code", response.getStatus());
+					responseData.put("message", "success");
+					responseData.set("payload", userleaverecord);
+
+			
+		}catch(Exception e) {
+			responseData.put("status", "Failed");
+			responseData.put("code", response.getStatus());
+			responseData.put("message", "Exception:"+e);
+			e.printStackTrace();
+		}
+		
+		return responseData;
 	}
 }
