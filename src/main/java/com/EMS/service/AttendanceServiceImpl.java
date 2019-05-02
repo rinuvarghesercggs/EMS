@@ -71,4 +71,10 @@ public class AttendanceServiceImpl implements AttendanceService {
 //		return count;
 //	}
 
+	
+	@Override
+	public void saveLeaveMarking(LeaveModel leaveModel) {
+		leaveRepository.save(leaveModel);
+		
+	}
 }

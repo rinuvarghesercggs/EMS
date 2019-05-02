@@ -119,6 +119,13 @@ public class LoginServiceImpl implements LoginService {
 				}
 	}
 
+
+	@Override
+	public Boolean checkUsernameDuplication(String userName) {
+		Boolean isUsernameExist = user_repositary.checkExistanceOfUserName(userName);
+		return isUsernameExist;
+	}
+
 	
 
 }

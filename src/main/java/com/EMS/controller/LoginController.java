@@ -185,48 +185,58 @@ public class LoginController {
 			 user.setPassword(encPassword);  
 			
 			user.setQualification(requestdata.get("qualification").asText());
-			UserModel userdata = login_service.adduser(user);
-
-			if (userdata == null) {
-				responseflag = 1;
-				responsedata.put("message", "user record insertion failed");
-			} else {
-
-				// adding details in user technology
-				ArrayNode usertechnology = (ArrayNode) requestdata.get("userTechnology");
-				if (usertechnology.equals(null)) {
-
+			Boolean isUsernameExist = login_service.checkUsernameDuplication(requestdata.get("userName").asText());
+			
+			if(!isUsernameExist) {
+				UserModel userdata = login_service.adduser(user);
+				if (userdata == null) {
 					responseflag = 1;
-					responsedata.put("message", "Technology insertion failed");
-				} else {
-					for (JsonNode node : usertechnology) {
+					responsedata.put("message", "user record insertion failed");
+				}
+				else {
 
-						// checking for technology using ID
+					// adding details in user technology
+					ArrayNode usertechnology = (ArrayNode) requestdata.get("userTechnology");
+					if (usertechnology.equals(null)) {
 
-						Long techId = node.get("technology").asLong();
-						Technology technology = null;
+						responseflag = 1;
+						responsedata.put("message", "Technology insertion failed");
+					} else {
+						for (JsonNode node : usertechnology) {
 
-						if (techId != null)
-							technology = login_service.findtechnology(techId);
+							// checking for technology using ID
 
-						UserTechnology usertech = new UserTechnology();
-						if (technology != null)
-							usertech.setTechnology(technology);
-						else {
-							responseflag = 1;
-							responsedata.put("message",
-									"user technology insertion failed due to missing technology value");
+							Long techId = node.get("technology").asLong();
+							Technology technology = null;
+
+							if (techId != null)
+								technology = login_service.findtechnology(techId);
+
+							UserTechnology usertech = new UserTechnology();
+							if (technology != null)
+								usertech.setTechnology(technology);
+							else {
+								responseflag = 1;
+								responsedata.put("message",
+										"user technology insertion failed due to missing technology value");
+							}
+							usertech.setUser(userdata);
+							usertech.setExperience(node.get("experience").asDouble());
+							UserTechnology userTechnology = login_service.addusertechnology(usertech);
+							if (userTechnology == null)
+								responseflag = 1;
 						}
-						usertech.setUser(userdata);
-						usertech.setExperience(node.get("experience").asDouble());
-						UserTechnology userTechnology = login_service.addusertechnology(usertech);
-						if (userTechnology == null)
-							responseflag = 1;
+
 					}
 
 				}
-
 			}
+			else {
+				responseflag = 1;
+				responsedata.put("message", "Username already exist.");
+			}
+
+			 
 
 			if (responseflag == 0) {
 				responsedata.put("status", "success");

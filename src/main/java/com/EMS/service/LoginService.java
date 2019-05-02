@@ -33,6 +33,8 @@ public interface LoginService {
 
 	UserModel changePasswordAuthentication(long parseLong, String oldPassword);
 
+	Boolean checkUsernameDuplication(String userName);
+
 	
 
 }

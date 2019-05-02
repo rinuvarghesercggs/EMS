@@ -51,6 +51,9 @@ public interface UserRepository extends JpaRepository<UserModel, Long>{
 	@Query(value = "SELECT COUNT(user_id) FROM EMS.user",nativeQuery = true)
 	Long getUserCount();
 
+	@Query("select count(*)>0 from UserModel u where u.userName = ?1")
+	Boolean checkExistanceOfUserName(String userName);
+
 	
 
 }

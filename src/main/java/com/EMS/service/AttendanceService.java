@@ -22,6 +22,8 @@ public interface AttendanceService {
 
 	public List<LeaveModel> getYearlyLeavelist(long userId, Date startDate1, Date endDate1);
 
+	public void saveLeaveMarking(LeaveModel leaveModel);
+
 //	public Object getUserLeaveBalance(Long userId, LocalDate firstDayOfYear, LocalDate lastDayOfYear);
 
 }

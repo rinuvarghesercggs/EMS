@@ -280,4 +280,60 @@ public class AttendanceController {
 		
 		return responseData;
 	}
+	
+	@PostMapping("/leaveMarking")
+	public ObjectNode setLeaveMarking(@RequestBody JsonNode requestdata,HttpServletResponse httpstatus) {
+		ObjectNode jsonDataRes = objectMapper.createObjectNode();
+		try {
+
+
+				TimeZone zone = TimeZone.getTimeZone("MST");
+				SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+				outputFormat.setTimeZone(zone);
+
+				Long userId = requestdata.get("userId").asLong();
+				UserModel user = userservice.getUserDetailsById(userId);
+
+				LocalDate now = LocalDate.now();
+
+				ArrayNode leaveNode=(ArrayNode) requestdata.get("leaveList");
+				System.out.println("leaveNode size : "+leaveNode.size());
+				for (JsonNode node:leaveNode) {
+					LeaveModel leaveModel = new LeaveModel();
+					leaveModel.setUser(user);
+					leaveModel.setStatus(requestdata.get("status").asText());
+					leaveModel.setAppliedDate(outputFormat.parse(now.toString()));
+					leaveModel.setLeaveReason(node.get("reason").asText());
+					String date = node.get("date").asText();
+					if (!date.isEmpty()) {
+						leaveModel.setLeaveFrom(outputFormat.parse(date));
+						leaveModel.setLeaveTo(outputFormat.parse(date));
+					}
+					System.out.println("type : "+node.get("leaveType").asText());
+					if(node.get("leaveType").asText().equals("cl"))
+						leaveModel.setCL(node.get("count").asDouble());
+					else if(node.get("leaveType").asText().equals("sl"))
+						leaveModel.setSL(node.get("count").asDouble());
+					else if(node.get("leaveType").asText().equals("lop"))
+						leaveModel.setLOP(node.get("count").asDouble());
+					else if(node.get("leaveType").asText().equals("el"))
+						leaveModel.setEL(node.get("count").asDouble());
+
+					attendanceService.saveLeaveMarking(leaveModel);
+
+				}
+				
+				
+				jsonDataRes.put("status", "success");
+				jsonDataRes.put("message", "successfully saved.");
+				jsonDataRes.put("code", httpstatus.getStatus());
+		}
+		catch (Exception e) {
+			jsonDataRes.put("status", "failure");
+			jsonDataRes.put("code", httpstatus.getStatus());
+			jsonDataRes.put("message", "failed. " + e);
+		}
+		return jsonDataRes;
+		
+	}
 }
