@@ -8,11 +8,17 @@ import org.springframework.stereotype.Service;
 
 import com.EMS.model.UserModel;
 import com.EMS.repository.UserRepository;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 @Service
 public class UserServiceImpl implements UserService {
 	@Autowired
 	UserRepository userRepository;
+	
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	@Override
 	public UserModel getUserDetailsById(Long id) {
@@ -68,6 +74,20 @@ public class UserServiceImpl implements UserService {
 	public Long getCount() {
 		Long count = userRepository.getUserCount();
 		return count;
+	}
+
+	@Override
+	public ArrayNode getUserList() {
+		ArrayNode array = objectMapper.createArrayNode();
+		array = objectMapper.convertValue(userRepository.getUser(), ArrayNode.class);
+		return array;
+	}
+
+	@Override
+	public JsonNode getUserdetails(Long userId) {
+		JsonNode node = objectMapper.createObjectNode();
+		node = objectMapper.convertValue(userRepository.getUserById(userId), JsonNode.class);
+		return node;
 	}
 
 	

@@ -40,7 +40,7 @@ public interface TasktrackService {
 	Boolean checkExistanceOfUser(Long projectId, Long userId);
 
 	List<JSONObject> getUserTaskDetails(Long id, Date startDate, Date endDate, List<Object[]> userList,
-			List<JSONObject> jsonArray, List<JSONObject> jsonDataRes1, Boolean isExist);
+			List<JSONObject> jsonArray, List<JSONObject> jsonDataRes1, Boolean isExist,Long projectId);
 
 	List<Object[]> getUserTaskList(Long id, Date startDate, Date endDate);
 

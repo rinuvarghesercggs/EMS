@@ -3,6 +3,8 @@ package com.EMS.service;
 import java.util.List;
 
 import com.EMS.model.UserModel;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 public interface UserService {
 	
@@ -22,6 +24,11 @@ public interface UserService {
 	String getUserName(Long id);
 
 	Long getCount();
+
+	 ArrayNode getUserList();
+
+	JsonNode getUserdetails(Long userId);
+	
 
 
 

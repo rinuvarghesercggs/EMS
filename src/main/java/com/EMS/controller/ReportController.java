@@ -150,7 +150,7 @@ public class ReportController {
 //				jsonDataRes.put("userCount", count);
 //				userIdList = userService.getUserIdLists(pageSize,startingIndex);
 				userIdList = userService.getUserIdLists();
-				getUserDataForReport(userIdList, startDate, endDate, jsonDataRes, jsonDataRes1, jsonArray);
+				getUserDataForReport(userIdList, startDate, endDate, jsonDataRes, jsonDataRes1, jsonArray,projectId);
 
 			}
 
@@ -160,7 +160,7 @@ public class ReportController {
 //				userIdList = projectAllocationService.getUserIdByProject(projectId,pageSize,startingIndex);
 				userIdList = projectAllocationService.getUserIdByProject(projectId);
 
-				getUserDataForReport(userIdList, startDate, endDate, jsonDataRes, jsonDataRes1, jsonArray);
+				getUserDataForReport(userIdList, startDate, endDate, jsonDataRes, jsonDataRes1, jsonArray,projectId);
 			}
 
 			else if (startDate != null && endDate != null && projectId == null && userId != null) {
@@ -168,7 +168,7 @@ public class ReportController {
 //				jsonDataRes.put("userCount", "1");
 				Boolean isExist = taskTrackService.checkIsUserExists(userId);
 				List<JSONObject> jsonDataRes11 = taskTrackService.getUserTaskDetails(userId, startDate, endDate,
-						userList, jsonArray, jsonDataRes1, isExist);
+						userList, jsonArray, jsonDataRes1, isExist,projectId);
 			}
 
 			else if (startDate != null && endDate != null && projectId != null && userId != null) {
@@ -176,7 +176,7 @@ public class ReportController {
 //				jsonDataRes.put("userCount", "1");
 				Boolean isExist = taskTrackService.checkExistanceOfUser(projectId, userId);
 				List<JSONObject> jsonDataRes11 = taskTrackService.getUserTaskDetails(userId, startDate, endDate,
-						userList, jsonArray, jsonDataRes1, isExist);
+						userList, jsonArray, jsonDataRes1, isExist,projectId);
 
 			}
 			jsonDataRes.put("data", jsonDataRes1);
@@ -193,7 +193,7 @@ public class ReportController {
 	}
 
 	private void getUserDataForReport(List<Object[]> userIdList, Date startDate, Date endDate, JSONObject jsonDataRes,
-			List<JSONObject> jsonDataRes1, List<JSONObject> jsonArray) {
+			List<JSONObject> jsonDataRes1, List<JSONObject> jsonArray,Long projectId) {
 
 		for (Object userItem : userIdList) {
 
@@ -202,7 +202,7 @@ public class ReportController {
 
 			List<Object[]> userList = null;
 			Boolean isExist = taskTrackService.checkIsUserExists(id);
-			 List<JSONObject> jsonDataRes11 = taskTrackService.getUserTaskDetails(id, startDate, endDate, userList, jsonArray, jsonDataRes1, isExist);
+			 List<JSONObject> jsonDataRes11 = taskTrackService.getUserTaskDetails(id, startDate, endDate, userList, jsonArray, jsonDataRes1, isExist,projectId);
 
 		}
 	}

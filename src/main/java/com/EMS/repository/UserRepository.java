@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.EMS.model.UserModel;
+import com.fasterxml.jackson.databind.JsonNode;
 
 public interface UserRepository extends JpaRepository<UserModel, Long>{
 		
@@ -53,6 +54,9 @@ public interface UserRepository extends JpaRepository<UserModel, Long>{
 
 	@Query("select count(*)>0 from UserModel u where u.userName = ?1")
 	Boolean checkExistanceOfUserName(String userName);
+
+	@Query("select u from UserModel u where u.userId = ?1")
+	Object getUserById(Long userId);
 
 	
 

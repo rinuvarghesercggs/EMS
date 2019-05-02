@@ -1,6 +1,7 @@
 package com.EMS.controller;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +31,7 @@ import com.EMS.model.UserTechnology;
 import com.EMS.service.LoginService;
 import com.EMS.service.PageRuleService;
 import com.EMS.service.TasktrackService;
+import com.EMS.service.UserService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -46,6 +50,9 @@ public class LoginController {
 	
 	@Autowired
 	private ObjectMapper objectMapper;
+	
+	@Autowired
+	private UserService userService;
 
 
 	
@@ -302,4 +309,52 @@ public class LoginController {
 			return blockedPageList;		
 	}
 
+	
+	
+	
+	@GetMapping("/getUserList")
+	public JsonNode getUserList(HttpServletResponse httpstatus) throws ParseException {
+
+		ObjectNode dataNode = objectMapper.createObjectNode();
+		ObjectNode node = objectMapper.createObjectNode();
+
+		try {
+			ArrayNode userList = userService.getUserList();
+			dataNode.set("userList", userList);
+
+			node.put("status", "success");
+			node.set("data", dataNode);
+
+		} catch (Exception e) {
+			node.put("status", "failure");
+			node.set("data", dataNode);
+		}
+
+		return node;
+
+	}
+	
+	@GetMapping("/getUserDetails/{userId}")
+	public JsonNode getUserDetails(@PathVariable("userId") Long userId,HttpServletResponse httpstatus) throws ParseException {
+
+		ObjectNode dataNode = objectMapper.createObjectNode();
+		ObjectNode node = objectMapper.createObjectNode();
+
+		try {
+			JsonNode userData = userService.getUserdetails(userId);
+			dataNode.set("userList", userData);
+
+			node.put("status", "success");
+			node.set("data", dataNode);
+
+		} catch (Exception e) {
+			node.put("status", "failure");
+			node.set("data", dataNode);
+		}
+
+		return node;
+
+	}
+
+	
 }

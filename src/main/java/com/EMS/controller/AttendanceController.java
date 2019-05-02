@@ -124,7 +124,7 @@ public class AttendanceController {
 						leaveObject.put("Leave Count", leaveCount);
 						leaveObject.put("Leave Description", leaveDescription);
 						leaveObject.put("Start Date", leaveFrom);
-						leaveObject.put("endDate", leaveTo);
+						leaveObject.put("End Date", leaveTo);
 						leaveObject.put("status", status);
 						jsonArray.add(leaveObject);
 
