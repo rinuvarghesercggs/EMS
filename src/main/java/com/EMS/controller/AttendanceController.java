@@ -51,15 +51,21 @@ public class AttendanceController {
 		ObjectNode jsonDataRes = objectMapper.createObjectNode();
 
 		try {
-			List<HolidayModel> holidayList = attendanceService.getHolidayList();
+			List<Object[]> holidayList = attendanceService.getHolidayList();
+			System.out.println("holidayList : "+holidayList.size());
 //			ArrayNode node = objectMapper.convertValue(attendanceService.getHolidayList(), ArrayNode.class);
-			for (HolidayModel item : holidayList) {
+			for (Object[] item : holidayList) {
 				ObjectNode holidayNode = objectMapper.createObjectNode();
-				holidayNode.put("holidayId", item.getHolidayId());
-				holidayNode.put("date", item.getDate().toString());
-				holidayNode.put("day", item.getDay());
-				holidayNode.put("holidayName", item.getHolidayName());
-				holidayNode.put("holidayType", item.getHolidayType());
+				String holidayId = item[0].toString();
+				String date = item[1].toString();
+				String day = item[2].toString();
+				String holidayName = item[3].toString();
+				String holidayType = item[4].toString();
+				holidayNode.put("holidayId", holidayId);
+				holidayNode.put("date", date);
+				holidayNode.put("day", day);
+				holidayNode.put("holidayName", holidayName);
+				holidayNode.put("holidayType", holidayType);
 				jsonArray.add(holidayNode);
 
 			}

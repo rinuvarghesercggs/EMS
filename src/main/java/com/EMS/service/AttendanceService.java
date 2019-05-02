@@ -9,7 +9,7 @@ import com.EMS.model.LeaveModel;
 
 public interface AttendanceService {
 
-	public List<HolidayModel> getHolidayList();
+	public List<Object[]> getHolidayList();
 
 //	public List<Object[]> getUserLeaveList(Long userId);
 

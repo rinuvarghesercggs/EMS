@@ -23,8 +23,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 	LeaveRepository leaveRepository;
 
 	@Override
-	public List<HolidayModel> getHolidayList() {
-		List<HolidayModel> list = holidayRepository.findAll();
+	public List<Object[]> getHolidayList() {
+		List<Object[]> list = holidayRepository.getHolidayLists();
 		return list;
 	}
 
