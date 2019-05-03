@@ -40,7 +40,7 @@ public class UserTechnologyRepository extends DbConnectionUtility{
 	}
 	
 	public int  save (UserTechnology user){
-		String sql ="INSERT INTO user_technology values(experience,technology_technology_id,user_user_id)VALUES('"+user.getExperience()+"','"+user.getUserTechnologyId()+"','"+user.getUser()+"')";
+		String sql ="INSERT INTO user_technology (experience,technology_technology_id,user_user_id)VALUES('"+user.getExperience()+"','"+user.getTechnology().getTechnologyId()+"','"+user.getUser().getUserId()+"')";
 		int result=0;
 		try {
 		 result = jdbcTemplate.update(sql);	
@@ -48,6 +48,18 @@ public class UserTechnologyRepository extends DbConnectionUtility{
 			e.printStackTrace();
 		}
 		return result;
+	}
+
+	public Boolean checkExistanceOfUserId(Long userId) {
+		String sql="SELECT COUNT(*) FROM user_technology WHERE user_user_id=?";
+		int result = 0;
+		result = jdbcTemplate.queryForObject(sql, new Object[] { userId }, Integer.class);
+		
+		if(result>0)
+			return true;
+		else
+			return false;
+		
 	}
 
 }

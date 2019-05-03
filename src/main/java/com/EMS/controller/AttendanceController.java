@@ -56,8 +56,8 @@ public class AttendanceController {
 //			ArrayNode node = objectMapper.convertValue(attendanceService.getHolidayList(), ArrayNode.class);
 			for (Object[] item : holidayList) {
 				ObjectNode holidayNode = objectMapper.createObjectNode();
-				String holidayId = item[0].toString();
-				String date = item[1].toString();
+				String holidayId = item[1].toString();
+				String date = item[0].toString();
 				String day = item[2].toString();
 				String holidayName = item[3].toString();
 				String holidayType = item[4].toString();
@@ -125,7 +125,7 @@ public class AttendanceController {
 						leaveObject.put("Leave Description", leaveDescription);
 						leaveObject.put("Start Date", leaveFrom);
 						leaveObject.put("End Date", leaveTo);
-						leaveObject.put("status", status);
+						leaveObject.put("Status", status);
 						jsonArray.add(leaveObject);
 
 					}

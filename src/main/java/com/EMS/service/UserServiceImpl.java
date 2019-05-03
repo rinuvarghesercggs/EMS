@@ -112,6 +112,12 @@ public class UserServiceImpl implements UserService {
 		return userTechnology;
 	}
 
+	@Override
+	public Boolean checkExistanceOfUserId(Long userId) {
+		Boolean isExist = userTechnologyRepository.checkExistanceOfUserId(userId);
+		return isExist;
+	}
+
 	
 
 	
