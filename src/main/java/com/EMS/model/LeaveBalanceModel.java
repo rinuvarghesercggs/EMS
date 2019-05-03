@@ -17,9 +17,8 @@ public class LeaveBalanceModel {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long leaveBalanceId;
 	
-	private long totalLeave;
 	private double clBalance,elBalance,slBalance;
-	private int quater;
+	private int quarter;
 	private long year;
 	
 	@OneToOne
@@ -52,12 +51,12 @@ public class LeaveBalanceModel {
 		this.slBalance = slBalance;
 	}
 
-	public int getQuater() {
-		return quater;
+	public int getQuarter() {
+		return quarter;
 	}
 
-	public void setQuater(int quater) {
-		this.quater = quater;
+	public void setQuarter(int quater) {
+		this.quarter = quater;
 	}
 
 	public long getLeavebalanceId() {
@@ -75,15 +74,6 @@ public class LeaveBalanceModel {
 	public void setLeaveBalanceId(long leaveBalanceId) {
 		this.leaveBalanceId = leaveBalanceId;
 	}
-
-	public long getTotalLeave() {
-		return totalLeave;
-	}
-
-	public void setTotalLeave(long totalLeave) {
-		this.totalLeave = totalLeave;
-	}
-
 
 	public UserModel getUser() {
 		return user;
