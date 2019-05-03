@@ -26,7 +26,7 @@ public interface LeaveRepository extends JpaRepository<LeaveModel, Long> {
 //	@Query(value="SELECT * FROM EMS.user_leave where leave_from between :startdate and :endDate OR leave_to between :startdate and :endDate",nativeQuery=true)
 //	List<LeaveModel> getweeklyleavelist(Date startdate, Date endDate);
 	
-	@Query(value="SELECT * FROM EMS.user_leave where leave_from =:date1 OR leave_to =:date1",nativeQuery=true)
+	@Query(value="SELECT * FROM EMS.user_leave where date(leave_from) =:date1 OR date(leave_to) =:date1",nativeQuery=true)
 	List<LeaveModel> getweeklyleavelist(Date date1);
 	
 	@Query(value="Select * from user_leave where user_user_id=:userId AND leave_from >=:startDate1 AND leave_to<=:endDate1",nativeQuery=true)

@@ -18,7 +18,8 @@ public class LeaveBalanceModel {
 	private long leaveBalanceId;
 	
 	private long totalLeave;
-	private long leaveBalance;
+	private double clBalance,elBalance,slBalance;
+	private int quater;
 	private long year;
 	
 	@OneToOne
@@ -27,6 +28,38 @@ public class LeaveBalanceModel {
 	
 	
 	
+	public double getClBalance() {
+		return clBalance;
+	}
+
+	public void setClBalance(double clBalance) {
+		this.clBalance = clBalance;
+	}
+
+	public double getElBalance() {
+		return elBalance;
+	}
+
+	public void setElBalance(double elBalance) {
+		this.elBalance = elBalance;
+	}
+
+	public double getSlBalance() {
+		return slBalance;
+	}
+
+	public void setSlBalance(double slBalance) {
+		this.slBalance = slBalance;
+	}
+
+	public int getQuater() {
+		return quater;
+	}
+
+	public void setQuater(int quater) {
+		this.quater = quater;
+	}
+
 	public long getLeavebalanceId() {
 		return leaveBalanceId;
 	}
@@ -51,13 +84,6 @@ public class LeaveBalanceModel {
 		this.totalLeave = totalLeave;
 	}
 
-	public long getLeaveBalance() {
-		return leaveBalance;
-	}
-
-	public void setLeaveBalance(long leaveBalance) {
-		this.leaveBalance = leaveBalance;
-	}
 
 	public UserModel getUser() {
 		return user;

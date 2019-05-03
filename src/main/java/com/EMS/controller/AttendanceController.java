@@ -158,6 +158,7 @@ public class AttendanceController {
 			
 			LocalDate start = LocalDate.parse(startDate);
 			LocalDate end = LocalDate.parse(endDate);
+			ObjectNode datewise=objectMapper.createObjectNode();
 			
 			while (!start.isAfter(end)) {
 
@@ -165,7 +166,7 @@ public class AttendanceController {
 			    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 			    String stgdate=String.valueOf(start);
 			    Date date1 =formatter.parse(stgdate);	
-			   
+			  
 			    List<LeaveModel> leavelist=attendanceService.getWeeklyLeavelist(date1);
 				ArrayNode leaverecord=objectMapper.createArrayNode();	
 					
@@ -173,39 +174,40 @@ public class AttendanceController {
 					
 						ObjectNode node=objectMapper.createObjectNode();
 						System.out.println("userid :"+leave.getUser().getUserId());
-						String username=userservice.getUserName(leave.getUser().getUserId());
+						String userDetail=userservice.getUserName(leave.getUser().getUserId());
+						String username=userDetail.replace(","," ");
 						System.out.println("username:"+username);
 						
 						node.put("username", username);
 						node.put("startDate", leave.getLeaveFrom().toString());
 //						node.put("endDate", leave.getLeaveTo().toString());
 						if(leave.getCL()!=null) {
-							node.put("Leave Type", "CL");
-							node.put("Leave Count", leave.getCL());
+							node.put("leaveType", "CL");
+							node.put("leaveCount", leave.getCL());
 						}
 						if(leave.getEL()!=null) {
-							node.put("Leave Type", "EL");
-//							node.put("Leave Count", leave.getEL());
+							node.put("leaveType", "EL");
+//							node.put("leaveCount", leave.getEL());
 						}
 						if(leave.getLOP()!=null) {
-							node.put("Leave Type", "LOP");
-//							node.put("Leave Count", leave.getLOP());
+							node.put("leaveType", "LOP");
+//							node.put("leaveCount", leave.getLOP());
 						}	
 						
 						if(leave.getSL()!=null) {
-							node.put("Leave Type", "SL");
-//							node.put("Leave Count", leave.getSL());
+							node.put("leaveType", "SL");
+//							node.put("leaveCount", leave.getSL());
 						}
 						leaverecord.add(node);
 					}
-					responseData.put("status", "success");
-					responseData.put("code", response.getStatus());
-					responseData.put("message", "success");
-					responseData.set(stgdate, leaverecord);
+					
+					datewise.set(stgdate, leaverecord);
 					start = start.plusDays(1);
-
 			}
-	
+			responseData.put("status", "success");
+			responseData.put("code", response.getStatus());
+			responseData.put("message", "success");
+			responseData.set("payload", datewise);
 			
 		}catch(Exception e) {
 			
@@ -239,8 +241,8 @@ public class AttendanceController {
 			    	for(UserModel user:userlist) {
 			    		
 			    		ObjectNode node=objectMapper.createObjectNode();
-			    		node.put("Employee ID", user.getEmpId());
-			    		node.put("Employee Name", user.getFirstName()+" "+user.getLastName());
+			    		node.put("employeeID", user.getEmpId());
+			    		node.put("employeeName", user.getFirstName()+" "+user.getLastName());
 			    		
 						System.out.println("userid :"+user.getUserId());
 						List<LeaveModel> leavelist=attendanceService.getYearlyLeavelist(user.getUserId(),startDate1,endDate1);
@@ -261,10 +263,10 @@ public class AttendanceController {
 								slCount++;
 							
 						}
-				    	node.put("Casual Leave", clCount);
-			    		node.put("Earned Leave", elCount);
+				    	node.put("casualLeave", clCount);
+			    		node.put("earnedLeave", elCount);
 			    		node.put("LOP", lopCount);
-			    		node.put("Sick Leave", slCount);
+			    		node.put("sickLeave", slCount);
 			    		
 				    	userleaverecord.add(node);	
 			    	}
@@ -287,6 +289,8 @@ public class AttendanceController {
 		return responseData;
 	}
 	
+	
+/*	
 	@PostMapping("/leaveMarking")
 	public ObjectNode setLeaveMarking(@RequestBody JsonNode requestdata,HttpServletResponse httpstatus) {
 		ObjectNode jsonDataRes = objectMapper.createObjectNode();
@@ -342,4 +346,6 @@ public class AttendanceController {
 		return jsonDataRes;
 		
 	}
+	
+	*/
 }
