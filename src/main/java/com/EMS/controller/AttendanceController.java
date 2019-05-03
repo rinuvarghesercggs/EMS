@@ -153,7 +153,6 @@ public class AttendanceController {
 		String startDate=requestdata.get("startdate").asText();
 		String endDate=requestdata.get("endDate").asText();
 		
-		
 		try {
 			
 			LocalDate start = LocalDate.parse(startDate);
