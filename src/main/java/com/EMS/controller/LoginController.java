@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -204,11 +205,11 @@ public class LoginController {
 
 					// adding details in user technology
 					ArrayNode usertechnology = (ArrayNode) requestdata.get("userTechnology");
-					if (usertechnology.equals(null)) {
+					if (!usertechnology.equals(null)) {
 
-						responseflag = 1;
-						responsedata.put("message", "Technology insertion failed");
-					} else {
+//						responseflag = 1;
+//						responsedata.put("message", "Technology insertion failed");
+//					} else {
 						for (JsonNode node : usertechnology) {
 
 							// checking for technology using ID
@@ -381,4 +382,112 @@ public class LoginController {
 		
 	}
 
+	@PutMapping(value = "/editUserDetails")
+	public JsonNode setuserData(@RequestBody ObjectNode requestdata, HttpServletResponse httpstatus) {
+		ObjectNode responseData = objectMapper.createObjectNode();
+		try {
+			
+			Long userId  = requestdata.get("userId").asLong();
+			UserModel user = userService.getUserDetailsById(userId);
+			if ( user != null) {
+				user.setFirstName(requestdata.get("firstName").asText());
+				user.setLastName(requestdata.get("lastName").asText());
+				user.setContact(requestdata.get("contact").asLong());
+				user.setUserName(requestdata.get("userName").asText());
+				user.setBloodGroup(requestdata.get("bloodGroup").asText());
+				user.setGender(requestdata.get("gender").asInt());
+				user.setEmploymentType(requestdata.get("employment").asText());
+				user.setActive(requestdata.get("active").asBoolean());
+
+				Long departId = requestdata.get("department").asLong();
+				DepartmentModel department = null;
+				if (departId != null)
+					department = login_service.getDepartment(departId);
+
+				if (department != null)
+					user.setdepartment(department);
+				
+				Long roleId = requestdata.get("role").asLong();
+				RoleModel role = null;
+				if (roleId != null)
+					role = login_service.getRole(roleId);
+				if (role != null)
+					user.setrole(role);
+
+				String dob = requestdata.get("dob").asText();
+				String joindate = requestdata.get("joiningDate").asText();
+
+				// Formatting the dates before storing
+				DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
+				Date date1 = null, date2 = null;
+
+				if (!dob.isEmpty()) {
+					date2 = formatter.parse(dob);
+					user.setDob(date2);
+
+				}
+				if (!joindate.isEmpty()) {
+					date1 = formatter.parse(joindate);
+					user.setJoiningDate(date1);
+
+				}
+
+				user.setEmpId(requestdata.get("empId").asLong());
+				user.setEmail(requestdata.get("email").asText());
+				user.setQualification(requestdata.get("qualification").asText());
+    
+				UserModel userModel = userService.updateUser(user);
+				System.out.println("user.getUserId() : "+userId);
+				UserTechnology userTechnology1 = userService.deleteTechnology(userId);
+				if(userTechnology1 != null) {
+					ArrayNode usertechnology = (ArrayNode) requestdata.get("userTechnology");
+					if (!usertechnology.equals(null)) {
+
+						for (JsonNode node : usertechnology) {
+
+							// checking for technology using ID
+
+							Long techId = node.get("technology").asLong();
+							Technology technology = null;
+
+							if (techId != null)
+								technology = login_service.findtechnology(techId);
+
+							UserTechnology usertech = new UserTechnology();
+							if (technology != null)
+								usertech.setTechnology(technology);
+							else {
+								responseData.put("message",
+										"user technology insertion failed due to missing technology value");
+							}
+							usertech.setUser(user);
+							usertech.setExperience(node.get("experience").asDouble());
+							UserTechnology userTechnology = login_service.addusertechnology(usertech);
+							
+						}
+
+					}
+				}
+				
+			
+				responseData.put("message", "Updated successfully");
+
+				
+				
+			}
+			else {
+				responseData.put("message", "user not exist");
+			}
+			responseData.put("status", "success");
+			responseData.put("code", httpstatus.getStatus());
+			
+			
+		}
+		catch (Exception e) {
+			responseData.put("status", "failure");
+			responseData.put("code", httpstatus.getStatus());
+		}
+		return responseData;
+		
+	}
 }

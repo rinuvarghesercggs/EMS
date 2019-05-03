@@ -3,11 +3,14 @@ package com.EMS.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.EMS.model.UserModel;
+import com.EMS.model.UserTechnology;
 import com.EMS.repository.UserRepository;
+import com.EMS.repository.UserTechnologyRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -20,6 +23,9 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private ObjectMapper objectMapper;
 
+	@Autowired
+	private UserTechnologyRepository userTechnologyRepository;
+	
 	@Override
 	public UserModel getUserDetailsById(Long id) {
 		return userRepository.getActiveUser(id);
@@ -89,6 +95,24 @@ public class UserServiceImpl implements UserService {
 		node = objectMapper.convertValue(userRepository.getUserById(userId), JsonNode.class);
 		return node;
 	}
+
+	@Override
+	public UserModel updateUser(UserModel user) {
+		UserModel userModel = userRepository.save(user);
+		return userModel;
+	}
+
+	@Override
+	public UserTechnology deleteTechnology(Long userId) {
+		System.out.println("userId: "+userId);
+
+		UserTechnology userTechnology = userTechnologyRepository.deleteByUserId(userId);
+		System.out.println("userId 1 : "+userId);
+
+		return userTechnology;
+	}
+
+	
 
 	
 
