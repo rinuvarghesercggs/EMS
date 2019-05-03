@@ -231,7 +231,8 @@ public class LoginController {
 							usertech.setUser(userdata);
 							usertech.setExperience(node.get("experience").asDouble());
 							int userTechnology = login_service.addusertechnology(usertech);
-							if (userTechnology!= 0)
+							System.out.println("userTechnology :"+userTechnology);
+							if (userTechnology == 0)
 								responseflag = 1;
 						}
 
@@ -437,9 +438,14 @@ public class LoginController {
 				user.setQualification(requestdata.get("qualification").asText());
     
 				UserModel userModel = userService.updateUser(user);
-				System.out.println("user.getUserId() : "+userId);
+				int  result = 1;
+				Boolean isExist = userService.checkExistanceOfUserId(userId);
+
+				if(isExist) {
+					result = userService.deleteTechnology(userId);
+				}
 				
-				int  result = userService.deleteTechnology(userId);
+
 				if(result != 0) {
 					ArrayNode usertechnology = (ArrayNode) requestdata.get("userTechnology");
 					if (!usertechnology.equals(null)) {
@@ -461,7 +467,7 @@ public class LoginController {
 								responseData.put("message",
 										"user technology insertion failed due to missing technology value");
 							}
-							usertech.setUser(user);
+							usertech.setUser(userModel);
 							usertech.setExperience(node.get("experience").asDouble());
 							int userTechnology = login_service.addusertechnology(usertech);
 							

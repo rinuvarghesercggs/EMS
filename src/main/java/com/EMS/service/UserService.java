@@ -36,6 +36,8 @@ public interface UserService {
 
 	int deleteTechnology(Long userId);
 
+	Boolean checkExistanceOfUserId(Long userId);
+
 	
 
 
