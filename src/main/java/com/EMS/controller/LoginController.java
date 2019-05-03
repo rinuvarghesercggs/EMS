@@ -230,8 +230,8 @@ public class LoginController {
 							}
 							usertech.setUser(userdata);
 							usertech.setExperience(node.get("experience").asDouble());
-							UserTechnology userTechnology = login_service.addusertechnology(usertech);
-							if (userTechnology == null)
+							int userTechnology = login_service.addusertechnology(usertech);
+							if (userTechnology!= 0)
 								responseflag = 1;
 						}
 
@@ -438,8 +438,9 @@ public class LoginController {
     
 				UserModel userModel = userService.updateUser(user);
 				System.out.println("user.getUserId() : "+userId);
-				UserTechnology userTechnology1 = userService.deleteTechnology(userId);
-				if(userTechnology1 != null) {
+				
+				int  result = userService.deleteTechnology(userId);
+				if(result != 0) {
 					ArrayNode usertechnology = (ArrayNode) requestdata.get("userTechnology");
 					if (!usertechnology.equals(null)) {
 
@@ -462,7 +463,7 @@ public class LoginController {
 							}
 							usertech.setUser(user);
 							usertech.setExperience(node.get("experience").asDouble());
-							UserTechnology userTechnology = login_service.addusertechnology(usertech);
+							int userTechnology = login_service.addusertechnology(usertech);
 							
 						}
 

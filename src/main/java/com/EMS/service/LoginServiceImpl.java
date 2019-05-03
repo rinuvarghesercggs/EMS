@@ -75,10 +75,11 @@ public class LoginServiceImpl implements LoginService {
 	
 	//method for creating records on usertechnology
 	@Override
-	public UserTechnology addusertechnology(UserTechnology usertech) {
-		
-		UserTechnology usertechno=usertechnology_repository.save(usertech);
+	public int addusertechnology(UserTechnology usertech) {
+	System.out.println("test");	
+		int usertechno=usertechnology_repository.save(usertech);
 		return usertechno;
+	
 	}
 
 	//method for finding technology by ID

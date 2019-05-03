@@ -103,10 +103,10 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserTechnology deleteTechnology(Long userId) {
+	public int deleteTechnology(Long userId) {
 		System.out.println("userId: "+userId);
 
-		UserTechnology userTechnology = userTechnologyRepository.deleteByUserId(userId);
+		int userTechnology = userTechnologyRepository.deleteByUserId(userId);
 		System.out.println("userId 1 : "+userId);
 
 		return userTechnology;

@@ -21,7 +21,7 @@ public interface LoginService {
 	UserModel adduser(UserModel requestdata);
 
 	//abstract method declaration for add user technology data
-	UserTechnology addusertechnology(UserTechnology usertech);
+	int addusertechnology(UserTechnology usertech);
 	
 	//find technology by given ID
 	Technology findtechnology(Long parseInt);

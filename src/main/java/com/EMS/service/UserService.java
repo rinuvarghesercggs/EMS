@@ -34,7 +34,7 @@ public interface UserService {
 
 	UserModel updateUser(UserModel user);
 
-	UserTechnology deleteTechnology(Long userId);
+	int deleteTechnology(Long userId);
 
 	
 
