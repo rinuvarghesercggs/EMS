@@ -290,7 +290,7 @@ public class AttendanceController {
 	}
 	
 	
-/*	
+	
 	@PostMapping("/leaveMarking")
 	public ObjectNode setLeaveMarking(@RequestBody JsonNode requestdata,HttpServletResponse httpstatus) {
 		ObjectNode jsonDataRes = objectMapper.createObjectNode();
@@ -347,5 +347,4 @@ public class AttendanceController {
 		
 	}
 	
-	*/
 }
