@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.EMS.model.HolidayModel;
+import com.EMS.model.LeaveBalanceModel;
 import com.EMS.model.LeaveModel;
 import com.EMS.model.UserModel;
 import com.EMS.service.AttendanceService;
@@ -91,6 +92,8 @@ public class AttendanceController {
 		
 		ArrayNode jsonArray = objectMapper.createArrayNode();
 		ObjectNode jsonDataRes = objectMapper.createObjectNode();
+		ObjectNode leaveBalanceNode = objectMapper.createObjectNode();
+
 		Long userId = null;
 
 		LocalDate now = LocalDate.now();
@@ -129,11 +132,31 @@ public class AttendanceController {
 						jsonArray.add(leaveObject);
 
 					}
+					
+					
+					//to obtain user leave balance details
+					LocalDate date = LocalDate.now();
+					int quarter = 0;
+
+					int monthNumber = date.getMonthValue();
+					int year = date.getYear();
+					
+					if(monthNumber >= 1 && monthNumber <= 3)
+						quarter = 1;
+					else if(monthNumber >= 4 && monthNumber <= 6)
+						quarter = 2;
+					else if(monthNumber >= 7 && monthNumber <= 9)
+						quarter = 3;
+					else if(monthNumber >= 10 && monthNumber <= 12)
+						quarter = 4;
+
+					leaveBalanceNode = attendanceService.getLeavebalanceData(userId,quarter,year);
 
 				}
 			}
 
 			jsonDataRes.set("data", jsonArray);
+			jsonDataRes.set("leaveBalance", leaveBalanceNode);
 			jsonDataRes.put("status", "success");
 			jsonDataRes.put("message", "success. ");
 			jsonDataRes.put("code", httpstatus.getStatus());
@@ -346,4 +369,8 @@ public class AttendanceController {
 		
 	}
 	
+	
+
+
+
 }

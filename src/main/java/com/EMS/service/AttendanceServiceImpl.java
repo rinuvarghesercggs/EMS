@@ -9,9 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.EMS.model.HolidayModel;
+import com.EMS.model.LeaveBalanceModel;
 import com.EMS.model.LeaveModel;
 import com.EMS.repository.HolidayRepository;
+import com.EMS.repository.LeaveBalanceRepository;
 import com.EMS.repository.LeaveRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @Service
 public class AttendanceServiceImpl implements AttendanceService {
@@ -21,7 +25,12 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	@Autowired
 	LeaveRepository leaveRepository;
+	
+	@Autowired
+	private ObjectMapper objectMapper;
 
+	@Autowired
+	LeaveBalanceRepository leaveBalanceRepository;
 	@Override
 	public List<Object[]> getHolidayList() {
 		List<Object[]> list = holidayRepository.getHolidayLists();
@@ -76,5 +85,40 @@ public class AttendanceServiceImpl implements AttendanceService {
 	public void saveLeaveMarking(LeaveModel leaveModel) {
 		leaveRepository.save(leaveModel);
 		
+	}
+
+	
+	@Override
+	public ObjectNode getLeavebalanceData(Long userId, int quarter, int year) {
+		ObjectNode leaveBalanceNode = objectMapper.createObjectNode();
+
+		 	Double clBalance = 0.0;
+		    Double slBalance = 0.0;
+		    Double elBalance = 0.0;
+
+			    
+				for (int i = 1; i <= quarter; i++) {
+
+					LeaveBalanceModel leaveBalanceOld = leaveBalanceRepository.getLeaveBalance(userId, i,
+							year);
+					if (leaveBalanceOld.getClBalance() > 0) {
+						clBalance+= leaveBalanceOld.getClBalance();
+												
+					}
+					if (leaveBalanceOld.getSlBalance() > 0) {
+						slBalance+= leaveBalanceOld.getSlBalance();
+					}
+					if (leaveBalanceOld.getElBalance() > 0) {
+						elBalance+= leaveBalanceOld.getElBalance();
+					}
+				}
+
+
+			leaveBalanceNode.put("CL", clBalance);
+			leaveBalanceNode.put("SL", slBalance);
+			leaveBalanceNode.put("EL", elBalance);
+
+
+		return leaveBalanceNode;
 	}
 }

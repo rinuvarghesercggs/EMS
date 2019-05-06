@@ -19,7 +19,7 @@ public class LeaveBalanceModel {
 	
 	private double clBalance,elBalance,slBalance;
 	private int quarter;
-	private long year;
+	private int year;
 	
 	@OneToOne
 	private UserModel user;
@@ -83,11 +83,11 @@ public class LeaveBalanceModel {
 		this.user = user;
 	}
 
-	public long getYear() {
+	public int getYear() {
 		return year;
 	}
 
-	public void setYear(long year) {
+	public void setYear(int year) {
 		this.year = year;
 	}
 	
