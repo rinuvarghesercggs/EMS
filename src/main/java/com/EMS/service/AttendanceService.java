@@ -7,6 +7,7 @@ import java.util.List;
 import com.EMS.model.HolidayModel;
 import com.EMS.model.LeaveBalanceModel;
 import com.EMS.model.LeaveModel;
+import com.EMS.model.UserModel;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public interface AttendanceService {
@@ -28,6 +29,16 @@ public interface AttendanceService {
 
 
 	public ObjectNode getLeavebalanceData(Long userId, int quarter, int year);
+
+	public Boolean checkLeave(LeaveModel leaveModel);
+
+	public void setLeaveBalance(LeaveBalanceModel leavebal);
+
+	public List<Long> getAllUserId();
+
+	public List<LeaveBalanceModel> getUserLeaveBalance(LeaveBalanceModel lBalance);
+
+	public List<LeaveModel> getLeavelist(Date startDate1, Date endDate1);
 
 //	public Object getUserLeaveBalance(Long userId, LocalDate firstDayOfYear, LocalDate lastDayOfYear);
 

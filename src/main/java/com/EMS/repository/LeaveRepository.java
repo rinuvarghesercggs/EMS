@@ -32,6 +32,14 @@ public interface LeaveRepository extends JpaRepository<LeaveModel, Long> {
 	@Query(value="Select * from user_leave where user_user_id=:userId AND leave_from >=:startDate1 AND leave_to<=:endDate1",nativeQuery=true)
 	List<LeaveModel> getyearlyleavelist(long userId, Date startDate1, Date endDate1);
 
+	@Query(value="SELECT COUNT(*) FROM user_leave WHERE user_user_id=?1 AND (leave_from=?2 OR leave_to=?3)",nativeQuery=true)
+//	@Query(value="SELECT COUNT(*) FROM user_leave WHERE user_user_id=26 AND (date(leave_from)='2019-04-29' OR date(leave_to)='2019-04-29')",nativeQuery=true)
+	int checkuser(long userId, Date leaveFrom, Date leaveTo);
+
+	@Query(value="Select * from user_leave where leave_from >=:startDate1 AND leave_to<=:endDate1",nativeQuery=true)
+	List<LeaveModel> getyearlyleavelist(Date startDate1, Date endDate1);
+	
+
 //	@Query(value ="select coalesce(sum( coalesce(EMS.user_leave.compensatory_off,0)+coalesce(EMS.user_leave.cl,0)+coalesce(EMS.user_leave.lop,0)+coalesce(EMS.user_leave.sl,0)),0) from EMS.user_leave where EMS.user_leave.user_user_id = ?1 and (EMS.user_leave.leave_from >=?2 and EMS.user_leave.leave_to <= ?3)",nativeQuery = true)
 //	Object getLeaveCount(Long userId, LocalDate firstDayOfYear, LocalDate lastDayOfYear);
 
