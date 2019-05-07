@@ -1,7 +1,10 @@
 package com.EMS.service;
 
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.EMS.repository.ProjectReportsRepository;
@@ -46,5 +49,23 @@ public class ReportServiceImpl implements ReportService {
 			exc.printStackTrace();
 		}
 		return array;
+	}
+	public List getProjectAllocationDetails() {
+		List list = new ArrayList();
+		try {
+			list = projectReportsRepository.GenerateProjectAllocationReportForExporting();
+		} catch (Exception exc) {
+			exc.printStackTrace();
+		}
+		return list;
+	}
+	public List getProjectTaskReportDetails(Date fromDate,Date toDate,Long projectId) {
+		List list = new ArrayList();
+		try {
+			list = projectReportsRepository.GenerateProjectTaskReportForExporting(fromDate,toDate,projectId);
+		} catch (Exception exc) {
+			exc.printStackTrace();
+		}
+		return list;
 	}
 }

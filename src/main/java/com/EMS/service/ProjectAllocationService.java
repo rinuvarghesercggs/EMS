@@ -28,7 +28,8 @@ public interface ProjectAllocationService {
 	public List<Object[]> getUserIdByProject(Long projectId);
 	public Long getUserCount(Long projectId);
 	public Boolean getIsBillable(Long id, Long projectId);	
-
+	
+	AllocationModel findById(Long id);
 	
 }
 

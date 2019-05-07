@@ -10,12 +10,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONException;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,12 +29,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.EMS.dto.Taskdetails;
 import com.EMS.model.AllocationModel;
+import com.EMS.model.ExportProjectTaskReportModel;
 import com.EMS.model.ProjectModel;
 import com.EMS.model.ProjectReportModel;
 import com.EMS.model.Task;
 import com.EMS.model.Tasktrack;
 import com.EMS.model.UserModel;
 import com.EMS.service.ProjectAllocationService;
+import com.EMS.service.ProjectExportService;
 import com.EMS.service.ProjectService;
 import com.EMS.service.ReportService;
 import com.EMS.service.ReportServiceImpl;
@@ -65,6 +69,10 @@ public class ReportController {
 	
 	@Autowired
 	private ObjectMapper objectMapper;
+	
+	@Autowired
+	ProjectExportService projectExportService;
+	
 
 	@PostMapping("/getProjectReport")
 	public JsonNode getProjectReport(@RequestBody Taskdetails requestdata) {
@@ -320,6 +328,35 @@ public class ReportController {
 	}
 	
 	
-	
+	@PostMapping(value = "/exportProjctTaskRpt")
+	public ResponseEntity exportProjctAllocationRpt(@RequestBody JSONObject requestData,HttpServletResponse response) {
+		ObjectNode jsonData = objectMapper.createObjectNode();
+		ObjectNode jsonDataRes = objectMapper.createObjectNode();
+		Date fromDate=null,toDate=null;
+		SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+		try {
+			if (!requestData.get("startDate").toString().isEmpty() && requestData.get("startDate").toString() != null) {
+				String startDate = requestData.get("startDate").toString();
+				if (!startDate.isEmpty()) {
+					fromDate = outputFormat.parse(startDate);
+
+				}
+			}
+			if (!requestData.get("endDate").toString().isEmpty() && requestData.get("endDate").toString() != null) {
+				String endDate = requestData.get("endDate").toString();
+				if (!endDate.isEmpty()) {
+					toDate = outputFormat.parse(endDate);
+
+				}
+			}
+			Long projectId = Long.parseLong(requestData.get("projectId").toString());
+			List <ExportProjectTaskReportModel>exportData = reportService.getProjectTaskReportDetails(fromDate,toDate,projectId);
+			projectExportService.exportProjectTaskReport(exportData,response);
+
+		} catch (Exception e) {
+			return new ResponseEntity( HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity( HttpStatus.OK);
+	}
 	
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.EMS.model.AllocationModel;
 import com.EMS.model.DepartmentModel;
+import com.EMS.model.ProjectModel;
 import com.EMS.model.UserModel;
 import com.EMS.repository.DepartmentRepository;
 import com.EMS.repository.ProjectRepository;
@@ -139,4 +140,9 @@ public class ProjectAllocationServiceImpl implements ProjectAllocationService{
 		return isBillable;
 	}
 	
+	@Override
+	public AllocationModel findById(Long id) {
+		AllocationModel model = projectAllocationRepository.getOne(id);
+		return model;
+	}
 }
