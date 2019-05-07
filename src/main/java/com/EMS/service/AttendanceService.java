@@ -40,6 +40,8 @@ public interface AttendanceService {
 
 	public List<LeaveModel> getLeavelist(Date startDate1, Date endDate1);
 
+	public LeaveModel Leavedetails(long leaveId);
+
 //	public Object getUserLeaveBalance(Long userId, LocalDate firstDayOfYear, LocalDate lastDayOfYear);
 
 }
