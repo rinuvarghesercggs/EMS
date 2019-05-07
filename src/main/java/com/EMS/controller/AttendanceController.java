@@ -194,7 +194,7 @@ public class AttendanceController {
 	public JsonNode getweeklyLeeveList(@RequestBody JsonNode requestdata, HttpServletResponse response) {
 		ObjectNode responseData = objectMapper.createObjectNode();
 
-		String startDate = requestdata.get("startdate").asText();
+		String startDate = requestdata.get("startDate").asText();
 		String endDate = requestdata.get("endDate").asText();
 
 		try {
@@ -224,23 +224,23 @@ public class AttendanceController {
 					node.put("username", username);
 					node.put("startDate", leave.getLeaveFrom().toString());
 					node.put("reason", leave.getLeaveReason().toString());
-//						node.put("endDate", leave.getLeaveTo().toString());
+					node.put("endDate", leave.getLeaveTo().toString());
 					if (leave.getCL() != null) {
 						node.put("leaveType", "CL");
-						node.put("leaveCount", leave.getCL());
+						node.put("clCount", leave.getCL());
 					}
 					if (leave.getEL() != null) {
 						node.put("leaveType", "EL");
-//							node.put("leaveCount", leave.getEL());
+							node.put("elCount", leave.getEL());
 					}
 					if (leave.getLOP() != null) {
 						node.put("leaveType", "LOP");
-//							node.put("leaveCount", leave.getLOP());
+							node.put("lopCount", leave.getLOP());
 					}
 
 					if (leave.getSL() != null) {
 						node.put("leaveType", "SL");
-//							node.put("leaveCount", leave.getSL());
+							node.put("slCount", leave.getSL());
 					}
 					leaverecord.add(node);
 				}
@@ -269,7 +269,7 @@ public class AttendanceController {
 	public JsonNode getYearlyLeeveList(@RequestBody JsonNode requestdata, HttpServletResponse response) {
 		ObjectNode responseData = objectMapper.createObjectNode();
 
-		String startDate = requestdata.get("startdate").asText();
+		String startDate = requestdata.get("startDate").asText();
 		String endDate = requestdata.get("endDate").asText();
 
 		try {
@@ -291,21 +291,21 @@ public class AttendanceController {
 					System.out.println("userid :" + user.getUserId());
 					List<LeaveModel> leavelist = attendanceService.getYearlyLeavelist(user.getUserId(), startDate1,
 							endDate1);
-					int clCount = 0, elCount = 0, lopCount = 0, slCount = 0;
+					double clCount = 0, elCount = 0, lopCount = 0, slCount = 0;
 
 					for (LeaveModel leave : leavelist) {
 
 						if (leave.getCL() != null)
-							clCount++;
+							clCount=clCount+leave.getCL();
 
 						if (leave.getEL() != null)
-							elCount++;
+							elCount=elCount+leave.getEL();
 
 						if (leave.getLOP() != null)
-							lopCount++;
+							lopCount=lopCount+leave.getLOP();
 
 						if (leave.getSL() != null)
-							slCount++;
+							slCount=slCount+leave.getSL();
 
 					}
 					node.put("casualLeave", clCount);
@@ -572,6 +572,7 @@ public class AttendanceController {
 				leavenode.put("leaveTo", leave.getLeaveTo().toString());
 				leavenode.put("leaveReason", leave.getLeaveReason());
 				leavenode.put("leaveId", leave.getLeaveId());
+				leavenode.put("userId", user.getUserId());
 
 				leaverecord.add(leavenode);
 			}
