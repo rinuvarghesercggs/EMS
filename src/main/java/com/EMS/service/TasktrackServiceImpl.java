@@ -205,13 +205,17 @@ public class TasktrackServiceImpl implements TasktrackService {
 
 	@Override
 	public List<JSONObject> getUserTaskDetails(Long id, Date startDate, Date endDate, List<Object[]> userList,
-			List<JSONObject> jsonArray, List<JSONObject> jsonDataRes1, Boolean isExist) {
+			List<JSONObject> jsonArray, List<JSONObject> jsonDataRes1, Boolean isExist, Long projectId) {
 		if (isExist) {
 			JSONObject userListObject = new JSONObject();
 
 			JSONObject userObject = new JSONObject();
+            if(projectId == null) {
+    			userList =getUserList(id, startDate, endDate);
+            }
+            else
+    			userList =getUserListByProject(id, startDate, endDate,projectId);
 
-			userList =getUserList(id, startDate, endDate);
 			jsonArray = new ArrayList<>();
 
 			String name = null;
@@ -288,6 +292,11 @@ public class TasktrackServiceImpl implements TasktrackService {
 			jsonDataRes1.add(userListObject);
 		}
 		return jsonDataRes1;
+	}
+
+	private List<Object[]> getUserListByProject(Long id, Date startDate, Date endDate, Long projectId) {
+		List<Object[]> userTaskList = taskRepository.getUserListByProject(id,startDate,endDate,projectId);
+		return userTaskList;
 	}
 
 	@Override

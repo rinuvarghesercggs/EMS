@@ -3,6 +3,7 @@ package com.EMS.service;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.EMS.model.DepartmentModel;
 import com.EMS.model.RoleModel;
@@ -20,7 +21,7 @@ public interface LoginService {
 	UserModel adduser(UserModel requestdata);
 
 	//abstract method declaration for add user technology data
-	UserTechnology addusertechnology(UserTechnology usertech);
+	int addusertechnology(UserTechnology usertech);
 	
 	//find technology by given ID
 	Technology findtechnology(Long parseInt);
@@ -32,6 +33,10 @@ public interface LoginService {
 	RoleModel getRole(long parseLong);
 
 	UserModel changePasswordAuthentication(long parseLong, String oldPassword);
+
+	Boolean checkUsernameDuplication(String userName);
+
+	List<Technology> getTechnology();
 
 	
 

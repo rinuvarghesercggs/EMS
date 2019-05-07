@@ -2,7 +2,12 @@ package com.EMS.service;
 
 import java.util.List;
 
+import org.json.simple.JSONObject;
+
 import com.EMS.model.UserModel;
+import com.EMS.model.UserTechnology;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 public interface UserService {
 	
@@ -22,6 +27,20 @@ public interface UserService {
 	String getUserName(Long id);
 
 	Long getCount();
+
+	 JsonNode getUserList();
+
+	JsonNode getUserdetails(Long userId);
+
+	UserModel updateUser(UserModel user);
+
+	int deleteTechnology(Long userId);
+
+	Boolean checkExistanceOfUserId(Long userId);
+
+	List<Object[]> getUserTechnologyList(Long userId);
+
+	
 
 
 
