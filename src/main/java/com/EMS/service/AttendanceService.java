@@ -17,15 +17,11 @@ public interface AttendanceService {
 
 	public List<Object[]> getUserLeaveList(Long userId, LocalDate firstDayOfYear, LocalDate lastDayOfYear);
 
-//	public List<LeaveModel> getWeeklyLeavelist(LeaveModel leavemodel);
-
-	
 	public List<LeaveModel> getWeeklyLeavelist(Date date1);
 
 	public List<LeaveModel> getYearlyLeavelist(long userId, Date startDate1, Date endDate1);
 
 	public void saveLeaveMarking(LeaveModel leaveModel);
-
 
 	public ObjectNode getLeavebalanceData(Long userId, int quarter, int year);
 
@@ -47,7 +43,5 @@ public interface AttendanceService {
 
 	public List<Object[]> getUserLeaveListByLeaveType(Long userId, String type, LocalDate firstDayOfYear,
 			LocalDate lastDayOfYear);
-
-//	public Object getUserLeaveBalance(Long userId, LocalDate firstDayOfYear, LocalDate lastDayOfYear);
 
 }

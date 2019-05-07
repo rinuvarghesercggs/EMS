@@ -45,15 +45,6 @@ public class AttendanceServiceImpl implements AttendanceService {
 		return leaveList;
 	}
 
-//	@Override
-//	public List<LeaveModel> getWeeklyLeavelist(LeaveModel leavemodel) {
-//		System.out.println("date :"+leavemodel.getLeaveFrom()+"leave:"+leavemodel.getLeaveTo());
-//		List<LeaveModel> list=leaveRepository.getweeklyleavelist(leavemodel.getLeaveFrom(),leavemodel.getLeaveTo());
-//		System.out.println("list :"+list.size());
-//		return list;
-//	}
-
-	
 
 	@Override
 	public List<LeaveModel> getWeeklyLeavelist(Date date1) {
@@ -69,13 +60,6 @@ public class AttendanceServiceImpl implements AttendanceService {
 		List<LeaveModel> list=leaveRepository.getyearlyleavelist(userId,startDate1,endDate1);
 		return list;
 	}
-	
-
-//	@Override
-//	public Object getUserLeaveBalance(Long userId, LocalDate firstDayOfYear, LocalDate lastDayOfYear) {
-//		Object count = leaveRepository.getLeaveCount(userId, firstDayOfYear, lastDayOfYear);
-//		return count;
-//	}
 
 	
 	@Override
@@ -94,9 +78,9 @@ public class AttendanceServiceImpl implements AttendanceService {
 		    Double elBalance = 0.0;
 
 			    
-				for (int i = 1; i <= quarter; i++) {
+//				for (int i = 1; i <= quarter; i++) {
 
-					LeaveBalanceModel leaveBalanceOld = leaveBalanceRepository.getLeaveBalance(userId, i,
+					LeaveBalanceModel leaveBalanceOld = leaveBalanceRepository.getLeaveBalance(userId, quarter,
 							year);
 					if(leaveBalanceOld != null) {
 						if (leaveBalanceOld.getClBalance() > 0) {
@@ -112,7 +96,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 						leaveBalanceNode.put("balanceId", leaveBalanceOld.getLeaveBalanceId());
 					}
 					
-				}
+//				}
 
 
 			leaveBalanceNode.put("CL", clBalance);
