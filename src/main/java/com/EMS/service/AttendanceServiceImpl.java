@@ -38,11 +38,6 @@ public class AttendanceServiceImpl implements AttendanceService {
 		return list;
 	}
 
-//	@Override
-//	public List<Object[]> getUserLeaveList(Long userId) {
-//		List<Object[]> leaveList = leaveRepository.getUserLeaveList(userId);
-//		return leaveList;
-//	}
 
 	@Override
 	public List<Object[]> getUserLeaveList(Long userId, LocalDate firstDayOfYear, LocalDate lastDayOfYear) {
@@ -103,17 +98,20 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 					LeaveBalanceModel leaveBalanceOld = leaveBalanceRepository.getLeaveBalance(userId, i,
 							year);
-					if (leaveBalanceOld.getClBalance() > 0) {
-						clBalance+= leaveBalanceOld.getClBalance();
-												
+					if(leaveBalanceOld != null) {
+						if (leaveBalanceOld.getClBalance() > 0) {
+							clBalance+= leaveBalanceOld.getClBalance();
+													
+						}
+						if (leaveBalanceOld.getSlBalance() > 0) {
+							slBalance+= leaveBalanceOld.getSlBalance();
+						}
+						if (leaveBalanceOld.getElBalance() > 0) {
+							elBalance+= leaveBalanceOld.getElBalance();
+						}
+						leaveBalanceNode.put("balanceId", leaveBalanceOld.getLeaveBalanceId());
 					}
-					if (leaveBalanceOld.getSlBalance() > 0) {
-						slBalance+= leaveBalanceOld.getSlBalance();
-					}
-					if (leaveBalanceOld.getElBalance() > 0) {
-						elBalance+= leaveBalanceOld.getElBalance();
-					}
-					leaveBalanceNode.put("balanceId", leaveBalanceOld.getLeaveBalanceId());
+					
 				}
 
 
@@ -163,6 +161,25 @@ public class AttendanceServiceImpl implements AttendanceService {
 	public LeaveModel Leavedetails(long leaveId) {
 		LeaveModel leavedata=leaveRepository.getOne(leaveId);
 		return leavedata;
+	}
+
+	@Override
+	public List<Object[]> getUserLeaveListByLeaveType(Long userId, String type, LocalDate firstDayOfYear,
+			LocalDate lastDayOfYear) {
+		List<Object[]> leaveList = null;
+		if(type.equals("Casual Leave")) {
+			leaveList = leaveRepository.getUsersCasualLeaveLeaveList(userId,firstDayOfYear,lastDayOfYear);
+		}
+		else if(type.equals("Sick Leave")) {
+			leaveList = leaveRepository.getUsersSickLeaveLeaveList(userId,firstDayOfYear,lastDayOfYear);
+		}
+		else if(type.equals("Earned Leave")) {
+			leaveList = leaveRepository.getUsersEarnedLeaveLeaveList(userId,firstDayOfYear,lastDayOfYear);
+		}
+		else if(type.equals("Loss of Pay")) {
+			leaveList = leaveRepository.getUsersLOPLeaveLeaveList(userId,firstDayOfYear,lastDayOfYear);
+		}
+		return leaveList;
 	}
 
 	

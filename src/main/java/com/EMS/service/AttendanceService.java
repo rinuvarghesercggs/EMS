@@ -14,7 +14,6 @@ public interface AttendanceService {
 
 	public List<Object[]> getHolidayList();
 
-//	public List<Object[]> getUserLeaveList(Long userId);
 
 	public List<Object[]> getUserLeaveList(Long userId, LocalDate firstDayOfYear, LocalDate lastDayOfYear);
 
@@ -41,6 +40,9 @@ public interface AttendanceService {
 	public List<LeaveModel> getLeavelist(Date startDate1, Date endDate1);
 
 	public LeaveModel Leavedetails(long leaveId);
+
+	public List<Object[]> getUserLeaveListByLeaveType(Long userId, String type, LocalDate firstDayOfYear,
+			LocalDate lastDayOfYear);
 
 //	public Object getUserLeaveBalance(Long userId, LocalDate firstDayOfYear, LocalDate lastDayOfYear);
 

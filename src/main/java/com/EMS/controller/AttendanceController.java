@@ -94,22 +94,59 @@ public class AttendanceController {
 		ObjectNode leaveBalanceNode = objectMapper.createObjectNode();
 
 		Long userId = null;
+        String type = null,date1 = null, date2 = null;
+		
+		LocalDate date = LocalDate.now();
+		LocalDate firstDayOfYear = date.with(TemporalAdjusters.firstDayOfYear());
+		LocalDate lastDayOfYear = date.with(TemporalAdjusters.lastDayOfYear());
+		
+		int quarter = 0;
+		int monthNumber = date.getMonthValue();
+		int year = date.getYear();
 
-		LocalDate now = LocalDate.now();
-		LocalDate firstDayOfYear = now.with(TemporalAdjusters.firstDayOfYear());
-		LocalDate lastDayOfYear = now.with(TemporalAdjusters.lastDayOfYear());
+		if (monthNumber >= 1 && monthNumber <= 3)
+			quarter = 1;
+		else if (monthNumber >= 4 && monthNumber <= 6)
+			quarter = 2;
+		else if (monthNumber >= 7 && monthNumber <= 9)
+			quarter = 3;
+		else if (monthNumber >= 10 && monthNumber <= 12)
+			quarter = 4;
+
+	
 
 		try {
-			if (requestdata.get("userId") != null && requestdata.get("userId").asText() != "") {
+			if (requestdata.get("userId") != null && requestdata.get("userId").asText() != "") 
 				userId = requestdata.get("userId").asLong();
-				System.out.println("userId : " + userId);
+			if (requestdata.get("leaveType") != null && requestdata.get("leaveType").asText() != "") 
+				type = requestdata.get("leaveType").asText();
+			if (requestdata.get("leaveFrom") != null && requestdata.get("leaveFrom").asText() != "") 
+				date1 = requestdata.get("leaveFrom").asText();
+			if (requestdata.get("leaveTo") != null && requestdata.get("leaveTo").asText() != "") 
+				date2 = requestdata.get("leaveTo").asText();
 
-				if (userId != null) {
-					List<Object[]> leaveModel = attendanceService.getUserLeaveList(userId, firstDayOfYear,
-							lastDayOfYear);
+				LocalDate startDate = null, endDate = null;
+				if (date1 != null && !date1.isEmpty()) {
+					startDate = LocalDate.parse(date1);
+					System.out.println("start date : "+startDate);
+				}
+				if (date1 != null && !date2.isEmpty()) {
+					endDate = LocalDate.parse(date2);
+				}
 
-					
-//					List<Object[]> leaveModel = attendanceService.getUserLeaveList(userId);
+				List<Object[]> leaveModel = null;
+
+				if (userId != null && type == null && startDate == null && endDate == null) 
+					leaveModel = attendanceService.getUserLeaveList(userId, firstDayOfYear,lastDayOfYear);
+				else if(userId != null && type != null && startDate == null && endDate == null)
+					leaveModel = attendanceService.getUserLeaveListByLeaveType(userId,type,firstDayOfYear,lastDayOfYear);
+				else if(userId != null && type != null && startDate != null && endDate != null)
+					leaveModel = attendanceService.getUserLeaveListByLeaveType(userId,type,startDate,endDate);
+				else if(userId != null && type == null && startDate != null && endDate != null)
+					leaveModel = attendanceService.getUserLeaveList(userId,startDate,endDate);
+
+
+					if(leaveModel != null) {
 					System.out.println("leave list size : " + leaveModel.size());
 
 					for (Object[] leave : leaveModel) {
@@ -134,25 +171,10 @@ public class AttendanceController {
 					
 					
 					//to obtain user leave balance details
-					LocalDate date = LocalDate.now();
-					int quarter = 0;
-
-					int monthNumber = date.getMonthValue();
-					int year = date.getYear();
-					
-					if(monthNumber >= 1 && monthNumber <= 3)
-						quarter = 1;
-					else if(monthNumber >= 4 && monthNumber <= 6)
-						quarter = 2;
-					else if(monthNumber >= 7 && monthNumber <= 9)
-						quarter = 3;
-					else if(monthNumber >= 10 && monthNumber <= 12)
-						quarter = 4;
-
 					leaveBalanceNode = attendanceService.getLeavebalanceData(userId,quarter,year);
 
 				}
-			}
+			
 
 			jsonDataRes.set("data", jsonArray);
 			jsonDataRes.set("leaveBalance", leaveBalanceNode);
