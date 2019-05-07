@@ -145,11 +145,6 @@ public class AttendanceServiceImpl implements AttendanceService {
 		return list;
 	}
 
-	@Override
-	public List<LeaveBalanceModel> getUserLeaveBalance(LeaveBalanceModel lBalance) {
-		List<LeaveBalanceModel> list=leaveBalanceRepository.getuserLeaveBalance(lBalance.getYear(),lBalance.getQuarter(),lBalance.getUser().getUserId());
-		return list;
-	}
 
 	@Override
 	public List<LeaveModel> getLeavelist(Date startDate1, Date endDate1) {
@@ -180,6 +175,35 @@ public class AttendanceServiceImpl implements AttendanceService {
 			leaveList = leaveRepository.getUsersLOPLeaveLeaveList(userId,firstDayOfYear,lastDayOfYear);
 		}
 		return leaveList;
+	}
+
+
+	@Override
+	public Boolean checkLeaveBalance(LeaveBalanceModel lBalance) {
+		int result=leaveBalanceRepository.checkBalance(lBalance.getUser().getUserId(),lBalance.getQuarter(),lBalance.getYear()); 
+		System.out.println("check count:"+result);
+		if(result==0)
+			return true;
+		else
+			return false;
+	}
+
+
+	@Override
+	public void deleteBalance(LeaveBalanceModel lBalance) {
+
+		try {
+			leaveBalanceRepository.deleteleaveBalance(lBalance.getQuarter(),lBalance.getYear(),lBalance.getUser().getUserId());
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	@Override
+	public LeaveBalanceModel getUserLeaveBalance(int quarter, int year, long userId) {
+		LeaveBalanceModel list=leaveBalanceRepository.getuserLeaveBalance(year,quarter,userId);
+		return list;
 	}
 
 	

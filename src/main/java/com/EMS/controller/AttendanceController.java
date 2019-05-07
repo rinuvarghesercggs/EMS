@@ -393,10 +393,8 @@ public class AttendanceController {
 				lBalance.setQuarter(quarterleave);
 				System.out.println("quat:" + lBalance.getQuarter() + "yera:" + lBalance.getYear() + " :user"
 						+ lBalance.getUser().getUserId());
-				List<LeaveBalanceModel> balList = attendanceService.getUserLeaveBalance(lBalance);
-				System.out.println("list size:" + balList.size());
-
-				LeaveBalanceModel leavebal = balList.get(0);
+				LeaveBalanceModel leavebal = attendanceService.getUserLeaveBalance(lBalance.getQuarter(),lBalance.getYear(),lBalance.getUser().getUserId());
+				
 				System.out.println("sl:" + leavebal.getSlBalance() + " el:" + leavebal.getElBalance() + " cl:"
 						+ leavebal.getClBalance());
 
@@ -654,10 +652,7 @@ public class AttendanceController {
 				lBalance.setQuarter(quarterleave);
 				System.out.println("quat:" + lBalance.getQuarter() + "yera:" + lBalance.getYear() + " :user"
 						+ lBalance.getUser().getUserId());
-				List<LeaveBalanceModel> balList = attendanceService.getUserLeaveBalance(lBalance);
-				System.out.println("list size:" + balList.size());
-
-				LeaveBalanceModel leavebal = balList.get(0);
+				LeaveBalanceModel leavebal = attendanceService.getUserLeaveBalance(lBalance.getQuarter(),lBalance.getYear(),lBalance.getUser().getUserId());
 				System.out.println("sl:" + leavebal.getSlBalance() + " el:" + leavebal.getElBalance() + " cl:"
 						+ leavebal.getClBalance());
 
@@ -736,4 +731,96 @@ public class AttendanceController {
 		return jsonDataRes;
 
 	}
+	
+	@PostMapping("/getleaveBalance")
+	public ObjectNode setLeaveBalance(@RequestBody JsonNode requestdata, HttpServletResponse httpstatus) {
+		ObjectNode jsonDataRes = objectMapper.createObjectNode();
+		try {
+
+			Long userId = requestdata.get("userId").asLong();
+			System.out.println("userID:"+userId);
+			UserModel user = userservice.getUserDetailsById(userId);
+
+			if(user!=null) {
+				LocalDate now = LocalDate.now();
+				int year = now.getYear();
+				LeaveBalanceModel lBalance = new LeaveBalanceModel();
+				lBalance.setYear(year);
+				lBalance.setUser(user);
+				int month = now.getMonthValue();
+				double currEL=requestdata.get("el").asDouble();
+				double currSL=requestdata.get("sl").asDouble();
+				double currCL=requestdata.get("cl").asDouble();
+
+				System.out.println("month :" + month);
+				
+					int quarterleave = 0;
+					if (month <= 3) {
+						quarterleave = 1;
+					} else if (month <= 6 && month > 3) {
+						quarterleave = 2;
+					} else if (month <= 9 && month > 6) {
+						quarterleave = 3;
+					} else if (month <= 12 && month > 9) {
+						quarterleave = 4;
+					}
+
+					lBalance.setQuarter(quarterleave);
+					System.out.println("user id"+lBalance.getUser().getUserId());
+					System.out.println("quarter:" + lBalance.getQuarter() + "yera:" + lBalance.getYear());
+					
+					double clBalance=0,elBalance=0,slBalance=0;
+					if(lBalance.getQuarter()>1) {
+						ObjectNode balanceList = attendanceService.getLeavebalanceData(lBalance.getUser().getUserId(), lBalance.getQuarter()-1, lBalance.getYear());
+						clBalance = balanceList.get("CL").asDouble();
+						elBalance=balanceList.get("SL").asDouble();
+						slBalance=balanceList.get("EL").asDouble();
+					}
+					
+					clBalance=clBalance+currCL;
+					elBalance=elBalance+currEL;
+					slBalance=slBalance+currSL;
+//					lBalance.setClBalance(clBalance);
+//					lBalance.setElBalance(elBalance);
+//					lBalance.setSlBalance(slBalance);
+
+					
+
+					Boolean checkvalue = attendanceService.checkLeaveBalance(lBalance);
+					if (checkvalue) {
+						LeaveBalanceModel leavedata=attendanceService.getUserLeaveBalance(lBalance.getQuarter()-1,lBalance.getYear(),lBalance.getUser().getUserId());
+						System.out.println("leave id;"+leavedata.getLeavebalanceId());
+						leavedata.setClBalance(clBalance);
+						leavedata.setElBalance(elBalance);
+						leavedata.setSlBalance(slBalance);
+						leavedata.setQuarter(lBalance.getQuarter());
+						leavedata.setYear(lBalance.getYear());
+						attendanceService.setLeaveBalance(leavedata);
+//						attendanceService.deleteBalance(lBalance);
+						jsonDataRes.put("status", "success");
+						jsonDataRes.put("message", "successfully saved.");
+						jsonDataRes.put("code", httpstatus.getStatus());
+					} else {
+						jsonDataRes.put("status", "failure");
+						jsonDataRes.put("code", httpstatus.getStatus());
+						jsonDataRes.put("message", "duplicate entry");
+					}
+
+			}else {
+				jsonDataRes.put("status", "failure");
+				jsonDataRes.put("code", httpstatus.getStatus());
+				jsonDataRes.put("message", "Not an active user");
+			}
+			
+
+
+		} catch (Exception e) {
+			jsonDataRes.put("status", "failure");
+			jsonDataRes.put("code", httpstatus.getStatus());
+			jsonDataRes.put("message", "failed. " + e);
+		}
+		return jsonDataRes;
+
+	}
+
 }

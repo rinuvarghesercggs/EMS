@@ -35,7 +35,11 @@ public interface AttendanceService {
 
 	public List<Long> getAllUserId();
 
-	public List<LeaveBalanceModel> getUserLeaveBalance(LeaveBalanceModel lBalance);
+	public Boolean checkLeaveBalance(LeaveBalanceModel lBalance);
+
+	public void deleteBalance(LeaveBalanceModel lBalance);
+
+	public LeaveBalanceModel getUserLeaveBalance(int i, int year, long userId);
 
 	public List<LeaveModel> getLeavelist(Date startDate1, Date endDate1);
 
