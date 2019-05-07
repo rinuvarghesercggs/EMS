@@ -319,10 +319,28 @@ public class LoginController {
 
 		ObjectNode dataNode = objectMapper.createObjectNode();
 		ObjectNode node = objectMapper.createObjectNode();
+		ArrayNode userarray=objectMapper.createArrayNode();
+
 
 		try {
-			ArrayNode userList = userService.getUserList();
-			dataNode.set("userList", userList);
+			JsonNode userList = userService.getUserList();
+			for(JsonNode nodeItem : userList) {
+				ArrayNode techarray=objectMapper.createArrayNode();
+
+				List<Object[]> technologyList = userService.getUserTechnologyList(nodeItem.get("userId").asLong());
+				for(Object[] item : technologyList) {
+					ObjectNode responseData=objectMapper.createObjectNode();
+					String id = String.valueOf(item[0]);
+					String techName = String.valueOf(item[1]);
+					responseData.put("id", id);
+					responseData.put("technologyName", techName);
+					techarray.add(responseData);
+				}
+				((ObjectNode) nodeItem).set("technologyList", techarray);
+				userarray.add(nodeItem);
+			}
+			
+			dataNode.set("userList", userarray);
 
 			node.put("status", "success");
 			node.set("data", dataNode);
@@ -339,19 +357,31 @@ public class LoginController {
 	@GetMapping("/getUserDetails/{userId}")
 	public JsonNode getUserDetails(@PathVariable("userId") Long userId,HttpServletResponse httpstatus) throws ParseException {
 
-		ObjectNode dataNode = objectMapper.createObjectNode();
+		ObjectNode userNode = objectMapper.createObjectNode();
 		ObjectNode node = objectMapper.createObjectNode();
+		ArrayNode techarray=objectMapper.createArrayNode();
 
 		try {
 			JsonNode userData = userService.getUserdetails(userId);
-			dataNode.set("userList", userData);
+			userNode.set("userList", userData);
+			
+			List<Object[]> technologyList = userService.getUserTechnologyList(userId);
+			for(Object[] item : technologyList) {
+				ObjectNode responseData=objectMapper.createObjectNode();
+				String id = String.valueOf(item[0]);
+				String techName = String.valueOf(item[1]);
+				responseData.put("id", id);
+				responseData.put("technologyName", techName);
+				techarray.add(responseData);
+			}
+			((ObjectNode) userData).set("technologyList", techarray);
 
 			node.put("status", "success");
-			node.set("data", dataNode);
+			node.set("data", userNode);
 
 		} catch (Exception e) {
 			node.put("status", "failure");
-			node.set("data", dataNode);
+			node.set("data", userNode);
 		}
 
 		return node;
@@ -369,13 +399,13 @@ public class LoginController {
 		
 			for (Technology tech : techList) {
 				ObjectNode clientobj = objectMapper.createObjectNode();
-				clientobj.put("TechnologyId", tech.getTechnologyId());
-				clientobj.put("TechnologyName", tech.getTechnologyName());
+				clientobj.put("technologyId", tech.getTechnologyId());
+				clientobj.put("technologyName", tech.getTechnologyName());
 				techarray.add(clientobj);
 			}
 		}
 		responseData.put("status", "success");
-		responseData.put("message", "Password Updated");
+		responseData.put("message", "success");
 		responseData.put("code", httpstatus.getStatus());
 		responseData.set("payload", techarray);
 		

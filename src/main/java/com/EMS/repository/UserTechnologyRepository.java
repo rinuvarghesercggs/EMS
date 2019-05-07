@@ -1,5 +1,7 @@
 package com.EMS.repository;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
@@ -8,13 +10,18 @@ import javax.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.RowMapperResultSetExtractor;
 import org.springframework.stereotype.Repository;
 
 import com.EMS.model.BenchProjectReportModel;
+import com.EMS.model.ProjectReportModel;
 import com.EMS.model.UserModel;
 import com.EMS.model.UserTechnology;
 import com.EMS.utility.BenchReportRowMapper;
 import com.EMS.utility.DbConnectionUtility;
+import com.EMS.utility.ReportRowMapper;
 
 import ch.qos.logback.classic.db.names.DBNameResolver;
 
@@ -61,5 +68,7 @@ public class UserTechnologyRepository extends DbConnectionUtility{
 			return false;
 		
 	}
+
+	
 
 }

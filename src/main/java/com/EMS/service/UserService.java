@@ -28,7 +28,7 @@ public interface UserService {
 
 	Long getCount();
 
-	 ArrayNode getUserList();
+	 JsonNode getUserList();
 
 	JsonNode getUserdetails(Long userId);
 
@@ -37,6 +37,8 @@ public interface UserService {
 	int deleteTechnology(Long userId);
 
 	Boolean checkExistanceOfUserId(Long userId);
+
+	List<Object[]> getUserTechnologyList(Long userId);
 
 	
 

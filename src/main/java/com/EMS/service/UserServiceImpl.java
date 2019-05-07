@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.EMS.model.UserModel;
 import com.EMS.model.UserTechnology;
+import com.EMS.repository.TechnologyRepository;
 import com.EMS.repository.UserRepository;
 import com.EMS.repository.UserTechnologyRepository;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -25,6 +26,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserTechnologyRepository userTechnologyRepository;
+	
+	@Autowired
+	private TechnologyRepository technologyRepository;
 	
 	@Override
 	public UserModel getUserDetailsById(Long id) {
@@ -83,10 +87,10 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public ArrayNode getUserList() {
-		ArrayNode array = objectMapper.createArrayNode();
-		array = objectMapper.convertValue(userRepository.getUser(), ArrayNode.class);
-		return array;
+	public JsonNode getUserList() {
+		JsonNode node = objectMapper.createObjectNode();
+		node = objectMapper.convertValue(userRepository.getUser(), JsonNode.class);
+		return node;
 	}
 
 	@Override
@@ -116,6 +120,14 @@ public class UserServiceImpl implements UserService {
 	public Boolean checkExistanceOfUserId(Long userId) {
 		Boolean isExist = userTechnologyRepository.checkExistanceOfUserId(userId);
 		return isExist;
+	}
+
+	@Override
+	public List<Object[]> getUserTechnologyList(Long userId) {
+		
+		List<Object[]> list = technologyRepository.getUserTechnologyList(userId);
+		return list;
+		
 	}
 
 	
