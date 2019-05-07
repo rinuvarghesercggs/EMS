@@ -330,10 +330,10 @@ public class LoginController {
 				List<Object[]> technologyList = userService.getUserTechnologyList(nodeItem.get("userId").asLong());
 				for(Object[] item : technologyList) {
 					ObjectNode responseData=objectMapper.createObjectNode();
-					String id = String.valueOf(item[0]);
-					String techName = String.valueOf(item[1]);
+					String experience = String.valueOf(item[0]);
+					String id = String.valueOf(item[1]);
 					responseData.put("id", id);
-					responseData.put("technologyName", techName);
+					responseData.put("experience", experience);
 					techarray.add(responseData);
 				}
 				((ObjectNode) nodeItem).set("technologyList", techarray);
@@ -368,10 +368,10 @@ public class LoginController {
 			List<Object[]> technologyList = userService.getUserTechnologyList(userId);
 			for(Object[] item : technologyList) {
 				ObjectNode responseData=objectMapper.createObjectNode();
-				String id = String.valueOf(item[0]);
-				String techName = String.valueOf(item[1]);
+				String experience = String.valueOf(item[0]);
+				String id = String.valueOf(item[1]);
 				responseData.put("id", id);
-				responseData.put("technologyName", techName);
+				responseData.put("experience", experience);
 				techarray.add(responseData);
 			}
 			((ObjectNode) userData).set("technologyList", techarray);
