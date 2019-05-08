@@ -36,6 +36,9 @@ public interface LeaveRepository extends JpaRepository<LeaveModel, Long> {
 	@Transactional
 	@Query(value="delete FROM user_leave WHERE user_leave_id=:leaveId",nativeQuery=true)
 	public void deleteleaveMarking(long leaveId) throws Exception;
+
+	@Query(value="Select * from user_leave where leave_from >=:startDate1 AND leave_to<=:endDate1 AND leave_type=:leaveType",nativeQuery=true)
+	List<LeaveModel> getleavelist(Date startDate1, Date endDate1, String leaveType);
 	
 
 }

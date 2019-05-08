@@ -49,4 +49,7 @@ public interface AttendanceService {
 
 	public void deleteLeaveMarking(long leaveId);
 
+
+	public List<LeaveModel> getLeavelist(Date startDate1, Date endDate1, String leaveType);
+
 }

@@ -194,5 +194,12 @@ public class AttendanceServiceImpl implements AttendanceService {
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+
+	@Override
+	public List<LeaveModel> getLeavelist(Date startDate1, Date endDate1, String leaveType) {
+		List<LeaveModel> list=leaveRepository.getleavelist(startDate1,endDate1,leaveType);
+		return list;
 	}	
 }
