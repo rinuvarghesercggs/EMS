@@ -190,5 +190,20 @@ public class AttendanceServiceImpl implements AttendanceService {
 		return list;
 	}
 
-	
+
+	@Override
+	public LeaveModel getLeaveDetails(long leaveId) {
+		LeaveModel leave=leaveRepository.getOne(leaveId);
+		return leave;
+	}
+
+
+	@Override
+	public void deleteLeaveMarking(long leaveId) {
+		try {
+			leaveRepository.deleteleaveMarking(leaveId);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}	
 }

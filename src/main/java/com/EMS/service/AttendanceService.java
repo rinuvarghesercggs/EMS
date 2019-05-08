@@ -44,4 +44,9 @@ public interface AttendanceService {
 	public List<Object[]> getUserLeaveListByLeaveType(Long userId, String type, LocalDate firstDayOfYear,
 			LocalDate lastDayOfYear);
 
+	public LeaveModel getLeaveDetails(long leaveId);
+
+
+	public void deleteLeaveMarking(long leaveId);
+
 }
