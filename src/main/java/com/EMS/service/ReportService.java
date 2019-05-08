@@ -13,7 +13,6 @@ public interface ReportService {
 	public ArrayNode getBenchProjectReportDetails(long uId,Date fromDate, Date toDate);
 	public ArrayNode getBenchProjectReportDetails(Date fromDate, Date toDate);
 		
-	public List getProjectAllocationDetails();
 	public List getProjectTaskReportDetails(Date fromDate,Date toDate,Long projectId);
 }
 

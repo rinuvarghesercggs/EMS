@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.EMS.model.AllocationModel;
 import com.EMS.model.DepartmentModel;
-import com.EMS.model.ExportProjectAllocationReportModel;
 import com.EMS.model.ProjectModel;
 import com.EMS.model.UserModel;
 import com.EMS.service.ProjectService;
@@ -33,7 +32,6 @@ import com.EMS.service.AttendanceService;
 import com.EMS.service.ProjectAllocationService;
 import com.EMS.service.UserService;
 import com.EMS.service.ProjectExportService;
-import com.EMS.service.projectAllocationImportService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -53,13 +51,7 @@ public class ProjectAllocationController {
 	
 	@Autowired
 	private ObjectMapper objectMapper;
-
-	@Autowired
-	ProjectExportService projectExportService;
-	
-	@Autowired
-	projectAllocationImportService projectAllocationImportService;
-	
+		
 	@Autowired
 	ReportService reportService;
 	
@@ -515,41 +507,6 @@ public class ProjectAllocationController {
 		}
 		
 	}
-	@GetMapping(value = "/exportProjctAllocationRpt")
-	public ResponseEntity exportProjctAllocationRpt(HttpServletResponse response){
-		try {
 
-			List <ExportProjectAllocationReportModel>exportData = reportService.getProjectAllocationDetails();
-
-			projectExportService.exportProjectAllocationReport(exportData,response);
-
-		} catch (Exception e) {
-			return new ResponseEntity( HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		return new ResponseEntity( HttpStatus.OK);
-	}
-	
-	@PostMapping(value = "/importProjctAllocationRpt")
-	public ObjectNode importProjctAllocationRpt(@RequestBody JSONObject requestData,HttpServletRequest request,HttpServletResponse response) {
-		ObjectNode jsonData = objectMapper.createObjectNode();
-		ObjectNode jsonDataRes = objectMapper.createObjectNode();
-		try {
-
-//			List <ExportProjectReportModel>exportData = reportService.getProjectAllocationDetails();
-			String path = (String) requestData.get("filepath");System.out.println("path=="+path);
-			projectAllocationImportService.importReport(path);
-
-			
-			//jsonDataRes.set("data", jsonData);
-			jsonDataRes.put("status", "success");
-			jsonDataRes.put("code", response.getStatus());
-			jsonDataRes.put("message", "success");
-		} catch (Exception e) {
-			jsonDataRes.put("status", "failure");
-			jsonDataRes.put("code", response.getStatus());
-			jsonDataRes.put("message", "failed. " + e);
-		}
-		return jsonDataRes;
-	}
 		
 }

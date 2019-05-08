@@ -7,12 +7,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.EMS.model.BenchProjectReportModel;
-import com.EMS.model.ExportProjectAllocationReportModel;
 import com.EMS.model.ExportProjectTaskReportModel;
 import com.EMS.model.ProjectReportModel;
 import com.EMS.utility.BenchReportRowMapper;
 import com.EMS.utility.DbConnectionUtility;
-import com.EMS.utility.ExportProjectAllocationReportRowMapper;
 import com.EMS.utility.ExportProjectTaskReportRowMapper;
 import com.EMS.utility.JsonNodeRowMapper;
 import com.EMS.utility.ReportRowMapper;
@@ -59,15 +57,6 @@ public class ProjectReportsRepository extends DbConnectionUtility {
 
 		sql = "SELECT CONCAT(u.first_name,' ',u.last_name) AS users ,u.user_id, a.is_billable, a.allocated_perce, p.project_name, d.department_id, d.department_name FROM allocation a LEFT JOIN `user` u ON u.user_id = a. user_user_id LEFT JOIN project p ON p.project_id = a.project_project_id LEFT JOIN department d ON d.department_id = u.department_department_id WHERE p.project_code = 'BP' AND			 CAST(a.start_date  AS DATE) >= ? AND CAST(a.end_date  AS DATE)  <=  ? order by users";
 		list = jdbcTemplate.query(sql, new BenchReportRowMapper(), new Object[] {fromDate,toDate});	
-
-		return list;
-	}
-	public List<ExportProjectAllocationReportModel> GenerateProjectAllocationReportForExporting (){
-		String sql ="";
-		List<ExportProjectAllocationReportModel> list = null;
-
-		sql = "SELECT a.alloc_id,a.project_project_id as projectId,p.project_name,a.user_user_id as userId,u.user_name,CONCAT(u.first_name,' ',u.last_name) AS FullName,a.allocated_perce AS percentage, a.start_date,a.end_date, (CASE 	WHEN COALESCE(a.is_billable) IS NULL THEN '-' 	WHEN COALESCE(a.is_billable) = '1' THEN 'Yes' 	ELSE 'No' END) AS Billable FROM allocation a LEFT JOIN `user` u ON u.user_id = a.user_user_id LEFT JOIN project p ON p.project_id = a.project_project_id ORDER BY project_name,user_name";
-		list = jdbcTemplate.query(sql, new ExportProjectAllocationReportRowMapper(), new Object[] {});	
 
 		return list;
 	}

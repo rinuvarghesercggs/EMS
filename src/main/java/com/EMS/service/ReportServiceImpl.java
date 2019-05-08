@@ -50,15 +50,6 @@ public class ReportServiceImpl implements ReportService {
 		}
 		return array;
 	}
-	public List getProjectAllocationDetails() {
-		List list = new ArrayList();
-		try {
-			list = projectReportsRepository.GenerateProjectAllocationReportForExporting();
-		} catch (Exception exc) {
-			exc.printStackTrace();
-		}
-		return list;
-	}
 	public List getProjectTaskReportDetails(Date fromDate,Date toDate,Long projectId) {
 		List list = new ArrayList();
 		try {
