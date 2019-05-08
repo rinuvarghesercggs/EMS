@@ -14,7 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -84,22 +86,21 @@ public class AttendanceController {
 		return jsonDataRes;
 
 	}
-	
-	
+
 	@PostMapping("/getUserLeaveList")
-	public ObjectNode getUserLeaveList(@RequestBody JsonNode requestdata,HttpServletResponse httpstatus) {
-		
+	public ObjectNode getUserLeaveList(@RequestBody JsonNode requestdata, HttpServletResponse httpstatus) {
+
 		ArrayNode jsonArray = objectMapper.createArrayNode();
 		ObjectNode jsonDataRes = objectMapper.createObjectNode();
 		ObjectNode leaveBalanceNode = objectMapper.createObjectNode();
 
 		Long userId = null;
-        String type = null,date1 = null, date2 = null;
-		
+		String type = null, date1 = null, date2 = null;
+
 		LocalDate date = LocalDate.now();
 		LocalDate firstDayOfYear = date.with(TemporalAdjusters.firstDayOfYear());
 		LocalDate lastDayOfYear = date.with(TemporalAdjusters.lastDayOfYear());
-		
+
 		int quarter = 0;
 		int monthNumber = date.getMonthValue();
 		int year = date.getYear();
@@ -113,40 +114,37 @@ public class AttendanceController {
 		else if (monthNumber >= 10 && monthNumber <= 12)
 			quarter = 4;
 
-	
-
 		try {
-			if (requestdata.get("userId") != null && requestdata.get("userId").asText() != "") 
+			if (requestdata.get("userId") != null && requestdata.get("userId").asText() != "")
 				userId = requestdata.get("userId").asLong();
-			if (requestdata.get("leaveType") != null && requestdata.get("leaveType").asText() != "") 
+			if (requestdata.get("leaveType") != null && requestdata.get("leaveType").asText() != "")
 				type = requestdata.get("leaveType").asText();
-			if (requestdata.get("leaveFrom") != null && requestdata.get("leaveFrom").asText() != "") 
+			if (requestdata.get("leaveFrom") != null && requestdata.get("leaveFrom").asText() != "")
 				date1 = requestdata.get("leaveFrom").asText();
-			if (requestdata.get("leaveTo") != null && requestdata.get("leaveTo").asText() != "") 
+			if (requestdata.get("leaveTo") != null && requestdata.get("leaveTo").asText() != "")
 				date2 = requestdata.get("leaveTo").asText();
 
-				LocalDate startDate = null, endDate = null;
-				if (date1 != null && !date1.isEmpty()) {
-					startDate = LocalDate.parse(date1);
-					System.out.println("start date : "+startDate);
-				}
-				if (date1 != null && !date2.isEmpty()) {
-					endDate = LocalDate.parse(date2);
-				}
+			LocalDate startDate = null, endDate = null;
+			if (date1 != null && !date1.isEmpty()) {
+				startDate = LocalDate.parse(date1);
+				System.out.println("start date : " + startDate);
+			}
+			if (date1 != null && !date2.isEmpty()) {
+				endDate = LocalDate.parse(date2);
+			}
 
-				List<Object[]> leaveModel = null;
+			List<Object[]> leaveModel = null;
 
-				if (userId != null && type == null && startDate == null && endDate == null) 
-					leaveModel = attendanceService.getUserLeaveList(userId, firstDayOfYear,lastDayOfYear);
-				else if(userId != null && type != null && startDate == null && endDate == null)
-					leaveModel = attendanceService.getUserLeaveListByLeaveType(userId,type,firstDayOfYear,lastDayOfYear);
-				else if(userId != null && type != null && startDate != null && endDate != null)
-					leaveModel = attendanceService.getUserLeaveListByLeaveType(userId,type,startDate,endDate);
-				else if(userId != null && type == null && startDate != null && endDate != null)
-					leaveModel = attendanceService.getUserLeaveList(userId,startDate,endDate);
+			if (userId != null && type == null && startDate == null && endDate == null)
+				leaveModel = attendanceService.getUserLeaveList(userId, firstDayOfYear, lastDayOfYear);
+			else if (userId != null && type != null && startDate == null && endDate == null)
+				leaveModel = attendanceService.getUserLeaveListByLeaveType(userId, type, firstDayOfYear, lastDayOfYear);
+			else if (userId != null && type != null && startDate != null && endDate != null)
+				leaveModel = attendanceService.getUserLeaveListByLeaveType(userId, type, startDate, endDate);
+			else if (userId != null && type == null && startDate != null && endDate != null)
+				leaveModel = attendanceService.getUserLeaveList(userId, startDate, endDate);
 
-
-					if(leaveModel != null) {
+			if (leaveModel != null) {
 				System.out.println("leave list size : " + leaveModel.size());
 
 				for (Object[] leave : leaveModel) {
@@ -173,7 +171,6 @@ public class AttendanceController {
 				leaveBalanceNode = attendanceService.getLeavebalanceData(userId, quarter, year);
 
 			}
-			
 
 			jsonDataRes.set("data", jsonArray);
 			jsonDataRes.set("leaveBalance", leaveBalanceNode);
@@ -351,7 +348,7 @@ public class AttendanceController {
 				double leaveCount = node.get("count").asDouble();
 				leaveModel.setLeaveType(node.get("leaveType").asText().toUpperCase());
 				leaveModel.setLeaveCount(leaveCount);
-				
+
 				LocalDate startdate = LocalDate.parse(startDate);
 				LocalDate enddate = LocalDate.parse(endDate);
 
@@ -384,8 +381,7 @@ public class AttendanceController {
 						+ leavebal.getClBalance());
 
 				double leavebalance = 0;
-				
-				
+
 				if (leaveModel.getLeaveType().equals("CL")) {
 
 					if (leavebal.getClBalance() >= leaveModel.getLeaveCount()) {
@@ -394,7 +390,7 @@ public class AttendanceController {
 						leavebalance = leavebalance - leaveModel.getLeaveCount();
 						System.out.println("new bal:" + leavebalance + " count:" + leaveModel.getLeaveCount());
 						leavebal.setClBalance(leavebalance);
-					} 
+					}
 				} else if (leaveModel.getLeaveType().equals("SL")) {
 					if (leavebal.getSlBalance() >= leaveModel.getLeaveCount()) {
 						leavebalance = leavebal.getSlBalance();
@@ -408,8 +404,9 @@ public class AttendanceController {
 						leavebalance = leavebal.getElBalance();
 						leavebalance = leavebalance - leaveModel.getLeaveCount();
 						leavebal.setElBalance(leavebalance);
-					} System.out.println("new bal:" + leavebalance + " count:" + leaveModel.getLeaveCount());
-					
+					}
+					System.out.println("new bal:" + leavebalance + " count:" + leaveModel.getLeaveCount());
+
 				}
 
 				attendanceService.setLeaveBalance(leavebal);
@@ -503,14 +500,13 @@ public class AttendanceController {
 		return responseData;
 	}
 
-
 	@PostMapping("/getLeaveList")
 	public JsonNode getLeaveList(@RequestBody JsonNode requestdata, HttpServletResponse response) {
 		ObjectNode responseData = objectMapper.createObjectNode();
 
 		String startDate = requestdata.get("startdate").asText();
 		String endDate = requestdata.get("endDate").asText();
-		String leaveType=requestdata.get("leaveType").asText();
+		String leaveType = requestdata.get("leaveType").asText();
 
 		try {
 
@@ -519,16 +515,14 @@ public class AttendanceController {
 			Date endDate1 = formatter.parse(endDate);
 
 			ArrayNode leaverecord = objectMapper.createArrayNode();
-			List<LeaveModel> leavelist=new ArrayList<LeaveModel>();
-			if(leaveType.equals(null)||leaveType.equals("")) {
+			List<LeaveModel> leavelist = new ArrayList<LeaveModel>();
+			if (leaveType.equals(null) || leaveType.equals("")) {
 				leavelist = attendanceService.getLeavelist(startDate1, endDate1);
-				System.out.println("if:"+leavelist.size());
-			}else {
-				leavelist=attendanceService.getLeavelist(startDate1, endDate1,leaveType.toUpperCase());
-				System.out.println("else:"+leavelist.size());
+				System.out.println("if:" + leavelist.size());
+			} else {
+				leavelist = attendanceService.getLeavelist(startDate1, endDate1, leaveType.toUpperCase());
+				System.out.println("else:" + leavelist.size());
 			}
-			
-			
 
 			for (LeaveModel leave : leavelist) {
 
@@ -589,7 +583,7 @@ public class AttendanceController {
 				double leaveCount = node.get("count").asDouble();
 				leaveModel.setLeaveCount(leaveCount);
 				leaveModel.setLeaveType(node.get("leaveType").asText().toUpperCase());
-				
+
 				String startDate = node.get("startdate").asText();
 				String endDate = node.get("enddate").asText();
 				System.out.println("start:" + startDate);
@@ -639,7 +633,6 @@ public class AttendanceController {
 				else if (checkleavevalue.getLeaveType().equals("SL"))
 					leavebal.setSlBalance(leavebal.getSlBalance() + checkleavevalue.getLeaveCount());
 
-				
 				if (leaveModel.getLeaveType().equals("CL")) {
 
 					if (leavebal.getClBalance() >= leaveModel.getLeaveCount()) {
@@ -648,7 +641,7 @@ public class AttendanceController {
 						leavebalance = leavebalance - leaveModel.getLeaveCount();
 						System.out.println("new bal:" + leavebalance + " count:" + leaveModel.getLeaveCount());
 						leavebal.setClBalance(leavebalance);
-					} 
+					}
 				} else if (leaveModel.getLeaveType().equals("SL")) {
 					if (leavebal.getSlBalance() >= leaveModel.getLeaveCount()) {
 						leavebalance = leavebal.getSlBalance();
@@ -662,8 +655,9 @@ public class AttendanceController {
 						leavebalance = leavebal.getElBalance();
 						leavebalance = leavebalance - leaveModel.getLeaveCount();
 						leavebal.setElBalance(leavebalance);
-					} System.out.println("new bal:" + leavebalance + " count:" + leaveModel.getLeaveCount());
-					
+					}
+					System.out.println("new bal:" + leavebalance + " count:" + leaveModel.getLeaveCount());
+
 				}
 				attendanceService.setLeaveBalance(leavebal);
 
@@ -774,7 +768,7 @@ public class AttendanceController {
 	@PostMapping("/cancelLeaveMarking")
 	public ObjectNode setcancelLeaveMarking(@RequestBody JsonNode requestdata, HttpServletResponse httpstatus) {
 		ObjectNode jsonDataRes = objectMapper.createObjectNode();
-		boolean statusflag=false;
+		boolean statusflag = false;
 		try {
 
 			Long userId = requestdata.get("userId").asLong();
@@ -829,7 +823,7 @@ public class AttendanceController {
 			attendanceService.setLeaveBalance(leavebal);
 
 			attendanceService.deleteLeaveMarking(leaveModel.getLeaveId());
-			statusflag=true;
+			statusflag = true;
 			jsonDataRes.put("status", "success");
 			jsonDataRes.put("message", "successfully deleted");
 			jsonDataRes.put("code", httpstatus.getStatus());
@@ -838,12 +832,46 @@ public class AttendanceController {
 			jsonDataRes.put("status", "failure");
 			jsonDataRes.put("code", httpstatus.getStatus());
 			jsonDataRes.put("message", "failed. " + e);
-			
+
 		}
 		jsonDataRes.put("statusflag", statusflag);
-		
+
 		return jsonDataRes;
 
 	}
 
+	@PutMapping("/getUserBalanceLeave/{userId}")
+	public JsonNode getUserBalanceLeave(@PathVariable Long userId, HttpServletResponse response) {
+		ObjectNode responseData = objectMapper.createObjectNode();
+
+		try {
+			LocalDate now = LocalDate.now();
+			int quarter = 0;
+			int monthNumber = now.getMonthValue();
+			int year = now.getYear();
+
+			if (monthNumber >= 1 && monthNumber <= 3)
+				quarter = 1;
+			else if (monthNumber >= 4 && monthNumber <= 6)
+				quarter = 2;
+			else if (monthNumber >= 7 && monthNumber <= 9)
+				quarter = 3;
+			else if (monthNumber >= 10 && monthNumber <= 12)
+				quarter = 4;
+			ObjectNode leaveBalanceNode = attendanceService.getLeavebalanceData(userId, quarter, year);
+
+			responseData.put("status", "success");
+			responseData.put("code", response.getStatus());
+			responseData.put("message", "success");
+			responseData.set("payload", leaveBalanceNode);
+
+		} catch (Exception e) {
+			responseData.put("status", "Failed");
+			responseData.put("code", response.getStatus());
+			responseData.put("message", "Exception:" + e);
+			e.printStackTrace();
+		}
+
+		return responseData;
+	}
 }

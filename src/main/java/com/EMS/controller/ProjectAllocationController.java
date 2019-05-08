@@ -1,6 +1,7 @@
 package com.EMS.controller;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,6 +29,7 @@ import com.EMS.model.ProjectModel;
 import com.EMS.model.UserModel;
 import com.EMS.service.ProjectService;
 import com.EMS.service.ReportService;
+import com.EMS.service.AttendanceService;
 import com.EMS.service.ProjectAllocationService;
 import com.EMS.service.UserService;
 import com.EMS.service.ProjectExportService;
@@ -61,6 +63,9 @@ public class ProjectAllocationController {
 	@Autowired
 	ReportService reportService;
 	
+	@Autowired
+	AttendanceService attendanceService;
+	
 	// To get user, department and project list
 
 	@GetMapping(value = "/getPreResourceData")
@@ -93,9 +98,27 @@ public class ProjectAllocationController {
 					depNode.put("departmentName", departmentModel.getdepartmentName());
 
 					jsonObject.set("department", depNode);
+					
+					
+					LocalDate now=LocalDate.now();
+					int quarter = 0;
+					int monthNumber = now.getMonthValue();
+					int year = now.getYear();
+
+					if (monthNumber >= 1 && monthNumber <= 3)
+						quarter = 1;
+					else if (monthNumber >= 4 && monthNumber <= 6)
+						quarter = 2;
+					else if (monthNumber >= 7 && monthNumber <= 9)
+						quarter = 3;
+					else if (monthNumber >= 10 && monthNumber <= 12)
+						quarter = 4;
+					ObjectNode leaveBalanceNode = attendanceService.getLeavebalanceData(user.getUserId(), quarter, year);
+					jsonObject.set("leaveBalance", leaveBalanceNode);
 					jsonArray.add(jsonObject);
 				}
 				jsonData.set("userList", jsonArray);
+				
 			}
 
 			// Add project list to json object
