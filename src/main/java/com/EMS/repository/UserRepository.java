@@ -58,6 +58,9 @@ public interface UserRepository extends JpaRepository<UserModel, Long>{
 	@Query("select u from UserModel u where u.userId = ?1")
 	Object getUserById(Long userId);
 
+	@Query("select count(*)>0 from UserModel u where u.empId = ?1")
+	Boolean checkExistanceOfEmpId(long empId);
+
 	
 
 }

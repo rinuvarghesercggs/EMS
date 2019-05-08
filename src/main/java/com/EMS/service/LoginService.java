@@ -38,6 +38,8 @@ public interface LoginService {
 
 	List<Technology> getTechnology();
 
+	Boolean checkEmpIDDuplication(long empId);
+
 	
 
 }

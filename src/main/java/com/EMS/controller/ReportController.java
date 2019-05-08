@@ -1,47 +1,31 @@
 package com.EMS.controller;
 
-import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.TimeZone;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.JSONException;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.EMS.dto.Taskdetails;
-import com.EMS.model.AllocationModel;
 import com.EMS.model.ExportProjectTaskReportModel;
-import com.EMS.model.ProjectModel;
-import com.EMS.model.ProjectReportModel;
-import com.EMS.model.Task;
-import com.EMS.model.Tasktrack;
-import com.EMS.model.UserModel;
+
 import com.EMS.service.ProjectAllocationService;
 import com.EMS.service.ProjectExportService;
-import com.EMS.service.ProjectService;
 import com.EMS.service.ReportService;
 import com.EMS.service.ReportServiceImpl;
 import com.EMS.service.TasktrackService;
-import com.EMS.service.TasktrackServiceImpl;
 import com.EMS.service.UserService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -267,27 +251,23 @@ public class ReportController {
 			System.out.println("taskList size : "+taskList.size());
 			
 			for(Object userItem : userIdList) {
-				System.out.println("entered into for loop");
 				String billable = null;
 				Boolean isBillable = false;
 				Long id = (Long) userItem;
 				System.out.println("id : "+id);
 
 				isBillable = projectAllocationService.getIsBillable(id,projectId);
-				System.out.println("isBillable : "+isBillable);
-
 				if(isBillable)
 					billable = "YES";
 				else
 					billable = "NO";
 
-				System.out.println("billable : "+billable);
 
 				List<Object[]> userList = null;
 				Boolean isExist = taskTrackService.checkIsUserExists(id);
 				
 				if(isExist) {
-					userList = taskTrackService.getUserTaskList(id,startDate,endDate);
+					userList = taskTrackService.getUserTaskList(id,startDate,endDate,projectId);
 				}
 				
 				if(userList != null && userList.size() > 0) {

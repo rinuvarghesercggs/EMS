@@ -35,8 +35,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 	List<Object[]> getUserListNew(Long userId, Date startDate, Date endDate, Long pageSize, Long startingIndex);
 
 
-	@Query(value = "select sum(EMS.tasktrack.hours),EMS.tasktrack.task_id,concat(EMS.user.first_name,' ',EMS.user.last_name),EMS.task_master.task_name from EMS.tasktrack JOIN EMS.user JOIN EMS.task_master ON (EMS.tasktrack.user_user_id = EMS.user.user_id and EMS.tasktrack.task_id = EMS.task_master.id) where (EMS.tasktrack.user_user_id = ?1) and (EMS.tasktrack.date >= ?2 and EMS.tasktrack.date <= ?3) group by EMS.tasktrack.task_id",nativeQuery = true)
-	List<Object[]> getUserTaskList(Long id, Date startDate, Date endDate);
+	@Query(value = "select sum(EMS.tasktrack.hours),EMS.tasktrack.task_id,concat(EMS.user.first_name,' ',EMS.user.last_name),EMS.task_master.task_name from EMS.tasktrack JOIN EMS.user JOIN EMS.task_master ON (EMS.tasktrack.user_user_id = EMS.user.user_id and EMS.tasktrack.task_id = EMS.task_master.id) where (EMS.tasktrack.user_user_id = ?1) and (EMS.tasktrack.date >= ?2 and EMS.tasktrack.date <= ?3) and EMS.tasktrack.project_project_id = ?4 group by EMS.tasktrack.task_id",nativeQuery = true)
+	List<Object[]> getUserTaskList(Long id, Date startDate, Date endDate, Long projectId);
 
 	@Query(value = "SELECT EMS.user.first_name,EMS.user.last_name,EMS.tasktrack.hours,Date(EMS.tasktrack.date) FROM EMS.tasktrack JOIN EMS.user ON EMS.user.user_id = EMS.tasktrack.user_user_id where (EMS.tasktrack.date <=?3 and EMS.tasktrack.date >= ?2) and (EMS.tasktrack.user_user_id =?1) and (EMS.tasktrack.project_project_id = ?4)",nativeQuery = true)
 	List<Object[]> getUserListByProject(Long id, Date startDate, Date endDate, Long projectId);

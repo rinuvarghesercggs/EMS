@@ -46,7 +46,9 @@ public class LoginServiceImpl implements LoginService {
 		UserModel checkuserid = null;
 		
 		try {
-			
+			System.out.println("una : "+userName);
+			System.out.println("pwd : "+password);
+
 //			calling sql query by passing parameters	
 			checkuserid = user_repositary.getUserdetails(userName, password);
 
@@ -133,6 +135,13 @@ public class LoginServiceImpl implements LoginService {
 	public List<Technology> getTechnology() {
 		List<Technology> techlist=technology_repository.findAll();
 		return techlist;
+	}
+
+
+	@Override
+	public Boolean checkEmpIDDuplication(long empId) {
+		Boolean isUsernameExist = user_repositary.checkExistanceOfEmpId(empId);
+		return isUsernameExist;
 	}
 
 	

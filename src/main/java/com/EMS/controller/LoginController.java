@@ -185,7 +185,7 @@ public class LoginController {
 			user.setEmpId(requestdata.get("empId").asLong());
 			user.setEmail(requestdata.get("email").asText());
 			
-			 String password = requestdata.get("password").toString();
+			 String password = requestdata.get("password").toString().replace("\"", "");
 			 MessageDigest md = MessageDigest.getInstance("MD5");
 			 md.update(password.getBytes());
 			 byte[] digest = md.digest();
@@ -194,8 +194,10 @@ public class LoginController {
 			
 			user.setQualification(requestdata.get("qualification").asText());
 			Boolean isUsernameExist = login_service.checkUsernameDuplication(requestdata.get("userName").asText());
+            Boolean isEmpIdExist = login_service.checkEmpIDDuplication(requestdata.get("empId").asLong());
 			
 			if(!isUsernameExist) {
+				if(!isEmpIdExist) {
 				UserModel userdata = login_service.adduser(user);
 				if (userdata == null) {
 					responseflag = 1;
@@ -237,7 +239,11 @@ public class LoginController {
 						}
 
 					}
-
+				}
+				}
+				else {
+					responseflag = 1;
+					responsedata.put("message", "Employee ID already exist.");
 				}
 			}
 			else {

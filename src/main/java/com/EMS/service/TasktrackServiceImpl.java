@@ -300,8 +300,8 @@ public class TasktrackServiceImpl implements TasktrackService {
 	}
 
 	@Override
-	public List<Object[]> getUserTaskList(Long id, Date startDate, Date endDate) {
-		List<Object[]> userTaskList = taskRepository.getUserTaskList(id,startDate,endDate);
+	public List<Object[]> getUserTaskList(Long id, Date startDate, Date endDate, Long projectId) {
+		List<Object[]> userTaskList = taskRepository.getUserTaskList(id,startDate,endDate,projectId);
 		return userTaskList;
 	}
 
