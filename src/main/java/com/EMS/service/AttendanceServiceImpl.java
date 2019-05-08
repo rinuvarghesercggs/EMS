@@ -146,18 +146,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	public List<Object[]> getUserLeaveListByLeaveType(Long userId, String type, LocalDate firstDayOfYear,
 			LocalDate lastDayOfYear) {
 		List<Object[]> leaveList = null;
-		if(type.equals("Casual Leave")) {
-			leaveList = leaveRepository.getUsersCasualLeaveLeaveList(userId,firstDayOfYear,lastDayOfYear);
-		}
-		else if(type.equals("Sick Leave")) {
-			leaveList = leaveRepository.getUsersSickLeaveLeaveList(userId,firstDayOfYear,lastDayOfYear);
-		}
-		else if(type.equals("Earned Leave")) {
-			leaveList = leaveRepository.getUsersEarnedLeaveLeaveList(userId,firstDayOfYear,lastDayOfYear);
-		}
-		else if(type.equals("Loss of Pay")) {
-			leaveList = leaveRepository.getUsersLOPLeaveLeaveList(userId,firstDayOfYear,lastDayOfYear);
-		}
+		leaveList = leaveRepository.getUsersLeaveLeaveListByType(userId,firstDayOfYear,lastDayOfYear,type);
 		return leaveList;
 	}
 

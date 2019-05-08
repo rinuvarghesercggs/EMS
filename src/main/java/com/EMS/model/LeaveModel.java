@@ -22,10 +22,9 @@ public class LeaveModel {
 	@ManyToOne
 	private UserModel user;
 	
-	private Double CL;
-	private Double SL;
-	private Double EL;
-	private Double LOP;
+
+	private Double leaveCount;
+	private String leaveType;
 	private Date leaveFrom;
 	private Date leaveTo;
 	private String leaveReason;
@@ -38,6 +37,22 @@ public class LeaveModel {
 		return leaveId;
 	}
 	
+	public Double getLeaveCount() {
+		return leaveCount;
+	}
+
+	public void setLeaveCount(Double leaveCount) {
+		this.leaveCount = leaveCount;
+	}
+
+	public String getLeaveType() {
+		return leaveType;
+	}
+
+	public void setLeaveType(String leaveType) {
+		this.leaveType = leaveType;
+	}
+
 	public void setLeaveId(long leaveId) {
 		this.leaveId = leaveId;
 	}
@@ -48,38 +63,6 @@ public class LeaveModel {
 	
 	public void setUser(UserModel user) {
 		this.user = user;
-	}
-	
-	public Double getCL() {
-		return CL;
-	}
-	
-	public void setCL(Double cL) {
-		CL = cL;
-	}
-	
-	public Double getSL() {
-		return SL;
-	}
-	
-	public void setSL(Double sL) {
-		SL = sL;
-	}
-	
-	public Double getEL() {
-		return EL;
-	}
-	
-	public void setEL(Double EL) {
-		this.EL = EL;
-	}
-	
-	public Double getLOP() {
-		return LOP;
-	}
-	
-	public void setLOP(Double lOP) {
-		this.LOP = lOP;
 	}
 	
 	public Date getLeaveFrom() {

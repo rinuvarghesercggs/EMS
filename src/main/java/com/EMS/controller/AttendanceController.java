@@ -147,33 +147,32 @@ public class AttendanceController {
 
 
 					if(leaveModel != null) {
-					System.out.println("leave list size : " + leaveModel.size());
+				System.out.println("leave list size : " + leaveModel.size());
 
-					for (Object[] leave : leaveModel) {
-						ObjectNode leaveObject = objectMapper.createObjectNode();
+				for (Object[] leave : leaveModel) {
+					ObjectNode leaveObject = objectMapper.createObjectNode();
 
-						String leaveType = leave[4].toString();
-						String leaveCount = leave[5].toString();
-						String leaveDescription = leave[2].toString();
-						String leaveFrom = leave[0].toString();
-						String leaveTo = leave[1].toString();
-						String status = leave[3].toString();
+					String leaveType = leave[4].toString();
+					String leaveCount = leave[5].toString();
+					String leaveDescription = leave[2].toString();
+					String leaveFrom = leave[0].toString();
+					String leaveTo = leave[1].toString();
+					String status = leave[3].toString();
 
-						leaveObject.put("Leave Type", leaveType);
-						leaveObject.put("Leave Count", leaveCount);
-						leaveObject.put("Leave Description", leaveDescription);
-						leaveObject.put("Start Date", leaveFrom);
-						leaveObject.put("End Date", leaveTo);
-						leaveObject.put("Status", status);
-						jsonArray.add(leaveObject);
-
-					}
-					
-					
-					//to obtain user leave balance details
-					leaveBalanceNode = attendanceService.getLeavebalanceData(userId,quarter,year);
+					leaveObject.put("Leave Type", leaveType);
+					leaveObject.put("Leave Count", leaveCount);
+					leaveObject.put("Leave Description", leaveDescription);
+					leaveObject.put("Start Date", leaveFrom);
+					leaveObject.put("End Date", leaveTo);
+					leaveObject.put("Status", status);
+					jsonArray.add(leaveObject);
 
 				}
+
+				// to obtain user leave balance details
+				leaveBalanceNode = attendanceService.getLeavebalanceData(userId, quarter, year);
+
+			}
 			
 
 			jsonDataRes.set("data", jsonArray);
@@ -190,290 +189,290 @@ public class AttendanceController {
 		return jsonDataRes;
 	}
 
-	@PostMapping("/getWeeklyLeaveList")
-	public JsonNode getweeklyLeeveList(@RequestBody JsonNode requestdata, HttpServletResponse response) {
-		ObjectNode responseData = objectMapper.createObjectNode();
+//	@PostMapping("/getWeeklyLeaveList")
+//	public JsonNode getweeklyLeeveList(@RequestBody JsonNode requestdata, HttpServletResponse response) {
+//		ObjectNode responseData = objectMapper.createObjectNode();
+//
+//		String startDate = requestdata.get("startDate").asText();
+//		String endDate = requestdata.get("endDate").asText();
+//
+//		try {
+//
+//			LocalDate start = LocalDate.parse(startDate);
+//			LocalDate end = LocalDate.parse(endDate);
+//			ObjectNode datewise = objectMapper.createObjectNode();
+//
+//			while (!start.isAfter(end)) {
+//
+//				System.out.println("dates :" + start);
+//				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+//				String stgdate = String.valueOf(start);
+//				Date date1 = formatter.parse(stgdate);
+//
+//				List<LeaveModel> leavelist = attendanceService.getWeeklyLeavelist(date1);
+//				ArrayNode leaverecord = objectMapper.createArrayNode();
+//
+//				for (LeaveModel leave : leavelist) {
+//
+//					ObjectNode node = objectMapper.createObjectNode();
+//					System.out.println("userid :" + leave.getUser().getUserId());
+//					String userDetail = userservice.getUserName(leave.getUser().getUserId());
+//					String username = userDetail.replace(",", " ");
+//					System.out.println("username:" + username);
+//
+//					node.put("username", username);
+//					node.put("startDate", leave.getLeaveFrom().toString());
+//					node.put("reason", leave.getLeaveReason().toString());
+//					node.put("endDate", leave.getLeaveTo().toString());
+//					if (leave.getCL() != null) {
+//						node.put("leaveType", "CL");
+//						node.put("clCount", leave.getCL());
+//					}
+//					if (leave.getEL() != null) {
+//						node.put("leaveType", "EL");
+//						node.put("elCount", leave.getEL());
+//					}
+//					if (leave.getLOP() != null) {
+//						node.put("leaveType", "LOP");
+//						node.put("lopCount", leave.getLOP());
+//					}
+//
+//					if (leave.getSL() != null) {
+//						node.put("leaveType", "SL");
+//						node.put("slCount", leave.getSL());
+//					}
+//					leaverecord.add(node);
+//				}
+//
+//				datewise.set(stgdate, leaverecord);
+//				start = start.plusDays(1);
+//			}
+//			responseData.put("status", "success");
+//			responseData.put("code", response.getStatus());
+//			responseData.put("message", "success");
+//			responseData.set("payload", datewise);
+//
+//		} catch (Exception e) {
+//
+//			responseData.put("status", "Failed");
+//			responseData.put("code", response.getStatus());
+//			responseData.put("message", "Exception:" + e);
+//			e.printStackTrace();
+//			e.printStackTrace();
+//		}
+//
+//		return responseData;
+//	}
 
-		String startDate = requestdata.get("startDate").asText();
-		String endDate = requestdata.get("endDate").asText();
+//	@PostMapping("/getYearlyLeaveList")
+//	public JsonNode getYearlyLeeveList(@RequestBody JsonNode requestdata, HttpServletResponse response) {
+//		ObjectNode responseData = objectMapper.createObjectNode();
+//
+//		String startDate = requestdata.get("startDate").asText();
+//		String endDate = requestdata.get("endDate").asText();
+//
+//		try {
+//
+//			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+//			Date startDate1 = formatter.parse(startDate);
+//			Date endDate1 = formatter.parse(endDate);
+//
+//			ArrayNode userleaverecord = objectMapper.createArrayNode();
+//			List<UserModel> userlist = userservice.getAllUsers();
+//			if (!userlist.isEmpty()) {
+//				System.out.println("array size :" + userlist.size());
+//				for (UserModel user : userlist) {
+//
+//					ObjectNode node = objectMapper.createObjectNode();
+//					node.put("employeeID", user.getEmpId());
+//					node.put("employeeName", user.getFirstName() + " " + user.getLastName());
+//
+//					System.out.println("userid :" + user.getUserId());
+//					List<LeaveModel> leavelist = attendanceService.getYearlyLeavelist(user.getUserId(), startDate1,
+//							endDate1);
+//					double clCount = 0, elCount = 0, lopCount = 0, slCount = 0;
+//
+//					for (LeaveModel leave : leavelist) {
+//
+//						if (leave.getCL() != null)
+//							clCount = clCount + leave.getCL();
+//
+//						if (leave.getEL() != null)
+//							elCount = elCount + leave.getEL();
+//
+//						if (leave.getLOP() != null)
+//							lopCount = lopCount + leave.getLOP();
+//
+//						if (leave.getSL() != null)
+//							slCount = slCount + leave.getSL();
+//
+//					}
+//					node.put("casualLeave", clCount);
+//					node.put("earnedLeave", elCount);
+//					node.put("LOP", lopCount);
+//					node.put("sickLeave", slCount);
+//
+//					userleaverecord.add(node);
+//				}
+//
+//			}
+//
+//			responseData.put("status", "success");
+//			responseData.put("code", response.getStatus());
+//			responseData.put("message", "success");
+//			responseData.set("payload", userleaverecord);
+//
+//		} catch (Exception e) {
+//			responseData.put("status", "Failed");
+//			responseData.put("code", response.getStatus());
+//			responseData.put("message", "Exception:" + e);
+//			e.printStackTrace();
+//		}
+//
+//		return responseData;
+//	}
 
-		try {
-
-			LocalDate start = LocalDate.parse(startDate);
-			LocalDate end = LocalDate.parse(endDate);
-			ObjectNode datewise = objectMapper.createObjectNode();
-
-			while (!start.isAfter(end)) {
-
-				System.out.println("dates :" + start);
-				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-				String stgdate = String.valueOf(start);
-				Date date1 = formatter.parse(stgdate);
-
-				List<LeaveModel> leavelist = attendanceService.getWeeklyLeavelist(date1);
-				ArrayNode leaverecord = objectMapper.createArrayNode();
-
-				for (LeaveModel leave : leavelist) {
-
-					ObjectNode node = objectMapper.createObjectNode();
-					System.out.println("userid :" + leave.getUser().getUserId());
-					String userDetail = userservice.getUserName(leave.getUser().getUserId());
-					String username = userDetail.replace(",", " ");
-					System.out.println("username:" + username);
-
-					node.put("username", username);
-					node.put("startDate", leave.getLeaveFrom().toString());
-					node.put("reason", leave.getLeaveReason().toString());
-					node.put("endDate", leave.getLeaveTo().toString());
-					if (leave.getCL() != null) {
-						node.put("leaveType", "CL");
-						node.put("clCount", leave.getCL());
-					}
-					if (leave.getEL() != null) {
-						node.put("leaveType", "EL");
-						node.put("elCount", leave.getEL());
-					}
-					if (leave.getLOP() != null) {
-						node.put("leaveType", "LOP");
-						node.put("lopCount", leave.getLOP());
-					}
-
-					if (leave.getSL() != null) {
-						node.put("leaveType", "SL");
-						node.put("slCount", leave.getSL());
-					}
-					leaverecord.add(node);
-				}
-
-				datewise.set(stgdate, leaverecord);
-				start = start.plusDays(1);
-			}
-			responseData.put("status", "success");
-			responseData.put("code", response.getStatus());
-			responseData.put("message", "success");
-			responseData.set("payload", datewise);
-
-		} catch (Exception e) {
-
-			responseData.put("status", "Failed");
-			responseData.put("code", response.getStatus());
-			responseData.put("message", "Exception:" + e);
-			e.printStackTrace();
-			e.printStackTrace();
-		}
-
-		return responseData;
-	}
-
-	@PostMapping("/getYearlyLeaveList")
-	public JsonNode getYearlyLeeveList(@RequestBody JsonNode requestdata, HttpServletResponse response) {
-		ObjectNode responseData = objectMapper.createObjectNode();
-
-		String startDate = requestdata.get("startDate").asText();
-		String endDate = requestdata.get("endDate").asText();
-
-		try {
-
-			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-			Date startDate1 = formatter.parse(startDate);
-			Date endDate1 = formatter.parse(endDate);
-
-			ArrayNode userleaverecord = objectMapper.createArrayNode();
-			List<UserModel> userlist = userservice.getAllUsers();
-			if (!userlist.isEmpty()) {
-				System.out.println("array size :" + userlist.size());
-				for (UserModel user : userlist) {
-
-					ObjectNode node = objectMapper.createObjectNode();
-					node.put("employeeID", user.getEmpId());
-					node.put("employeeName", user.getFirstName() + " " + user.getLastName());
-
-					System.out.println("userid :" + user.getUserId());
-					List<LeaveModel> leavelist = attendanceService.getYearlyLeavelist(user.getUserId(), startDate1,
-							endDate1);
-					double clCount = 0, elCount = 0, lopCount = 0, slCount = 0;
-
-					for (LeaveModel leave : leavelist) {
-
-						if (leave.getCL() != null)
-							clCount = clCount + leave.getCL();
-
-						if (leave.getEL() != null)
-							elCount = elCount + leave.getEL();
-
-						if (leave.getLOP() != null)
-							lopCount = lopCount + leave.getLOP();
-
-						if (leave.getSL() != null)
-							slCount = slCount + leave.getSL();
-
-					}
-					node.put("casualLeave", clCount);
-					node.put("earnedLeave", elCount);
-					node.put("LOP", lopCount);
-					node.put("sickLeave", slCount);
-
-					userleaverecord.add(node);
-				}
-
-			}
-
-			responseData.put("status", "success");
-			responseData.put("code", response.getStatus());
-			responseData.put("message", "success");
-			responseData.set("payload", userleaverecord);
-
-		} catch (Exception e) {
-			responseData.put("status", "Failed");
-			responseData.put("code", response.getStatus());
-			responseData.put("message", "Exception:" + e);
-			e.printStackTrace();
-		}
-
-		return responseData;
-	}
-
-	@PostMapping("/leaveMarking")
-	public ObjectNode setLeaveMarking(@RequestBody JsonNode requestdata, HttpServletResponse httpstatus) {
-		ObjectNode jsonDataRes = objectMapper.createObjectNode();
-		try {
-
-			TimeZone zone = TimeZone.getTimeZone("MST");
-			SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-			outputFormat.setTimeZone(zone);
-
-			Long userId = requestdata.get("userId").asLong();
-			UserModel user = userservice.getUserDetailsById(userId);
-
-			LocalDate now = LocalDate.now();
-
-			ArrayNode leaveNode = (ArrayNode) requestdata.get("leaveList");
-			System.out.println("leaveNode size : " + leaveNode.size());
-			for (JsonNode node : leaveNode) {
-				LeaveModel leaveModel = new LeaveModel();
-				leaveModel.setUser(user);
-				leaveModel.setStatus(requestdata.get("status").asText());
-				leaveModel.setAppliedDate(outputFormat.parse(now.toString()));
-				leaveModel.setLeaveReason(node.get("reason").asText());
-				String startDate = node.get("startdate").asText();
-				String endDate = node.get("enddate").asText();
-				System.out.println("start:" + startDate);
-				if (!startDate.isEmpty()) {
-					leaveModel.setLeaveFrom(outputFormat.parse(startDate));
-				}
-				if (!endDate.isEmpty()) {
-					leaveModel.setLeaveTo(outputFormat.parse(endDate));
-				}
-
-				double leaveCount = node.get("count").asDouble();
-				System.out.println("leave count:" + leaveCount);
-
-				LocalDate startdate = LocalDate.parse(startDate);
-				LocalDate enddate = LocalDate.parse(endDate);
-
-				// balance check
-				LeaveBalanceModel lBalance = new LeaveBalanceModel();
-				int year = startdate.getYear();
-				lBalance.setYear(year);
-				lBalance.setUser(leaveModel.getUser());
-				int month = startdate.getMonthValue();
-				System.out.println("month :" + month);
-				int quarterleave = 0;
-				if (month <= 3) {
-					quarterleave = 1;
-				} else if (month <= 6 && month > 3) {
-					quarterleave = 2;
-				} else if (month <= 9 && month > 6) {
-					quarterleave = 3;
-				} else if (month <= 12 && month > 9) {
-					quarterleave = 4;
-
-				}
-
-				lBalance.setQuarter(quarterleave);
-				System.out.println("quat:" + lBalance.getQuarter() + "yera:" + lBalance.getYear() + " :user"
-						+ lBalance.getUser().getUserId());
-				LeaveBalanceModel leavebal = attendanceService.getUserLeaveBalance(lBalance.getQuarter(),
-						lBalance.getYear(), lBalance.getUser().getUserId());
-
-				System.out.println("sl:" + leavebal.getSlBalance() + " el:" + leavebal.getElBalance() + " cl:"
-						+ leavebal.getClBalance());
-
-				double leavebalance = 0;
-
-				if (node.get("leaveType").asText().equals("cl")) {
-
-					if (leavebal.getClBalance() >= leaveCount) {
-
-						leavebalance = leavebal.getClBalance();
-						leavebalance = leavebalance - leaveCount;
-						System.out.println("new bal:" + leavebalance + " count:" + leaveCount);
-						leavebal.setClBalance(leavebalance);
-						leaveModel.setCL(leaveCount);
-					} else {
-						leaveCount = leaveCount - leavebal.getClBalance();
-						leaveModel.setLOP(leaveCount);
-						leaveModel.setCL(leavebal.getClBalance());
-						System.out.println("new bal:" + leavebalance + " count:" + leaveCount);
-						leavebal.setClBalance(0);
-					}
-				} else if (node.get("leaveType").asText().equals("sl")) {
-					if (leavebal.getSlBalance() >= leaveCount) {
-						leavebalance = leavebal.getSlBalance();
-						leavebalance = leavebalance - leaveCount;
-						System.out.println("new bal:" + leavebalance + " count:" + leaveCount);
-						leavebal.setSlBalance(leavebalance);
-						leaveModel.setSL(leaveCount);
-					} else {
-						leaveCount = leaveCount - leavebal.getSlBalance();
-						leaveModel.setLOP(leaveCount);
-						leaveModel.setSL(leavebal.getSlBalance());
-						System.out.println("new bal:" + leavebalance + " count:" + leaveCount);
-						leavebal.setSlBalance(0);
-					}
-				} else if (node.get("leaveType").asText().equals("lop")) {
-
-					leaveModel.setLOP(leaveCount);
-				} else if (node.get("leaveType").asText().equals("el")) {
-					if (leavebal.getElBalance() >= leaveCount) {
-
-						leavebalance = leavebal.getElBalance();
-						leavebalance = leavebalance - leaveCount;
-						leavebal.setElBalance(leavebalance);
-						leaveModel.setEL(leaveCount);
-					} else {
-						leaveCount = leaveCount - leavebal.getElBalance();
-						leaveModel.setEL(leavebal.getElBalance());
-						leaveModel.setLOP(leaveCount);
-						leavebal.setElBalance(0);
-						System.out.println("new bal:" + leavebalance + " count:" + leaveCount);
-					}
-				}
-
-				attendanceService.setLeaveBalance(leavebal);
-				boolean statusFlag = false;
-				Boolean checkvalue = attendanceService.checkLeave(leaveModel);
-				if (checkvalue) {
-					statusFlag = true;
-					attendanceService.saveLeaveMarking(leaveModel);
-					jsonDataRes.put("status", "success");
-					jsonDataRes.put("message", "successfully saved.");
-				} else {
-					jsonDataRes.put("status", "success");
-					jsonDataRes.put("message", "duplicate entry");
-				}
-				jsonDataRes.put("flag", statusFlag);
-				jsonDataRes.put("code", httpstatus.getStatus());
-			}
-
-		} catch (Exception e) {
-			jsonDataRes.put("status", "failure");
-			jsonDataRes.put("code", httpstatus.getStatus());
-			jsonDataRes.put("message", "failed. " + e);
-		}
-		return jsonDataRes;
-
-	}
+//	@PostMapping("/leaveMarking")
+//	public ObjectNode setLeaveMarking(@RequestBody JsonNode requestdata, HttpServletResponse httpstatus) {
+//		ObjectNode jsonDataRes = objectMapper.createObjectNode();
+//		try {
+//
+//			TimeZone zone = TimeZone.getTimeZone("MST");
+//			SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+//			outputFormat.setTimeZone(zone);
+//
+//			Long userId = requestdata.get("userId").asLong();
+//			UserModel user = userservice.getUserDetailsById(userId);
+//
+//			LocalDate now = LocalDate.now();
+//
+//			ArrayNode leaveNode = (ArrayNode) requestdata.get("leaveList");
+//			System.out.println("leaveNode size : " + leaveNode.size());
+//			for (JsonNode node : leaveNode) {
+//				LeaveModel leaveModel = new LeaveModel();
+//				leaveModel.setUser(user);
+//				leaveModel.setStatus(requestdata.get("status").asText());
+//				leaveModel.setAppliedDate(outputFormat.parse(now.toString()));
+//				leaveModel.setLeaveReason(node.get("reason").asText());
+//				String startDate = node.get("startdate").asText();
+//				String endDate = node.get("enddate").asText();
+//				System.out.println("start:" + startDate);
+//				if (!startDate.isEmpty()) {
+//					leaveModel.setLeaveFrom(outputFormat.parse(startDate));
+//				}
+//				if (!endDate.isEmpty()) {
+//					leaveModel.setLeaveTo(outputFormat.parse(endDate));
+//				}
+//
+//				double leaveCount = node.get("count").asDouble();
+//				System.out.println("leave count:" + leaveCount);
+//
+//				LocalDate startdate = LocalDate.parse(startDate);
+//				LocalDate enddate = LocalDate.parse(endDate);
+//
+//				// balance check
+//				LeaveBalanceModel lBalance = new LeaveBalanceModel();
+//				int year = startdate.getYear();
+//				lBalance.setYear(year);
+//				lBalance.setUser(leaveModel.getUser());
+//				int month = startdate.getMonthValue();
+//				System.out.println("month :" + month);
+//				int quarterleave = 0;
+//				if (month <= 3) {
+//					quarterleave = 1;
+//				} else if (month <= 6 && month > 3) {
+//					quarterleave = 2;
+//				} else if (month <= 9 && month > 6) {
+//					quarterleave = 3;
+//				} else if (month <= 12 && month > 9) {
+//					quarterleave = 4;
+//
+//				}
+//
+//				lBalance.setQuarter(quarterleave);
+//				System.out.println("quat:" + lBalance.getQuarter() + "yera:" + lBalance.getYear() + " :user"
+//						+ lBalance.getUser().getUserId());
+//				LeaveBalanceModel leavebal = attendanceService.getUserLeaveBalance(lBalance.getQuarter(),
+//						lBalance.getYear(), lBalance.getUser().getUserId());
+//
+//				System.out.println("sl:" + leavebal.getSlBalance() + " el:" + leavebal.getElBalance() + " cl:"
+//						+ leavebal.getClBalance());
+//
+//				double leavebalance = 0;
+//
+//				if (node.get("leaveType").asText().equals("cl")) {
+//
+//					if (leavebal.getClBalance() >= leaveCount) {
+//
+//						leavebalance = leavebal.getClBalance();
+//						leavebalance = leavebalance - leaveCount;
+//						System.out.println("new bal:" + leavebalance + " count:" + leaveCount);
+//						leavebal.setClBalance(leavebalance);
+//						leaveModel.setCL(leaveCount);
+//					} else {
+//						leaveCount = leaveCount - leavebal.getClBalance();
+//						leaveModel.setLOP(leaveCount);
+//						leaveModel.setCL(leavebal.getClBalance());
+//						System.out.println("new bal:" + leavebalance + " count:" + leaveCount);
+//						leavebal.setClBalance(0);
+//					}
+//				} else if (node.get("leaveType").asText().equals("sl")) {
+//					if (leavebal.getSlBalance() >= leaveCount) {
+//						leavebalance = leavebal.getSlBalance();
+//						leavebalance = leavebalance - leaveCount;
+//						System.out.println("new bal:" + leavebalance + " count:" + leaveCount);
+//						leavebal.setSlBalance(leavebalance);
+//						leaveModel.setSL(leaveCount);
+//					} else {
+//						leaveCount = leaveCount - leavebal.getSlBalance();
+//						leaveModel.setLOP(leaveCount);
+//						leaveModel.setSL(leavebal.getSlBalance());
+//						System.out.println("new bal:" + leavebalance + " count:" + leaveCount);
+//						leavebal.setSlBalance(0);
+//					}
+//				} else if (node.get("leaveType").asText().equals("lop")) {
+//
+//					leaveModel.setLOP(leaveCount);
+//				} else if (node.get("leaveType").asText().equals("el")) {
+//					if (leavebal.getElBalance() >= leaveCount) {
+//
+//						leavebalance = leavebal.getElBalance();
+//						leavebalance = leavebalance - leaveCount;
+//						leavebal.setElBalance(leavebalance);
+//						leaveModel.setEL(leaveCount);
+//					} else {
+//						leaveCount = leaveCount - leavebal.getElBalance();
+//						leaveModel.setEL(leavebal.getElBalance());
+//						leaveModel.setLOP(leaveCount);
+//						leavebal.setElBalance(0);
+//						System.out.println("new bal:" + leavebalance + " count:" + leaveCount);
+//					}
+//				}
+//
+//				attendanceService.setLeaveBalance(leavebal);
+//				boolean statusFlag = false;
+//				Boolean checkvalue = attendanceService.checkLeave(leaveModel);
+//				if (checkvalue) {
+//					statusFlag = true;
+//					attendanceService.saveLeaveMarking(leaveModel);
+//					jsonDataRes.put("status", "success");
+//					jsonDataRes.put("message", "successfully saved.");
+//				} else {
+//					jsonDataRes.put("status", "success");
+//					jsonDataRes.put("message", "duplicate entry");
+//				}
+//				jsonDataRes.put("flag", statusFlag);
+//				jsonDataRes.put("code", httpstatus.getStatus());
+//			}
+//
+//		} catch (Exception e) {
+//			jsonDataRes.put("status", "failure");
+//			jsonDataRes.put("code", httpstatus.getStatus());
+//			jsonDataRes.put("message", "failed. " + e);
+//		}
+//		return jsonDataRes;
+//
+//	}
 
 	@GetMapping("/getLeaveBalanceList")
 	public JsonNode getLeaveBalanceList(HttpServletResponse response) {
@@ -544,198 +543,198 @@ public class AttendanceController {
 	}
 
 	
-	@PostMapping("/getLeaveList")
-	public JsonNode getLeaveList(@RequestBody JsonNode requestdata, HttpServletResponse response) {
-		ObjectNode responseData = objectMapper.createObjectNode();
-
-		String startDate = requestdata.get("startdate").asText();
-		String endDate = requestdata.get("endDate").asText();
-
-		try {
-
-			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-			Date startDate1 = formatter.parse(startDate);
-			Date endDate1 = formatter.parse(endDate);
-
-			ArrayNode leaverecord = objectMapper.createArrayNode();
-
-			List<LeaveModel> leavelist = attendanceService.getLeavelist(startDate1, endDate1);
-
-			for (LeaveModel leave : leavelist) {
-
-				ObjectNode leavenode = objectMapper.createObjectNode();
-				UserModel user = userservice.getUserDetailsById(leave.getUser().getUserId());
-				leavenode.put("empId", user.getEmpId());
-				leavenode.put("employeeName", user.getFirstName() + " " + user.getLastName());
-				leavenode.put("casualLeave", leave.getCL());
-				leavenode.put("earnedLeave", leave.getEL());
-				leavenode.put("sickLeave", leave.getSL());
-				leavenode.put("leaveFrom", leave.getLeaveFrom().toString());
-				leavenode.put("leaveTo", leave.getLeaveTo().toString());
-				leavenode.put("leaveReason", leave.getLeaveReason());
-				leavenode.put("leaveId", leave.getLeaveId());
-				leavenode.put("userId", user.getUserId());
-
-				leaverecord.add(leavenode);
-			}
-
-			responseData.put("status", "success");
-			responseData.put("code", response.getStatus());
-			responseData.put("message", "success");
-			responseData.set("payload", leaverecord);
-
-		} catch (Exception e) {
-			responseData.put("status", "Failed");
-			responseData.put("code", response.getStatus());
-			responseData.put("message", "Exception:" + e);
-			e.printStackTrace();
-		}
-
-		return responseData;
-	}
+//	@PostMapping("/getLeaveList")
+//	public JsonNode getLeaveList(@RequestBody JsonNode requestdata, HttpServletResponse response) {
+//		ObjectNode responseData = objectMapper.createObjectNode();
+//
+//		String startDate = requestdata.get("startdate").asText();
+//		String endDate = requestdata.get("endDate").asText();
+//
+//		try {
+//
+//			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+//			Date startDate1 = formatter.parse(startDate);
+//			Date endDate1 = formatter.parse(endDate);
+//
+//			ArrayNode leaverecord = objectMapper.createArrayNode();
+//
+//			List<LeaveModel> leavelist = attendanceService.getLeavelist(startDate1, endDate1);
+//
+//			for (LeaveModel leave : leavelist) {
+//
+//				ObjectNode leavenode = objectMapper.createObjectNode();
+//				UserModel user = userservice.getUserDetailsById(leave.getUser().getUserId());
+//				leavenode.put("empId", user.getEmpId());
+//				leavenode.put("employeeName", user.getFirstName() + " " + user.getLastName());
+//				leavenode.put("casualLeave", leave.getCL());
+//				leavenode.put("earnedLeave", leave.getEL());
+//				leavenode.put("sickLeave", leave.getSL());
+//				leavenode.put("leaveFrom", leave.getLeaveFrom().toString());
+//				leavenode.put("leaveTo", leave.getLeaveTo().toString());
+//				leavenode.put("leaveReason", leave.getLeaveReason());
+//				leavenode.put("leaveId", leave.getLeaveId());
+//				leavenode.put("userId", user.getUserId());
+//
+//				leaverecord.add(leavenode);
+//			}
+//
+//			responseData.put("status", "success");
+//			responseData.put("code", response.getStatus());
+//			responseData.put("message", "success");
+//			responseData.set("payload", leaverecord);
+//
+//		} catch (Exception e) {
+//			responseData.put("status", "Failed");
+//			responseData.put("code", response.getStatus());
+//			responseData.put("message", "Exception:" + e);
+//			e.printStackTrace();
+//		}
+//
+//		return responseData;
+//	}
 
 //	for editing leave 
-	@PostMapping("/editLeaveMarking")
-	public ObjectNode setEditLeaveMarking(@RequestBody JsonNode requestdata, HttpServletResponse httpstatus) {
-		ObjectNode jsonDataRes = objectMapper.createObjectNode();
-		try {
-
-			TimeZone zone = TimeZone.getTimeZone("MST");
-			SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-			outputFormat.setTimeZone(zone);
-
-			Long userId = requestdata.get("userId").asLong();
-			UserModel user = userservice.getUserDetailsById(userId);
-
-			LocalDate now = LocalDate.now();
-
-			ArrayNode leaveNode = (ArrayNode) requestdata.get("leaveList");
-			System.out.println("leaveNode size : " + leaveNode.size());
-			for (JsonNode node : leaveNode) {
-				LeaveModel leaveModel = new LeaveModel();
-				leaveModel.setLeaveId(node.get("leaveId").asLong());
-				leaveModel.setUser(user);
-				leaveModel.setStatus(requestdata.get("status").asText());
-				leaveModel.setAppliedDate(outputFormat.parse(now.toString()));
-				leaveModel.setLeaveReason(node.get("reason").asText());
-				String startDate = node.get("startdate").asText();
-				String endDate = node.get("enddate").asText();
-				System.out.println("start:" + startDate);
-				if (!startDate.isEmpty()) {
-					leaveModel.setLeaveFrom(outputFormat.parse(startDate));
-				}
-				if (!endDate.isEmpty()) {
-					leaveModel.setLeaveTo(outputFormat.parse(endDate));
-				}
-
-				double leaveCount = node.get("count").asDouble();
-				System.out.println("leave count:" + leaveCount);
-
-				LocalDate startdate = LocalDate.parse(startDate);
-				LocalDate enddate = LocalDate.parse(endDate);
-
-				// balance check
-				LeaveBalanceModel lBalance = new LeaveBalanceModel();
-				int year = startdate.getYear();
-				lBalance.setYear(year);
-				lBalance.setUser(leaveModel.getUser());
-				int month = startdate.getMonthValue();
-				System.out.println("month :" + month);
-				int quarterleave = 0;
-				if (month <= 3) {
-					quarterleave = 1;
-				} else if (month <= 6 && month > 3) {
-					quarterleave = 2;
-				} else if (month <= 9 && month > 6) {
-					quarterleave = 3;
-				} else if (month <= 12 && month > 9) {
-					quarterleave = 4;
-
-				}
-
-				lBalance.setQuarter(quarterleave);
-				System.out.println("quat:" + lBalance.getQuarter() + "yera:" + lBalance.getYear() + " :user"
-						+ lBalance.getUser().getUserId());
-				LeaveBalanceModel leavebal = attendanceService.getUserLeaveBalance(lBalance.getQuarter(),
-						lBalance.getYear(), lBalance.getUser().getUserId());
-				System.out.println("sl:" + leavebal.getSlBalance() + " el:" + leavebal.getElBalance() + " cl:"
-						+ leavebal.getClBalance());
-
-				double leavebalance = 0;
-				LeaveModel checkleavevalue = attendanceService.Leavedetails(leaveModel.getLeaveId());
-				if (checkleavevalue.getCL() != null)
-					leavebal.setClBalance(leavebal.getClBalance() + checkleavevalue.getCL());
-				else if (checkleavevalue.getEL() != null)
-					leavebal.setElBalance(leavebal.getElBalance() + checkleavevalue.getEL());
-				else if (checkleavevalue.getSL() != null)
-					leavebal.setSlBalance(leavebal.getSlBalance() + checkleavevalue.getSL());
-
-				if (node.get("leaveType").asText().equals("cl")) {
-
-					if (leavebal.getClBalance() >= leaveCount) {
-
-						leavebalance = leavebal.getClBalance();
-						leavebalance = leavebalance - leaveCount;
-						System.out.println("new bal:" + leavebalance + " count:" + leaveCount);
-						leavebal.setClBalance(leavebalance);
-						leaveModel.setCL(leaveCount);
-					} else {
-						leaveCount = leaveCount - leavebal.getClBalance();
-						leaveModel.setLOP(leaveCount);
-						leaveModel.setCL(leavebal.getClBalance());
-						System.out.println("new bal:" + leavebalance + " count:" + leaveCount);
-						leavebal.setClBalance(0);
-					}
-				} else if (node.get("leaveType").asText().equals("sl")) {
-					if (leavebal.getSlBalance() >= leaveCount) {
-						leavebalance = leavebal.getSlBalance();
-						leavebalance = leavebalance - leaveCount;
-						System.out.println("new bal:" + leavebalance + " count:" + leaveCount);
-						leavebal.setSlBalance(leavebalance);
-						leaveModel.setSL(leaveCount);
-					} else {
-						leaveCount = leaveCount - leavebal.getSlBalance();
-						leaveModel.setLOP(leaveCount);
-						leaveModel.setSL(leavebal.getSlBalance());
-						System.out.println("new bal:" + leavebalance + " count:" + leaveCount);
-						leavebal.setSlBalance(0);
-					}
-				} else if (node.get("leaveType").asText().equals("lop")) {
-
-					leaveModel.setLOP(leaveCount);
-				} else if (node.get("leaveType").asText().equals("el")) {
-					if (leavebal.getElBalance() >= leaveCount) {
-
-						leavebalance = leavebal.getElBalance();
-						leavebalance = leavebalance - leaveCount;
-						leavebal.setElBalance(leavebalance);
-						leaveModel.setEL(leaveCount);
-					} else {
-						leaveCount = leaveCount - leavebal.getElBalance();
-						leaveModel.setEL(leavebal.getElBalance());
-						leaveModel.setLOP(leaveCount);
-						leavebal.setElBalance(0);
-						System.out.println("new bal:" + leavebalance + " count:" + leaveCount);
-					}
-				}
-
-				attendanceService.setLeaveBalance(leavebal);
-
-				attendanceService.saveLeaveMarking(leaveModel);
-				jsonDataRes.put("status", "success");
-				jsonDataRes.put("message", "successfully saved.");
-				jsonDataRes.put("code", httpstatus.getStatus());
-
-			}
-
-		} catch (Exception e) {
-			jsonDataRes.put("status", "failure");
-			jsonDataRes.put("code", httpstatus.getStatus());
-			jsonDataRes.put("message", "failed. " + e);
-		}
-		return jsonDataRes;
-
-	}
+//	@PostMapping("/editLeaveMarking")
+//	public ObjectNode setEditLeaveMarking(@RequestBody JsonNode requestdata, HttpServletResponse httpstatus) {
+//		ObjectNode jsonDataRes = objectMapper.createObjectNode();
+//		try {
+//
+//			TimeZone zone = TimeZone.getTimeZone("MST");
+//			SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+//			outputFormat.setTimeZone(zone);
+//
+//			Long userId = requestdata.get("userId").asLong();
+//			UserModel user = userservice.getUserDetailsById(userId);
+//
+//			LocalDate now = LocalDate.now();
+//
+//			ArrayNode leaveNode = (ArrayNode) requestdata.get("leaveList");
+//			System.out.println("leaveNode size : " + leaveNode.size());
+//			for (JsonNode node : leaveNode) {
+//				LeaveModel leaveModel = new LeaveModel();
+//				leaveModel.setLeaveId(node.get("leaveId").asLong());
+//				leaveModel.setUser(user);
+//				leaveModel.setStatus(requestdata.get("status").asText());
+//				leaveModel.setAppliedDate(outputFormat.parse(now.toString()));
+//				leaveModel.setLeaveReason(node.get("reason").asText());
+//				String startDate = node.get("startdate").asText();
+//				String endDate = node.get("enddate").asText();
+//				System.out.println("start:" + startDate);
+//				if (!startDate.isEmpty()) {
+//					leaveModel.setLeaveFrom(outputFormat.parse(startDate));
+//				}
+//				if (!endDate.isEmpty()) {
+//					leaveModel.setLeaveTo(outputFormat.parse(endDate));
+//				}
+//
+//				double leaveCount = node.get("count").asDouble();
+//				System.out.println("leave count:" + leaveCount);
+//
+//				LocalDate startdate = LocalDate.parse(startDate);
+//				LocalDate enddate = LocalDate.parse(endDate);
+//
+//				// balance check
+//				LeaveBalanceModel lBalance = new LeaveBalanceModel();
+//				int year = startdate.getYear();
+//				lBalance.setYear(year);
+//				lBalance.setUser(leaveModel.getUser());
+//				int month = startdate.getMonthValue();
+//				System.out.println("month :" + month);
+//				int quarterleave = 0;
+//				if (month <= 3) {
+//					quarterleave = 1;
+//				} else if (month <= 6 && month > 3) {
+//					quarterleave = 2;
+//				} else if (month <= 9 && month > 6) {
+//					quarterleave = 3;
+//				} else if (month <= 12 && month > 9) {
+//					quarterleave = 4;
+//
+//				}
+//
+//				lBalance.setQuarter(quarterleave);
+//				System.out.println("quat:" + lBalance.getQuarter() + "yera:" + lBalance.getYear() + " :user"
+//						+ lBalance.getUser().getUserId());
+//				LeaveBalanceModel leavebal = attendanceService.getUserLeaveBalance(lBalance.getQuarter(),
+//						lBalance.getYear(), lBalance.getUser().getUserId());
+//				System.out.println("sl:" + leavebal.getSlBalance() + " el:" + leavebal.getElBalance() + " cl:"
+//						+ leavebal.getClBalance());
+//
+//				double leavebalance = 0;
+//				LeaveModel checkleavevalue = attendanceService.Leavedetails(leaveModel.getLeaveId());
+//				if (checkleavevalue.getCL() != null)
+//					leavebal.setClBalance(leavebal.getClBalance() + checkleavevalue.getCL());
+//				else if (checkleavevalue.getEL() != null)
+//					leavebal.setElBalance(leavebal.getElBalance() + checkleavevalue.getEL());
+//				else if (checkleavevalue.getSL() != null)
+//					leavebal.setSlBalance(leavebal.getSlBalance() + checkleavevalue.getSL());
+//
+//				if (node.get("leaveType").asText().equals("cl")) {
+//
+//					if (leavebal.getClBalance() >= leaveCount) {
+//
+//						leavebalance = leavebal.getClBalance();
+//						leavebalance = leavebalance - leaveCount;
+//						System.out.println("new bal:" + leavebalance + " count:" + leaveCount);
+//						leavebal.setClBalance(leavebalance);
+//						leaveModel.setCL(leaveCount);
+//					} else {
+//						leaveCount = leaveCount - leavebal.getClBalance();
+//						leaveModel.setLOP(leaveCount);
+//						leaveModel.setCL(leavebal.getClBalance());
+//						System.out.println("new bal:" + leavebalance + " count:" + leaveCount);
+//						leavebal.setClBalance(0);
+//					}
+//				} else if (node.get("leaveType").asText().equals("sl")) {
+//					if (leavebal.getSlBalance() >= leaveCount) {
+//						leavebalance = leavebal.getSlBalance();
+//						leavebalance = leavebalance - leaveCount;
+//						System.out.println("new bal:" + leavebalance + " count:" + leaveCount);
+//						leavebal.setSlBalance(leavebalance);
+//						leaveModel.setSL(leaveCount);
+//					} else {
+//						leaveCount = leaveCount - leavebal.getSlBalance();
+//						leaveModel.setLOP(leaveCount);
+//						leaveModel.setSL(leavebal.getSlBalance());
+//						System.out.println("new bal:" + leavebalance + " count:" + leaveCount);
+//						leavebal.setSlBalance(0);
+//					}
+//				} else if (node.get("leaveType").asText().equals("lop")) {
+//
+//					leaveModel.setLOP(leaveCount);
+//				} else if (node.get("leaveType").asText().equals("el")) {
+//					if (leavebal.getElBalance() >= leaveCount) {
+//
+//						leavebalance = leavebal.getElBalance();
+//						leavebalance = leavebalance - leaveCount;
+//						leavebal.setElBalance(leavebalance);
+//						leaveModel.setEL(leaveCount);
+//					} else {
+//						leaveCount = leaveCount - leavebal.getElBalance();
+//						leaveModel.setEL(leavebal.getElBalance());
+//						leaveModel.setLOP(leaveCount);
+//						leavebal.setElBalance(0);
+//						System.out.println("new bal:" + leavebalance + " count:" + leaveCount);
+//					}
+//				}
+//
+//				attendanceService.setLeaveBalance(leavebal);
+//
+//				attendanceService.saveLeaveMarking(leaveModel);
+//				jsonDataRes.put("status", "success");
+//				jsonDataRes.put("message", "successfully saved.");
+//				jsonDataRes.put("code", httpstatus.getStatus());
+//
+//			}
+//
+//		} catch (Exception e) {
+//			jsonDataRes.put("status", "failure");
+//			jsonDataRes.put("code", httpstatus.getStatus());
+//			jsonDataRes.put("message", "failed. " + e);
+//		}
+//		return jsonDataRes;
+//
+//	}
 
 //	for calculating balance leave
 	@PostMapping("/getleaveBalance")
@@ -825,73 +824,73 @@ public class AttendanceController {
 	}
 
 //	for cancelling leave
-	@PostMapping("/cancelLeaveMarking")
-	public ObjectNode setcancelLeaveMarking(@RequestBody JsonNode requestdata, HttpServletResponse httpstatus) {
-		ObjectNode jsonDataRes = objectMapper.createObjectNode();
-		try {
-
-			Long userId = requestdata.get("userId").asLong();
-			UserModel user = userservice.getUserDetailsById(userId);
-
-			LocalDate now = LocalDate.now();
-			LeaveModel leaveModel = new LeaveModel();
-			leaveModel.setLeaveId(requestdata.get("leaveId").asLong());
-			leaveModel.setUser(user);
-			System.out.println("leaveid:" + leaveModel.getLeaveId() + " userId:" + leaveModel.getUser().getUserId());
-			LeaveModel leaveDetails = attendanceService.getLeaveDetails(leaveModel.getLeaveId());
-			double clCount = 0, elCount = 0, slCount = 0;
-			if (leaveDetails.getCL() != null)
-				clCount = clCount + leaveDetails.getCL();
-			if (leaveDetails.getEL() != null)
-				elCount = elCount + leaveDetails.getEL();
-			if (leaveDetails.getSL() != null)
-				slCount = slCount + leaveDetails.getSL();
-			System.out.println("CL:" + clCount + "EL:" + elCount + "SL:" + slCount);
-			LeaveBalanceModel lBalance = new LeaveBalanceModel();
-
-			int year = now.getYear();
-			lBalance.setYear(year);
-			lBalance.setUser(leaveModel.getUser());
-			int month = now.getMonthValue();
-			System.out.println("month :" + month);
-			int quarterleave = 0;
-			if (month <= 3) {
-				quarterleave = 1;
-			} else if (month <= 6 && month > 3) {
-				quarterleave = 2;
-			} else if (month <= 9 && month > 6) {
-				quarterleave = 3;
-			} else if (month <= 12 && month > 9) {
-				quarterleave = 4;
-
-			}
-
-			lBalance.setQuarter(quarterleave);
-			System.out.println("quat:" + lBalance.getQuarter() + "yera:" + lBalance.getYear() + " :user"
-					+ lBalance.getUser().getUserId());
-			LeaveBalanceModel leavebal = attendanceService.getUserLeaveBalance(lBalance.getQuarter(),
-					lBalance.getYear(), lBalance.getUser().getUserId());
-			System.out.println("balId:" + leavebal.getLeavebalanceId() + " sl:" + leavebal.getSlBalance() + " el:"
-					+ leavebal.getElBalance() + " cl:" + leavebal.getClBalance());
-
-			leavebal.setClBalance(leavebal.getClBalance() + clCount);
-			leavebal.setElBalance(leavebal.getElBalance() + elCount);
-			leavebal.setSlBalance(leavebal.getSlBalance() + slCount);
-
-			attendanceService.setLeaveBalance(leavebal);
-
-			attendanceService.deleteLeaveMarking(leaveModel.getLeaveId());
-			jsonDataRes.put("status", "success");
-			jsonDataRes.put("message", "successfully deleted");
-			jsonDataRes.put("code", httpstatus.getStatus());
-
-		} catch (Exception e) {
-			jsonDataRes.put("status", "failure");
-			jsonDataRes.put("code", httpstatus.getStatus());
-			jsonDataRes.put("message", "failed. " + e);
-		}
-		return jsonDataRes;
-
-	}
+//	@PostMapping("/cancelLeaveMarking")
+//	public ObjectNode setcancelLeaveMarking(@RequestBody JsonNode requestdata, HttpServletResponse httpstatus) {
+//		ObjectNode jsonDataRes = objectMapper.createObjectNode();
+//		try {
+//
+//			Long userId = requestdata.get("userId").asLong();
+//			UserModel user = userservice.getUserDetailsById(userId);
+//
+//			LocalDate now = LocalDate.now();
+//			LeaveModel leaveModel = new LeaveModel();
+//			leaveModel.setLeaveId(requestdata.get("leaveId").asLong());
+//			leaveModel.setUser(user);
+//			System.out.println("leaveid:" + leaveModel.getLeaveId() + " userId:" + leaveModel.getUser().getUserId());
+//			LeaveModel leaveDetails = attendanceService.getLeaveDetails(leaveModel.getLeaveId());
+//			double clCount = 0, elCount = 0, slCount = 0;
+//			if (leaveDetails.getCL() != null)
+//				clCount = clCount + leaveDetails.getCL();
+//			if (leaveDetails.getEL() != null)
+//				elCount = elCount + leaveDetails.getEL();
+//			if (leaveDetails.getSL() != null)
+//				slCount = slCount + leaveDetails.getSL();
+//			System.out.println("CL:" + clCount + "EL:" + elCount + "SL:" + slCount);
+//			LeaveBalanceModel lBalance = new LeaveBalanceModel();
+//
+//			int year = now.getYear();
+//			lBalance.setYear(year);
+//			lBalance.setUser(leaveModel.getUser());
+//			int month = now.getMonthValue();
+//			System.out.println("month :" + month);
+//			int quarterleave = 0;
+//			if (month <= 3) {
+//				quarterleave = 1;
+//			} else if (month <= 6 && month > 3) {
+//				quarterleave = 2;
+//			} else if (month <= 9 && month > 6) {
+//				quarterleave = 3;
+//			} else if (month <= 12 && month > 9) {
+//				quarterleave = 4;
+//
+//			}
+//
+//			lBalance.setQuarter(quarterleave);
+//			System.out.println("quat:" + lBalance.getQuarter() + "yera:" + lBalance.getYear() + " :user"
+//					+ lBalance.getUser().getUserId());
+//			LeaveBalanceModel leavebal = attendanceService.getUserLeaveBalance(lBalance.getQuarter(),
+//					lBalance.getYear(), lBalance.getUser().getUserId());
+//			System.out.println("balId:" + leavebal.getLeavebalanceId() + " sl:" + leavebal.getSlBalance() + " el:"
+//					+ leavebal.getElBalance() + " cl:" + leavebal.getClBalance());
+//
+//			leavebal.setClBalance(leavebal.getClBalance() + clCount);
+//			leavebal.setElBalance(leavebal.getElBalance() + elCount);
+//			leavebal.setSlBalance(leavebal.getSlBalance() + slCount);
+//
+//			attendanceService.setLeaveBalance(leavebal);
+//
+//			attendanceService.deleteLeaveMarking(leaveModel.getLeaveId());
+//			jsonDataRes.put("status", "success");
+//			jsonDataRes.put("message", "successfully deleted");
+//			jsonDataRes.put("code", httpstatus.getStatus());
+//
+//		} catch (Exception e) {
+//			jsonDataRes.put("status", "failure");
+//			jsonDataRes.put("code", httpstatus.getStatus());
+//			jsonDataRes.put("message", "failed. " + e);
+//		}
+//		return jsonDataRes;
+//
+//	}
 
 }
