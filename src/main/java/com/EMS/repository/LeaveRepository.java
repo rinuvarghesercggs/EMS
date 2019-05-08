@@ -4,7 +4,10 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import com.EMS.model.LeaveModel;
@@ -37,6 +40,11 @@ public interface LeaveRepository extends JpaRepository<LeaveModel, Long> {
 
 	@Query(value = "select Date(EMS.user_leave.leave_from) AS leaveFrom,Date(EMS.user_leave.leave_to) AS leaveTo,EMS.user_leave.leave_reason AS leaveReason,EMS.user_leave.status AS status,(CASE  WHEN(EMS.user_leave.cl) IS NOT NULL THEN 'Casual Leave' WHEN (EMS.user_leave.lop) IS NOT NULL THEN 'Loss of Pay ' WHEN (EMS.user_leave.sl) IS NOT NULL THEN 'Sick Leave ' WHEN (EMS.user_leave.el) IS NOT NULL THEN 'Earned Leave'  END) AS leaveType,(CASE  WHEN(EMS.user_leave.cl) IS NOT NULL THEN EMS.user_leave.cl WHEN (EMS.user_leave.lop) IS NOT NULL THEN EMS.user_leave.lop WHEN (EMS.user_leave.sl) IS NOT NULL THEN EMS.user_leave.sl WHEN (EMS.user_leave.el) IS NOT NULL THEN EMS.user_leave.el  END) AS leaveCount from EMS.user_leave where EMS.user_leave.user_user_id = ?1 and (EMS.user_leave.leave_from >= ?2 and EMS.user_leave.leave_to <= ?3) and EMS.user_leave.lop IS NOT NULL",nativeQuery = true)
 	List<Object[]> getUsersLOPLeaveLeaveList(Long userId, LocalDate firstDayOfYear, LocalDate lastDayOfYear);
+
+	@Modifying
+	@Transactional
+	@Query(value="delete FROM user_leave WHERE user_leave_id=:leaveId",nativeQuery=true)
+	public void deleteleaveMarking(long leaveId) throws Exception;
 	
 
 }
