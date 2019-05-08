@@ -37,15 +37,15 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 	public void exportProjectTaskReport(List <ExportProjectTaskReportModel> data,HttpServletResponse response) throws FileNotFoundException {
 		
 		// TODO Auto-generated method stub
-		String[] headers = { "Id", "TaskDate","ResourceName","TaskDescription", "hours","ProjectId","ProjectName"};
+		String[] headers = { "Project Name", "Task Date","Resource Name","Task Category","Task Description", "Hours","Billable"};
 		
 		//public static void main(String[] args) throws IOException, InvalidFormatException {
 			List<ExportProjectTaskReportModel> Listdata = new ArrayList<ExportProjectTaskReportModel>();
 			
 			  for(ExportProjectTaskReportModel obj : data) {
 				Listdata.add(new ExportProjectTaskReportModel
-						(obj.getId(),obj.getProjectId(),obj.getProjectName(),obj.getResourceName(),obj.getTaskDate()
-						,obj.getHours(),obj.getTaskDescription(),obj.getBillable()));
+						(obj.getProjectName(),obj.getResourceName(),obj.getTaskDate()
+						,obj.getHours(),obj.getTaskCategory(),obj.getTaskDescription(),obj.getBillable()));
 						  
 			  }
 
@@ -99,7 +99,7 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 			for (ExportProjectTaskReportModel summary : Listdata) {
 				Row row = sheet.createRow(rowNum++);
 				Cell cell = row.createCell(0);
-				cell.setCellValue(summary.getId());
+				cell.setCellValue(summary.getProjectName());
 				cell.setCellStyle(borderedCellStyle);
 				
 				cell = row.createCell(1);
@@ -111,19 +111,19 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 				cell.setCellStyle(borderedCellStyle);
 				
 				cell = row.createCell(3);
-				cell.setCellValue(summary.getTaskDescription());
+				cell.setCellValue(summary.getTaskCategory());
 				cell.setCellStyle(borderedCellStyle);
 				
 				cell = row.createCell(4);
-				cell.setCellValue(summary.getHours());
+				cell.setCellValue(summary.getTaskDescription());
 				cell.setCellStyle(borderedCellStyle);
 				
 				cell = row.createCell(5);
-				cell.setCellValue(summary.getProjectId());
+				cell.setCellValue(summary.getHours());
 				cell.setCellStyle(borderedCellStyle);
 				
 				cell = row.createCell(6);
-				cell.setCellValue(summary.getProjectName());
+				cell.setCellValue(summary.getBillable());
 				cell.setCellStyle(borderedCellStyle);
 
 			}

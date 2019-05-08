@@ -3,46 +3,32 @@ package com.EMS.model;
 
 public class ExportProjectTaskReportModel {
 
-	private long id;
-	private long projectId;
 	private String projectName ;
 	private String taskDate;
 	private String resourceName;
 	private Double hours;
 	private String taskDescription;
 	private String billable;
-
+	private String taskCategory;
+	
+	
 	public ExportProjectTaskReportModel() {
 		
 	}
 	
-	public ExportProjectTaskReportModel(long id, long projectId, String projectName, String resourceName, String taskDate,Double hours, String taskDescription, String billable) 
+	public ExportProjectTaskReportModel( String projectName, String resourceName, String taskDate,Double hours,String taskCategory, String taskDescription, String billable) 
 	{
-			this.id = id;
-			this.projectId = projectId;
+
 			this.projectName = projectName;
 			this.taskDate = taskDate;
 			this.resourceName = resourceName;
 			this.hours = hours;
+			this.taskCategory = taskCategory;
 			this.taskDescription = taskDescription;
 			this.billable = billable;
 		}
 
-	public long getId() {
-		return id;
-	}
 
-	public void setId(long id) {
-		this.id = id;
-	}
-
-	public long getProjectId() {
-		return projectId;
-	}
-
-	public void setProjectId(long projectId) {
-		this.projectId = projectId;
-	}
 
 	public String getProjectName() {
 		return projectName;
@@ -90,6 +76,14 @@ public class ExportProjectTaskReportModel {
 
 	public void setBillable(String billable) {
 		this.billable = billable;
+	}
+
+	public String getTaskCategory() {
+		return taskCategory;
+	}
+
+	public void setTaskCategory(String taskCategory) {
+		this.taskCategory = taskCategory;
 	}
 	
 	
