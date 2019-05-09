@@ -1,5 +1,6 @@
 package com.EMS.controller;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -190,21 +191,31 @@ public class ProjectAllocationController {
 	
 	// To get the allocation list
 
-	@GetMapping(value = "/getResourceListBasedonProject/{projectId}")
-	public ObjectNode getAllocationListsBasedonProject(@PathVariable("projectId") Long projectId,
-			HttpServletResponse httpstatus) {
+	//@GetMapping(value = "/getResourceListBasedonProject/{projectId}")
+	//public ObjectNode getAllocationListsBasedonProject(@PathVariable("projectId") Long projectId,HttpServletResponse httpstatus) {
+	@PostMapping(value = "/getResourceListBasedonProject")
+	public ObjectNode getAllocationListsBasedonProject(@RequestBody ObjectNode requestData,HttpServletResponse httpstatus) {
+	
 		// Method invocation for getting allocation list based on the project
+		Long projectId = requestData.get("projectId").asLong();
+		String startDate = requestData.get("startDate").asText();
+		String endDate = requestData.get("endDate").asText();
+		Date fromDate=null,toDate=null;
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+				    
 		List<AllocationModel> allocationModel = projectAllocation.getAllocationList(projectId);
 		
 		ArrayNode jsonArray = objectMapper.createArrayNode();
 		ObjectNode jsonData = objectMapper.createObjectNode();
 		ObjectNode jsonDataRes = objectMapper.createObjectNode();
-		Date currentDate = new Date();
-
 		try {
+			fromDate = df.parse(startDate);
+	    	toDate = df.parse(endDate);
 			if (!(allocationModel.isEmpty() && allocationModel.size() > 0)) {
 				for (AllocationModel item : allocationModel) {
-					if (item.getEndDate().compareTo(currentDate) > 0) {
+					String projectStartDate = df.format(item.getStartDate());
+					String projectEndDate = df.format(item.getEndDate());
+						if (df.parse(projectStartDate).compareTo(fromDate) <= 0 && df.parse(projectEndDate).compareTo(toDate) >= 0) {
 						ObjectNode jsonObject = objectMapper.createObjectNode();
 						jsonObject.put("allocationId", item.getAllocId());
 						if (item.getproject() != null) {
@@ -282,7 +293,6 @@ public class ProjectAllocationController {
 			allocationModel.setEndDate(endDate);
 			allocationModel.setAllocatedPerce(val);
 			allocationModel.setIsBillable(isBillable);
-
 			// Check whether the user is already allocated to the project.If so update the previous entry of the user otherwise new entry is created.
 			Long allocId = projectAllocation.getAllocId(projectId,userId);
 			if(allocId != null) {
@@ -466,7 +476,10 @@ public class ProjectAllocationController {
 					jsonObjectData.put("allocationEndDate", item.getEndDate().toString());
 					jsonObjectData.put("isBillable", item.getIsBillable());
 					totAlloc += item.getAllocatedPerce();
-					freeAlloc-= item.getAllocatedPerce();
+					
+					if(freeAlloc>0)
+						freeAlloc-= item.getAllocatedPerce();
+					
 					jsonArray.add(jsonObjectData);
 
 				}
@@ -507,6 +520,5 @@ public class ProjectAllocationController {
 		}
 		
 	}
-
-		
+	
 }
