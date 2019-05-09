@@ -47,10 +47,9 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 
 	@Override
-	public List<LeaveModel> getWeeklyLeavelist(Date date1) {
-		System.out.println("date :"+date1);
-		List<LeaveModel> list=leaveRepository.getweeklyleavelist(date1);
-		System.out.println("date :"+date1+" list :"+list.size());
+	public List<Object[]> getWeeklyLeavelist(Date startdate1,Date enddate1) {
+		List<Object[]> list=leaveRepository.getweeklyleavelist(startdate1,enddate1);
+		System.out.println("startdate :"+startdate1+" enddate: "+enddate1+" list :"+list.size());
 		return list;
 	}
 

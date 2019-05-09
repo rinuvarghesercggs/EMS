@@ -1,5 +1,7 @@
 package com.EMS.controller;
 
+import java.math.BigInteger;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -198,32 +200,106 @@ public class AttendanceController {
 			LocalDate start = LocalDate.parse(startDate);
 			LocalDate end = LocalDate.parse(endDate);
 			ObjectNode datewise = objectMapper.createObjectNode();
-
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+//			DateFormat dateformatter = new SimpleDateFormat("yyyy-MM-dd");
+			Date startdate1 = formatter.parse(startDate);
+			Date enddate1 = formatter.parse(endDate);
+			List<Object[]> leavelist = attendanceService.getWeeklyLeavelist(startdate1, enddate1);
+			System.out.println("list"+leavelist.size());
 			while (!start.isAfter(end)) {
 
-				System.out.println("dates :" + start);
-				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+				System.out.println("day  :" + start);
+//				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 				String stgdate = String.valueOf(start);
 				Date date1 = formatter.parse(stgdate);
 
-				List<LeaveModel> leavelist = attendanceService.getWeeklyLeavelist(date1);
 				ArrayNode leaverecord = objectMapper.createArrayNode();
 
-				for (LeaveModel leave : leavelist) {
+				for (Object[] leaveobj : leavelist) {
 
+					LeaveModel leave=new LeaveModel();
+					long leaveid=Long.parseLong(String.valueOf(leaveobj[0]));
+					leave.setLeaveId(leaveid);
+					leave.setLeaveFrom((Date)leaveobj[4]);
+					leave.setLeaveTo((Date)leaveobj[6]);
+					leave.setLeaveCount((double)leaveobj[3]);
+					leave.setLeaveType(leaveobj[7].toString());
+					leave.setStatus(leaveobj[8].toString());
+					leave.setLeaveReason(leaveobj[5].toString());
+					UserModel user=new UserModel();
+					long userid=Long.parseLong(String.valueOf(leaveobj[9]));
+					user.setUserId(userid);
+					leave.setUser(user);
+					
 					ObjectNode node = objectMapper.createObjectNode();
 					System.out.println("userid :" + leave.getUser().getUserId());
 					String userDetail = userservice.getUserName(leave.getUser().getUserId());
 					String username = userDetail.replace(",", " ");
-					System.out.println("username:" + username);
-
+					System.out.println("username:" + username+"leaveid"+leave.getLeaveId());
 					node.put("username", username);
-					node.put("startDate", leave.getLeaveFrom().toString());
 					node.put("reason", leave.getLeaveReason().toString());
-					node.put("endDate", leave.getLeaveTo().toString());
 					node.put("leaveType", leave.getLeaveType().toLowerCase());
-					node.put("count", leave.getLeaveCount());
-					leaverecord.add(node);
+//					node.put("count", leave.getLeaveCount());
+					System.out.println("sec1");
+					if ((leave.getLeaveFrom().compareTo(date1) >= 0) && (leave.getLeaveTo().compareTo(enddate1) <= 0)) {
+						System.out.println("if 1 lFrom" + leave.getLeaveFrom() + " lTo:" + leave.getLeaveTo() + " compdate:"
+								+ date1+"   leaveid  :"+leave.getLeaveId());
+
+						if ((leave.getLeaveFrom().compareTo(date1)<=0)) {
+							System.out.println("leaveid :"+leave.getLeaveId());
+							node.put("startDate", leave.getLeaveFrom().toString());
+							node.put("endDate", leave.getLeaveTo().toString());
+							node.put("count", 1.0);
+							leaverecord.add(node);
+						}
+
+
+					}else if ((leave.getLeaveFrom().compareTo(date1) <= 0) && (leave.getLeaveTo().compareTo(enddate1) > 0)) {
+						
+						System.out.println("sec2");
+						System.out.println("if 2  lFrom" + leave.getLeaveFrom() + " lTo:" + leave.getLeaveTo() +"compadate: "+date1+" leaveid:"
+								+ leave.getLeaveId());
+						if (leave.getLeaveFrom().compareTo(date1) <= 0) {
+							System.out.println("leaveid :"+leave.getLeaveId());
+							node.put("startDate", leave.getLeaveFrom().toString());
+							node.put("endDate", leave.getLeaveTo().toString());
+							node.put("count", 1.0);
+							leaverecord.add(node);
+						}
+					}else if ((leave.getLeaveFrom().compareTo(date1) <= 0) && (leave.getLeaveTo().compareTo(enddate1) <= 0)
+							&& (leave.getLeaveTo().compareTo(date1) >= 0)) {
+						
+						System.out.println("sec3");
+						System.out.println("if 3  lFrom" + leave.getLeaveFrom() + " lTo:" + leave.getLeaveTo() + "  compadate: "+date1+" leaveid:"
+								+ leave.getLeaveId());
+						if (leave.getLeaveFrom().compareTo(date1) <= 0) {
+							System.out.println("leaveid :"+leave.getLeaveId());
+							node.put("startDate", leave.getLeaveFrom().toString());
+							node.put("endDate", leave.getLeaveTo().toString());
+							node.put("count", 1.0);
+							leaverecord.add(node);
+						}
+					}else if ((leave.getLeaveFrom().compareTo(date1) > 0) && (leave.getLeaveTo().compareTo(enddate1) > 0)
+							&& (leave.getLeaveFrom().compareTo(enddate1) < 0)) {
+						System.out.println("sec4");
+						System.out.println("if 4  lFrom" + leave.getLeaveFrom() + " lTo:" + leave.getLeaveTo() + " compadate: "+date1+" leaveid:"
+								+ leave.getLeaveId());
+						if (leave.getLeaveFrom().compareTo(date1) <= 0) {
+							System.out.println("leaveid :"+leave.getLeaveId());
+							node.put("startDate", leave.getLeaveFrom().toString());
+							node.put("endDate", leave.getLeaveTo().toString());
+							node.put("count", 1.0);
+							leaverecord.add(node);
+						}
+					}else if(leave.getLeaveTo().equals(date1)) {
+						System.out.println("sec5");
+						System.out.println("leaveid :"+leave.getLeaveId());
+						node.put("startDate", leave.getLeaveFrom().toString());
+						node.put("endDate", leave.getLeaveTo().toString());
+						node.put("count", 1.0);
+						leaverecord.add(node);
+					}
+
 				}
 
 				datewise.set(stgdate, leaverecord);
@@ -537,7 +613,7 @@ public class AttendanceController {
 				leavenode.put("leaveReason", leave.getLeaveReason());
 				leavenode.put("leaveId", leave.getLeaveId());
 				leavenode.put("userId", user.getUserId());
-
+				leavenode.put("leaveStatus", leave.getStatus());
 				leaverecord.add(leavenode);
 			}
 
@@ -860,10 +936,16 @@ public class AttendanceController {
 				quarter = 4;
 			ObjectNode leaveBalanceNode = attendanceService.getLeavebalanceData(userId, quarter, year);
 
+			ObjectNode leavebal = objectMapper.createObjectNode();
+			leavebal.put("cl", leaveBalanceNode.get("CL").asDouble());
+			leavebal.put("el", leaveBalanceNode.get("EL").asDouble());
+			leavebal.put("sl", leaveBalanceNode.get("SL").asDouble());
+			leavebal.put("balanceId", leaveBalanceNode.get("balanceId").asLong());
+
 			responseData.put("status", "success");
 			responseData.put("code", response.getStatus());
 			responseData.put("message", "success");
-			responseData.set("payload", leaveBalanceNode);
+			responseData.set("payload", leavebal);
 
 		} catch (Exception e) {
 			responseData.put("status", "Failed");

@@ -17,7 +17,7 @@ public interface AttendanceService {
 
 	public List<Object[]> getUserLeaveList(Long userId, LocalDate firstDayOfYear, LocalDate lastDayOfYear);
 
-	public List<LeaveModel> getWeeklyLeavelist(Date date1);
+	public List<Object[]> getWeeklyLeavelist(Date startdate1,Date enddate1);
 
 	public List<LeaveModel> getYearlyLeavelist(long userId, Date startDate1, Date endDate1);
 
