@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.json.simple.JSONObject;
 
+import com.EMS.model.Technology;
 import com.EMS.model.UserModel;
 import com.EMS.model.UserTechnology;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -39,6 +40,12 @@ public interface UserService {
 	Boolean checkExistanceOfUserId(Long userId);
 
 	List<Object[]> getUserTechnologyList(Long userId);
+
+	List<Object[]> getnewHire(int startmonth,int endmonth,int year);
+
+	List<Technology> getprimarySkills(long userId);
+
+	UserModel getUserdetailsbyId(long userId);
 
 	
 

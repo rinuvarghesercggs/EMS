@@ -42,7 +42,7 @@ public class UserModel{
 	private String employmentType;
 	private int gender;
 	private boolean active;
-	
+	private String empCategory,cppLevel,Recruiter,referredBy;
 	
 	
 	
@@ -50,6 +50,54 @@ public class UserModel{
 
 //	private Address address;
 	
+
+	public DepartmentModel getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(DepartmentModel department) {
+		this.department = department;
+	}
+
+	public RoleModel getRole() {
+		return role;
+	}
+
+	public void setRole(RoleModel role) {
+		this.role = role;
+	}
+
+	public String getEmpCategory() {
+		return empCategory;
+	}
+
+	public void setEmpCategory(String empCategory) {
+		this.empCategory = empCategory;
+	}
+
+	public String getCppLevel() {
+		return cppLevel;
+	}
+
+	public void setCppLevel(String cppLevel) {
+		this.cppLevel = cppLevel;
+	}
+
+	public String getRecruiter() {
+		return Recruiter;
+	}
+
+	public void setRecruiter(String recruiter) {
+		Recruiter = recruiter;
+	}
+
+	public String getReferredBy() {
+		return referredBy;
+	}
+
+	public void setReferredBy(String referredBy) {
+		this.referredBy = referredBy;
+	}
 
 	public boolean isActive() {
 		return active;

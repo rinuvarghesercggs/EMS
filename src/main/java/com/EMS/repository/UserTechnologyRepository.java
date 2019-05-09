@@ -17,6 +17,7 @@ import org.springframework.stereotype.Repository;
 
 import com.EMS.model.BenchProjectReportModel;
 import com.EMS.model.ProjectReportModel;
+import com.EMS.model.Technology;
 import com.EMS.model.UserModel;
 import com.EMS.model.UserTechnology;
 import com.EMS.utility.BenchReportRowMapper;
@@ -67,6 +68,24 @@ public class UserTechnologyRepository extends DbConnectionUtility{
 		else
 			return false;
 		
+	}
+
+	public List<Technology> getPrimarySkills(long userId) {
+		
+		String sql="SELECT user_technology.technology_technology_id,technology.technology_name FROM EMS.user_technology INNER JOIN technology ON user_technology.technology_technology_id=technology.technology_id where user_technology.user_user_id='"+userId+"'";
+		
+		List<Technology> result = jdbcTemplate.query(sql, new RowMapper<Technology>(){
+
+			@Override
+			public Technology mapRow(ResultSet rs, int rowNum) throws SQLException {
+				Technology tech=new Technology();
+				tech.setTechnologyName(rs.getString(2));
+				return tech;
+			}});
+		
+		System.out.println("list :"+result.size());
+		
+		return result;
 	}
 
 	

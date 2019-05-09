@@ -61,6 +61,9 @@ public interface UserRepository extends JpaRepository<UserModel, Long>{
 	@Query("select count(*)>0 from UserModel u where u.empId = ?1")
 	Boolean checkExistanceOfEmpId(long empId);
 
+	@Query(value="SELECT joining_date,first_name,last_name,cpp_level,emp_category,recruiter,referred_by,active,user_id FROM EMS.user where year(joining_date)=:year AND month(joining_date) between :startmonth AND :endmonth",nativeQuery=true)
+	List<Object[]> findnewHire(int startmonth,int endmonth, int year);
+
 	
 
 }

@@ -1,12 +1,14 @@
 package com.EMS.service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.EMS.model.Technology;
 import com.EMS.model.UserModel;
 import com.EMS.model.UserTechnology;
 import com.EMS.repository.TechnologyRepository;
@@ -128,6 +130,27 @@ public class UserServiceImpl implements UserService {
 		List<Object[]> list = technologyRepository.getUserTechnologyList(userId);
 		return list;
 		
+	}
+
+	@Override
+	public List<Object[]> getnewHire(int startmonth,int endmonth,int year) {
+		System.out.println("month :"+startmonth+" endmonth:"+endmonth);
+		
+		List<Object[]> list=userRepository.findnewHire(startmonth,endmonth,year);
+
+		return list;
+	}
+
+	@Override
+	public List<Technology> getprimarySkills(long userId) {
+		List<Technology> list=userTechnologyRepository.getPrimarySkills(userId);
+		return list;
+	}
+
+	@Override
+	public UserModel getUserdetailsbyId(long userId) {
+		UserModel user=userRepository.getOne(userId);
+		return user;
 	}
 
 	
