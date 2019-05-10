@@ -73,8 +73,8 @@ public class PulseReportController {
 		response.setContentType("application/vnd.ms-excel");
 		response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
 		response.setHeader("Content-Disposition", "filename=\"" + "PulseReport.xlsx" + "\"");
-		userbook.write(output);
-//		userbook.write(response.getOutputStream());
+//		userbook.write(output);
+		userbook.write(response.getOutputStream());
 		userbook.close();
 
 	}
