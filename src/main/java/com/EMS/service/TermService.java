@@ -227,9 +227,8 @@ public class TermService {
 				datacell7.setCellFormula(dateif);
 				
 				Cell datacell8=createcell(datarow, 8, normalstyleforint);
-//				String service="IF(H"+(termrownum)+"<365,\"<1 Yr\",IF(AND(MOD(H"+(termrownum)+",365)=0,INT(H"+(termrownum)+"/365)=1),CONCATENATE(TEXT(INT(H"+(termrownum)+"/365),\"0\"),\" yr\"),IF(AND(MOD(H"+(termrownum)+",365)=0,INT(H"+(termrownum)+"/365)>1),CONCATENATE(TEXT(INT(H"+(termrownum)+"/365),\"0\"),\"";
-//				datacell8.setCellFormula(service);
-				datacell8.setCellValue(0);
+				String service="IF(H"+termrownum+"<365,\"<1 Yr\",IF(AND(MOD(H"+termrownum+",365)=0,INT(H"+termrownum+"/365)=1),CONCATENATE(TEXT(INT(H"+termrownum+"/365),\"0\"),\" yr\"),IF(AND(MOD(H"+termrownum+",365)=0,INT(H"+termrownum+"/365)>1),CONCATENATE(TEXT(INT(H"+termrownum+"/365),\"0\"),\" yrs\"),IF(AND(MOD(H"+termrownum+",365)>0,INT(H"+termrownum+"/365)>0),CONCATENATE(TEXT(INT(H"+termrownum+"/365),\"0\"),\"-\",TEXT(INT(H"+termrownum+"/365)+1,\"0\"),\" yrs\",\"\")))))";
+				datacell8.setCellFormula(service);
 				
 			}
 			

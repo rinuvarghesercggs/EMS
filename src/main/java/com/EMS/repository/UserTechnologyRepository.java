@@ -83,8 +83,6 @@ public class UserTechnologyRepository extends DbConnectionUtility{
 				return tech;
 			}});
 		
-		System.out.println("list :"+result.size());
-		
 		return result;
 	}
 
