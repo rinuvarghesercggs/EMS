@@ -87,6 +87,8 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 			//headerCellStyle.setFont((org.apache.poi.ss.usermodel.Font) headerFont);
 			
 			Row headerRow = sheet.createRow(2);
+			int widthInChars = 50;
+		    sheet.setColumnWidth(4, widthInChars);
 			for (int i = 0; i < headers.length; i++) {
 				Cell cell = headerRow.createCell(i);
 				cell.setCellValue(headers[i]);

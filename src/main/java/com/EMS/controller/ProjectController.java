@@ -311,7 +311,7 @@ public class ProjectController {
 					object.put("firstName", user.getFirstName());
 					object.put("id", user.getUserId());
 					object.put("lastName", user.getLastName());
-					object.put("role", user.getrole().getroleId());
+					object.put("role", user.getRole().getroleId());
 					// adding records object to json array
 					userarray.add(object);
 				}
@@ -426,7 +426,7 @@ public class ProjectController {
 					else {
 						userobj.put("firstName", userdata.getFirstName());
 						userobj.put("lastName", userdata.getLastName());
-						userobj.put("role", userdata.getrole().getroleId());
+						userobj.put("role", userdata.getRole().getroleId());
 						userobj.put("userId", userdata.getUserId());
 
 					}
@@ -687,7 +687,7 @@ public class ProjectController {
 				else {
 					userobj.put("firstName", userdata.getFirstName());
 					userobj.put("lastName", userdata.getLastName());
-					userobj.put("role", userdata.getrole().getroleId());
+					userobj.put("role", userdata.getRole().getroleId());
 					userobj.put("userId", userdata.getUserId());
 
 				}

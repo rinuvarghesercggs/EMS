@@ -1,5 +1,6 @@
 package com.EMS.controller;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -83,8 +84,8 @@ public class ProjectAllocationController {
 					jsonObject.put("userId", user.getUserId());
 					jsonObject.put("firstName", user.getFirstName());
 					jsonObject.put("lastName", user.getLastName());
-					jsonObject.put("role", user.getrole().getroleId());
-					DepartmentModel departmentModel = user.getdepartment();
+					jsonObject.put("role", user.getRole().getroleId());
+					DepartmentModel departmentModel = user.getDepartment();
 					ObjectNode depNode = objectMapper.createObjectNode();
 					depNode.put("departmentId",departmentModel.getDepartmentId());
 					depNode.put("departmentName", departmentModel.getdepartmentName());
@@ -190,21 +191,31 @@ public class ProjectAllocationController {
 	
 	// To get the allocation list
 
-	@GetMapping(value = "/getResourceListBasedonProject/{projectId}")
-	public ObjectNode getAllocationListsBasedonProject(@PathVariable("projectId") Long projectId,
-			HttpServletResponse httpstatus) {
+	//@GetMapping(value = "/getResourceListBasedonProject/{projectId}")
+	//public ObjectNode getAllocationListsBasedonProject(@PathVariable("projectId") Long projectId,HttpServletResponse httpstatus) {
+	@PostMapping(value = "/getResourceListBasedonProject")
+	public ObjectNode getAllocationListsBasedonProject(@RequestBody ObjectNode requestData,HttpServletResponse httpstatus) {
+	
 		// Method invocation for getting allocation list based on the project
+		Long projectId = requestData.get("projectId").asLong();
+		String startDate = requestData.get("startDate").asText();
+		String endDate = requestData.get("endDate").asText();
+		Date fromDate=null,toDate=null;
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+				    
 		List<AllocationModel> allocationModel = projectAllocation.getAllocationList(projectId);
 		
 		ArrayNode jsonArray = objectMapper.createArrayNode();
 		ObjectNode jsonData = objectMapper.createObjectNode();
 		ObjectNode jsonDataRes = objectMapper.createObjectNode();
-		Date currentDate = new Date();
-
 		try {
+			fromDate = df.parse(startDate);
+	    	toDate = df.parse(endDate);
 			if (!(allocationModel.isEmpty() && allocationModel.size() > 0)) {
 				for (AllocationModel item : allocationModel) {
-					if (item.getEndDate().compareTo(currentDate) > 0) {
+					String projectStartDate = df.format(item.getStartDate());
+					String projectEndDate = df.format(item.getEndDate());
+						if (df.parse(projectStartDate).compareTo(fromDate) <= 0 && df.parse(projectEndDate).compareTo(toDate) >= 0) {
 						ObjectNode jsonObject = objectMapper.createObjectNode();
 						jsonObject.put("allocationId", item.getAllocId());
 						if (item.getproject() != null) {
@@ -215,13 +226,13 @@ public class ProjectAllocationController {
 							jsonObject.put("userId",item.getuser().getUserId());
 							jsonObject.put("firstName", item.getuser().getFirstName());
 							jsonObject.put("lastName", item.getuser().getLastName());
-							jsonObject.put("role", item.getuser().getrole().getroleId());
+							jsonObject.put("role", item.getuser().getRole().getroleId());
 						}
 						jsonObject.put("allocatedVal", item.getAllocatedPerce());
 						jsonObject.put("isBillable", item.getIsBillable());
 
-						if (item.getuser() != null && item.getuser().getdepartment() != null)
-							jsonObject.put("departmentName", item.getuser().getdepartment().getdepartmentName());
+						if (item.getuser() != null && item.getuser().getDepartment() != null)
+							jsonObject.put("departmentName", item.getuser().getDepartment().getdepartmentName());
 						jsonArray.add(jsonObject);
 					}
 				}
@@ -282,7 +293,6 @@ public class ProjectAllocationController {
 			allocationModel.setEndDate(endDate);
 			allocationModel.setAllocatedPerce(val);
 			allocationModel.setIsBillable(isBillable);
-
 			// Check whether the user is already allocated to the project.If so update the previous entry of the user otherwise new entry is created.
 			Long allocId = projectAllocation.getAllocId(projectId,userId);
 			if(allocId != null) {
@@ -453,8 +463,8 @@ public class ProjectAllocationController {
 				jsonObject.put("userId", user.getUserId());
 				jsonObject.put("firstName", user.getFirstName());
 				jsonObject.put("lastName", user.getLastName());
-				jsonObject.put("role", user.getrole().getroleId());
-				jsonObject.put("department", user.getdepartment());
+				jsonObject.put("role", user.getRole().getroleId());
+				jsonObject.put("department", user.getDepartment());
 				for (AllocationModel item : newUserList) {
 					JSONObject jsonObjectData = new JSONObject();
 					jsonObjectData.put("allocationId", item.getAllocId());
@@ -466,7 +476,10 @@ public class ProjectAllocationController {
 					jsonObjectData.put("allocationEndDate", item.getEndDate().toString());
 					jsonObjectData.put("isBillable", item.getIsBillable());
 					totAlloc += item.getAllocatedPerce();
-					freeAlloc-= item.getAllocatedPerce();
+					
+					if(freeAlloc>0)
+						freeAlloc-= item.getAllocatedPerce();
+					
 					jsonArray.add(jsonObjectData);
 
 				}
@@ -481,8 +494,8 @@ public class ProjectAllocationController {
 				jsonObject.put("userId", user.getUserId());
 				jsonObject.put("firstName", user.getFirstName());
 				jsonObject.put("lastName", user.getLastName());
-				jsonObject.put("role", user.getrole().getroleId());
-				jsonObject.put("department", user.getdepartment());
+				jsonObject.put("role", user.getRole().getroleId());
+				jsonObject.put("department", user.getDepartment());
 				jsonObject.put("project", jsonArray);
 				jsonObject.put("freeAlloc", 100);
 				jsonObject.put("totalAllocation", 0);
@@ -498,15 +511,13 @@ public class ProjectAllocationController {
 			jsonObject.put("userId", user.getUserId());
 			jsonObject.put("firstName", user.getFirstName());
 			jsonObject.put("lastName", user.getLastName());
-			jsonObject.put("role", user.getrole().getroleId());
-			jsonObject.put("department", user.getdepartment());
+			jsonObject.put("role", user.getRole().getroleId());
+			jsonObject.put("department", user.getDepartment());
 			jsonObject.put("project", jsonArray);
 			jsonObject.put("freeAlloc", 100);
 			jsonObject.put("totalAllocation", 0);
 			jsonArrayFiltered.add(jsonObject);
 		}
 		
-	}
-
-		
+	}	
 }

@@ -163,22 +163,6 @@ public class UserModel{
 		this.userId = userId;
 	}
 
-	public DepartmentModel getdepartment() {
-		return department;
-	}
-
-	public void setdepartment(DepartmentModel department) {
-		this.department = department;
-	}
-
-	public RoleModel getrole() {
-		return role;
-	}
-
-	public void setrole(RoleModel role) {
-		this.role = role;
-	}
-
 	public String getFirstName() {
 		return firstName;
 	}
