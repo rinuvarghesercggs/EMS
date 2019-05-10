@@ -84,8 +84,8 @@ public class ProjectAllocationController {
 					jsonObject.put("userId", user.getUserId());
 					jsonObject.put("firstName", user.getFirstName());
 					jsonObject.put("lastName", user.getLastName());
-					jsonObject.put("role", user.getrole().getroleId());
-					DepartmentModel departmentModel = user.getdepartment();
+					jsonObject.put("role", user.getRole().getroleId());
+					DepartmentModel departmentModel = user.getDepartment();
 					ObjectNode depNode = objectMapper.createObjectNode();
 					depNode.put("departmentId",departmentModel.getDepartmentId());
 					depNode.put("departmentName", departmentModel.getdepartmentName());
@@ -226,13 +226,13 @@ public class ProjectAllocationController {
 							jsonObject.put("userId",item.getuser().getUserId());
 							jsonObject.put("firstName", item.getuser().getFirstName());
 							jsonObject.put("lastName", item.getuser().getLastName());
-							jsonObject.put("role", item.getuser().getrole().getroleId());
+							jsonObject.put("role", item.getuser().getRole().getroleId());
 						}
 						jsonObject.put("allocatedVal", item.getAllocatedPerce());
 						jsonObject.put("isBillable", item.getIsBillable());
 
-						if (item.getuser() != null && item.getuser().getdepartment() != null)
-							jsonObject.put("departmentName", item.getuser().getdepartment().getdepartmentName());
+						if (item.getuser() != null && item.getuser().getDepartment() != null)
+							jsonObject.put("departmentName", item.getuser().getDepartment().getdepartmentName());
 						jsonArray.add(jsonObject);
 					}
 				}
@@ -463,8 +463,8 @@ public class ProjectAllocationController {
 				jsonObject.put("userId", user.getUserId());
 				jsonObject.put("firstName", user.getFirstName());
 				jsonObject.put("lastName", user.getLastName());
-				jsonObject.put("role", user.getrole().getroleId());
-				jsonObject.put("department", user.getdepartment());
+				jsonObject.put("role", user.getRole().getroleId());
+				jsonObject.put("department", user.getDepartment());
 				for (AllocationModel item : newUserList) {
 					JSONObject jsonObjectData = new JSONObject();
 					jsonObjectData.put("allocationId", item.getAllocId());
@@ -494,8 +494,8 @@ public class ProjectAllocationController {
 				jsonObject.put("userId", user.getUserId());
 				jsonObject.put("firstName", user.getFirstName());
 				jsonObject.put("lastName", user.getLastName());
-				jsonObject.put("role", user.getrole().getroleId());
-				jsonObject.put("department", user.getdepartment());
+				jsonObject.put("role", user.getRole().getroleId());
+				jsonObject.put("department", user.getDepartment());
 				jsonObject.put("project", jsonArray);
 				jsonObject.put("freeAlloc", 100);
 				jsonObject.put("totalAllocation", 0);
@@ -511,14 +511,13 @@ public class ProjectAllocationController {
 			jsonObject.put("userId", user.getUserId());
 			jsonObject.put("firstName", user.getFirstName());
 			jsonObject.put("lastName", user.getLastName());
-			jsonObject.put("role", user.getrole().getroleId());
-			jsonObject.put("department", user.getdepartment());
+			jsonObject.put("role", user.getRole().getroleId());
+			jsonObject.put("department", user.getDepartment());
 			jsonObject.put("project", jsonArray);
 			jsonObject.put("freeAlloc", 100);
 			jsonObject.put("totalAllocation", 0);
 			jsonArrayFiltered.add(jsonObject);
 		}
 		
-	}
-	
+	}	
 }

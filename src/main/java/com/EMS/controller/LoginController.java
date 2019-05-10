@@ -96,13 +96,13 @@ public class LoginController {
 					response.put("message", "Valid user");
 					data.put("username", usercheck.getUserName());
 					data.put("userId", usercheck.getUserId());
-					data.put("roleId", usercheck.getrole().getroleId());
-					data.put("roleName", usercheck.getrole().getroleName());
-					Long roleid=usercheck.getrole().getroleId();
+					data.put("roleId", usercheck.getRole().getroleId());
+					data.put("roleName", usercheck.getRole().getroleName());
+					Long roleid=usercheck.getRole().getroleId();
 					//data.put("blockedPages", objectMapper.writeValueAsString(getBlockedPageList(usercheck.getrole().getroleId())));
 						
 					ObjectMapper mapper = new ObjectMapper();
-					ArrayNode array = mapper.valueToTree(getBlockedPageList(usercheck.getrole().getroleId()));
+					ArrayNode array = mapper.valueToTree(getBlockedPageList(usercheck.getRole().getroleId()));
 					data.putArray("blockedPages").addAll(array);
 
 					// Setting data on json object
@@ -153,7 +153,7 @@ public class LoginController {
 				department = login_service.getDepartment(departId);
 
 			if (department != null)
-				user.setdepartment(department);
+				user.setDepartment(department);
 			else
 				responseflag = 1;
 
@@ -162,7 +162,7 @@ public class LoginController {
 			if (roleId != null)
 				role = login_service.getRole(roleId);
 			if (role != null)
-				user.setrole(role);
+				user.setRole(role);
 
 			String dob = requestdata.get("dob").asText();
 			String joindate = requestdata.get("joiningDate").asText();
@@ -352,6 +352,7 @@ public class LoginController {
 			node.set("data", dataNode);
 
 		} catch (Exception e) {
+			System.out.println("Exception " + e);
 			node.put("status", "failure");
 			node.set("data", dataNode);
 		}
@@ -442,14 +443,14 @@ public class LoginController {
 					department = login_service.getDepartment(departId);
 
 				if (department != null)
-					user.setdepartment(department);
+					user.setDepartment(department);
 				
 				Long roleId = requestdata.get("role").asLong();
 				RoleModel role = null;
 				if (roleId != null)
 					role = login_service.getRole(roleId);
 				if (role != null)
-					user.setrole(role);
+					user.setRole(role);
 
 				String dob = requestdata.get("dob").asText();
 				String joindate = requestdata.get("joiningDate").asText();
