@@ -63,6 +63,8 @@ public interface ProjectService {
 		//get client master details
 		List<ClientModel> getClientList();
 
+		List<String> getclientLocation();
+
 
 
 

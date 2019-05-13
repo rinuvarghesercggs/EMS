@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.EMS.service.NewHireService;
 import com.EMS.service.PulseReportService;
+import com.EMS.service.SummaryService;
 import com.EMS.service.TermService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,6 +39,10 @@ public class PulseReportController {
 
 	@Autowired
 	PulseReportService pulsereportservice;
+	
+	
+	@Autowired
+	SummaryService summaryservice;
 
 	private static String[] pReportHeading = { "Consultant", "Hire Date", "Emp. Type", "Client", "Project Name", "PM",
 			"Revenue/ Location", "CPP Level", "Start Date", "End Date", "Billing Type","Daily Bill Rate-INR","Loaded Daily Pay Rate-INR","Daily GM $","Daily GM %","Primary Skill Set","Hourly Bill Rate","Hourly Bill Rate in US$"};
@@ -65,16 +70,18 @@ public class PulseReportController {
 		Sheet term = userbook.createSheet("Term");
 		Sheet staff = userbook.createSheet("NonBillableAdminStaff");
 		Sheet newhire = userbook.createSheet("NewHire");
-
+		
+		
 		termservice.generateReport(userbook, termheading, term, startdate, enddate);
 		newHireservice.generatenewhireReport(userbook, newHireheading, newhire, startdate, enddate);
-		pulsereportservice.generateReport(userbook, pReportHeading, pulsedata,startdate, enddate);
+		int endrow=pulsereportservice.generateReport(userbook, pReportHeading, pulsedata,startdate, enddate);
+		summaryservice.generateReport(userbook,summaryHeading,summary,startdate,enddate,exchangeRateName,exchangeRate,endrow);
 
 		response.setContentType("application/vnd.ms-excel");
 		response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
 		response.setHeader("Content-Disposition", "filename=\"" + "PulseReport.xlsx" + "\"");
-//		userbook.write(output);
-		userbook.write(response.getOutputStream());
+		userbook.write(output);
+//		userbook.write(response.getOutputStream());
 		userbook.close();
 
 	}

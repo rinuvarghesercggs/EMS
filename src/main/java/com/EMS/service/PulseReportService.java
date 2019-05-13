@@ -1,5 +1,6 @@
 package com.EMS.service;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -35,14 +36,13 @@ public class PulseReportService {
 	@Autowired
 	ProjectService projectservice;
 
-	public void generateReport(Workbook userbook, String[] pReportHeading, Sheet pulsedata,String startdate,String enddate) {
+	public int generateReport(Workbook userbook, String[] pReportHeading, Sheet pulsedata,String startdate,String enddate) {
 
 		Sheet sheetstyle = setsheetStyle(pulsedata, pReportHeading);
 		Font normalFont = setnormalfont(userbook);
 		CellStyle normalstyle = setnormalstyle(userbook);
 		normalstyle.setFont(normalFont);
 
-		Font headerfont = setheaderfont(userbook);
 		CellStyle headerstyle = userbook.createCellStyle();
 
 		Font hFont = setdataheadfont(userbook);
@@ -59,6 +59,9 @@ public class PulseReportService {
 		pulsecell0.setCellValue("Ti Technology (India)-  Pulse as of "+startdate+" to "+enddate);
 		pulsecell0.setCellStyle(headerstyle);
 
+		LocalDate startDate=LocalDate.parse(startdate);
+		LocalDate endDate=LocalDate.parse(enddate);
+		
 		Row pulserow1 = pulsedata.createRow(3);
 		for (int i = 0; i < pReportHeading.length; i++) {
 			Cell pulseheadcell = createcell(pulserow1, i, headstyle);
@@ -78,7 +81,7 @@ public class PulseReportService {
 
 			System.out.println("project id :" + project.getProjectId() + "sDate :" + project.getStartDate() + " end :"
 					+ project.getEndDate());
-			List<AllocationModel> allocationlist = projectAllocationservice.getAllocationList(project.getProjectId());
+			List<AllocationModel> allocationlist = projectAllocationservice.getAllocationListonDate(project.getProjectId(),startDate,endDate);
 			System.out.println("alloc :" + allocationlist.size());
 
 			count = 0;
@@ -110,7 +113,7 @@ public class PulseReportService {
 					cell5.setCellValue(projectOwner.getFirstName() + " " + projectOwner.getLastName());
 
 					Cell cell6 = createcell(datarow, 6, normalstyle);
-					cell6.setCellValue(projectClient.getClientLocation());
+					cell6.setCellValue(projectClient.getClientCountry());
 
 					Cell cell7 = createcell(datarow, 7, normalstyle);
 					cell7.setCellValue(user.getCppLevel());
@@ -127,10 +130,10 @@ public class PulseReportService {
 					cell10.setCellValue(project.getisBillable());
 
 					Cell cell11 = createcell(datarow, 11, normalstyle);
-					cell11.setCellValue(0);
+					cell11.setCellValue(20);
 
 					Cell cell12 = createcell(datarow, 12, normalstyle);
-					cell12.setCellValue(0);
+					cell12.setCellValue(10);
 
 					Cell cell13 = createcell(datarow, 13, normalstyle);
 					String formula6="+L"+rownum+"-M"+rownum;
@@ -243,6 +246,8 @@ public class PulseReportService {
 		String formula12="SUM(B"+(rownum-3)+":B"+(rownum-1)+")";
 		cell5.setCellFormula(formula12);
 		pulsedata.addMergedRegion(new CellRangeAddress(rownum - 1, rownum, 1, 1));
+		
+		return rownum;
 	}
 
 	public Cell createcell(Row row, int index, CellStyle style) {
@@ -259,15 +264,6 @@ public class PulseReportService {
 		return normalFont;
 	}
 
-	public Font setheaderfont(Workbook userbook) {
-		Font headerFont = userbook.createFont();
-		headerFont.setBold(true);
-		headerFont.setFontHeightInPoints((short) 18);
-		headerFont.setColor(IndexedColors.BLACK.getIndex());
-
-		return headerFont;
-
-	}
 
 	public Font setdataheadfont(Workbook userbook) {
 		Font headerFont = userbook.createFont();
@@ -322,5 +318,7 @@ public class PulseReportService {
 		normalStyle.setDataFormat(createHelper.createDataFormat().getFormat("m/d/yy"));
 		return normalStyle;
 	}
+	
+	
 
 }
