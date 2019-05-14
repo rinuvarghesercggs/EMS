@@ -79,10 +79,8 @@ public class PulseReportService {
 			if (project.getprojectType() == 0)
 				projectClient = projectservice.getClientName(project.getClientName().getClientId());
 
-			System.out.println("project id :" + project.getProjectId() + "sDate :" + project.getStartDate() + " end :"
-					+ project.getEndDate());
 			List<AllocationModel> allocationlist = projectAllocationservice.getAllocationListonDate(project.getProjectId(),startDate,endDate);
-			System.out.println("alloc :" + allocationlist.size());
+			System.out.println("allocation list size :" + allocationlist.size());
 
 			count = 0;
 			if (!allocationlist.isEmpty()) {
@@ -130,10 +128,10 @@ public class PulseReportService {
 					cell10.setCellValue(project.getisBillable());
 
 					Cell cell11 = createcell(datarow, 11, normalstyle);
-					cell11.setCellValue(20);
+					cell11.setCellValue(200);
 
 					Cell cell12 = createcell(datarow, 12, normalstyle);
-					cell12.setCellValue(10);
+					cell12.setCellValue(125);
 
 					Cell cell13 = createcell(datarow, 13, normalstyle);
 					String formula6="+L"+rownum+"-M"+rownum;
@@ -161,10 +159,7 @@ public class PulseReportService {
 					cell16.setCellFormula(formula);
 
 					Cell cell17 = createcell(datarow, 17, normalstyle);
-//					String formula8="+Q"+rownum+"/$Summary.$M$3";
-//					cell17.setCellFormula("+Q" + (rownum - 1) + "/Summary!M3");
-//					cell17.setCellFormula(formula8);
-					cell17.setCellValue(0);
+					cell17.setCellFormula("+Q" + rownum + "/summary!M5");
 					count++;
 				}
 				int endRow=rownum;

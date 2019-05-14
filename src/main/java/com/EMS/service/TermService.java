@@ -115,22 +115,6 @@ public class TermService {
 		
 		try {
 			termlist=termRepository.getTerminationList(startdate,enddate);
-//			termlist.add(new TermModel(parsedate("31/01/2019"), "A", "FT", "T1", parsedate("13/08/2018"), "End of Assignment","LFEA"));
-//			termlist.add(new TermModel(parsedate("01/01/2019"), "Clores, Tristan Thor", "Term", "C3", parsedate("22/02/2016"), "End of Assignment","CFTE"));
-//			termlist.add(new TermModel(parsedate("03/01/2019"), "Miranda, April", "FT", "C3", parsedate("12/02/2018"), "Resignation","RRLO"));
-//			termlist.add(new TermModel(parsedate("04/01/2019"), "Cruz, Brian Kasey", "FT", "C3", parsedate("24/11/2014"), "Resignation","OTHR"));
-//			termlist.add(new TermModel(parsedate("04/01/2019"), "Torres, Mark Daniel", "SC", "C3", parsedate("02/01/2018"), "End of Assignment","OTHR"));
-//			termlist.add(new TermModel(parsedate("11/01/2019"), "Santos, Patrick Norman", "FT", "C2", parsedate("12/07/2017"), "Company Initiated Separation","CAUS"));
-//			termlist.add(new TermModel(parsedate("11/01/2019"), "Silverio, Wendell", "SC", "C2", parsedate("12/04/2018"), "End of Assignment","OTHR"));
-//			termlist.add(new TermModel(parsedate("12/01/2019"), "Carpio, Marygrace", "FT", "C2", parsedate("28/03/2016"), "Resignation","OTHR"));
-//			termlist.add(new TermModel(parsedate("12/01/2019"), "Sabio, Mary Lourdes", "FT", "C3", parsedate("23/07/2018"), "Resignation","OTHR"));
-//			termlist.add(new TermModel(parsedate("15/01/2019"), "Gallego, Jayson", "FT", "C3", parsedate("30/10/2017"), "Resignation","OTHR"));
-//			
-//			termlist.add(new TermModel(parsedate("23/01/2019"), "Barroga, John Paul", "FT", "C2", parsedate("16/04/2018"), "Company Initiated Separation","PERF"));
-//			termlist.add(new TermModel(parsedate("31/01/2019"), "Ahorro, Jorelle Aaron", "SC", "C2", parsedate("11/07/2016"), "Resignation","OTHR"));
-//			termlist.add(new TermModel(parsedate("31/01/2019"), "B", "SC", "C2", parsedate("17/04/2018"), "End of Assignment","OTHR"));
-//			termlist.add(new TermModel(parsedate("01/02/2019"), "C", "FT", "C3", parsedate("04/01/2016"), "Absorbed by client","Absorbed by client"));
-//			termlist.add(new TermModel(parsedate("02/02/2019"), "D", "FT", "C2", parsedate("26/02/2018"), "Resignation","OTHR"));
 			
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -198,7 +182,7 @@ public class TermService {
 			int termrownum=6;
 			
 			List<UserTermination> termlist=getTermlist(startDate,endDate);
-			System.out.println("terlist:"+termlist.size());
+			System.out.println("term list:"+termlist.size());
 			for(UserTermination termdata:termlist) {
 				
 				UserModel userdata=userservice.getUserdetailsbyId(termdata.getConsultant().getUserId());
@@ -242,9 +226,7 @@ public class TermService {
 			e.printStackTrace();
 		}
 		
-		
-		
-//		return term;
+
 	}
 
 	
