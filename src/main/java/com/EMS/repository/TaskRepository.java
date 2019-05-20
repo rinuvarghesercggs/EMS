@@ -40,7 +40,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
 	@Query(value = "SELECT EMS.user.first_name,EMS.user.last_name,EMS.tasktrack.hours,Date(EMS.tasktrack.date) FROM EMS.tasktrack JOIN EMS.user ON EMS.user.user_id = EMS.tasktrack.user_user_id where (EMS.tasktrack.date <=?3 and EMS.tasktrack.date >= ?2) and (EMS.tasktrack.user_user_id =?1) and (EMS.tasktrack.project_project_id = ?4)",nativeQuery = true)
 	List<Object[]> getUserListByProject(Long id, Date startDate, Date endDate, Long projectId);
-
 	
+
 }
 

@@ -7,7 +7,10 @@ import org.json.simple.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.EMS.model.AllocationModel;
+import com.EMS.model.ProjectModel;
 import com.EMS.model.Task;
+import com.EMS.model.TaskTrackApproval;
 import com.EMS.model.Tasktrack;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
@@ -43,6 +46,6 @@ public interface TasktrackService {
 			List<JSONObject> jsonArray, List<JSONObject> jsonDataRes1, Boolean isExist,Long projectId);
 
 	List<Object[]> getUserTaskList(Long id, Date startDate, Date endDate, Long projectId);
-
+		
 }
 

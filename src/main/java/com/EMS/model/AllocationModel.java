@@ -35,6 +35,7 @@ public class AllocationModel {
 	
 	
 	
+	
 	public long getAllocId() {
 		return allocId;
 	}
@@ -90,6 +91,7 @@ public class AllocationModel {
 	public void setIsBillable(Boolean isBillable) {
 		this.isBillable = isBillable;
 	}
+
 	
 	
 	

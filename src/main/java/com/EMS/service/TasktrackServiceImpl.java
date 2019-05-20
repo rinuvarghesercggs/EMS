@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.json.simple.JSONObject;
@@ -17,10 +18,12 @@ import org.springframework.stereotype.Service;
 import com.EMS.model.AllocationModel;
 import com.EMS.model.ProjectModel;
 import com.EMS.model.Task;
+import com.EMS.model.TaskTrackApproval;
 import com.EMS.model.Tasktrack;
 import com.EMS.repository.ProjectReportsRepository;
 import com.EMS.repository.TaskRepository;
 import com.EMS.repository.TasktrackRepository;
+import com.EMS.repository.TimeTrackApprovalRepository;
 import com.EMS.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -47,6 +50,8 @@ public class TasktrackServiceImpl implements TasktrackService {
 	@Autowired
 	ProjectReportsRepository projectReportsRepository;
 
+	@Autowired
+	TimeTrackApprovalRepository timeTrackApprovalRepository;
 //	For Task track Model
 
 	@Override
@@ -304,8 +309,4 @@ public class TasktrackServiceImpl implements TasktrackService {
 		List<Object[]> userTaskList = taskRepository.getUserTaskList(id,startDate,endDate,projectId);
 		return userTaskList;
 	}
-
-	
-
-	
 }
