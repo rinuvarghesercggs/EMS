@@ -237,6 +237,7 @@ public class TasktrackApprovalServiceImpl implements TasktrackApprovalService {
 
 		} else {
 			loggedJsonArray = new ArrayList<>();
+			billableJsonArray = new ArrayList<>();
 			JSONObject userListObject = new JSONObject();
 
 			String uName = userService.getUserName(id);
