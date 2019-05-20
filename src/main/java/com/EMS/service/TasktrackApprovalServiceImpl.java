@@ -257,6 +257,7 @@ public class TasktrackApprovalServiceImpl implements TasktrackApprovalService {
 				jsonObject.put(vl, 0);
 				cal.add(Calendar.DATE, 1);
 				loggedJsonArray.add(jsonObject);
+				billableJsonArray.add(jsonObject);
 			}
 			userListObject.put("userName", name);
 			userListObject.put("userId", id);
