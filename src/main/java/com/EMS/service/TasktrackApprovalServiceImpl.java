@@ -280,6 +280,11 @@ public class TasktrackApprovalServiceImpl implements TasktrackApprovalService {
 	public JSONObject getApprovedUserTaskDetails(Long id, Date startDate, Date endDate, List<TaskTrackApproval> userList,
 			List<JSONObject> jsonArray, List<JSONObject> jsonDataRes1, Boolean isExist,Long projectId) {
 		JSONObject userListObject = new JSONObject();
+		
+		List<JSONObject> billableArray = new ArrayList<>();
+		List<JSONObject> nonbillableArray = new ArrayList<>();
+		List<JSONObject> beachArray = new ArrayList<>();
+		
 		if (isExist) {
 			
 			Calendar cal = Calendar.getInstance();
@@ -294,9 +299,7 @@ public class TasktrackApprovalServiceImpl implements TasktrackApprovalService {
 			cal.setTime(startDate);
 			int diffInDays = (int) ((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
 			int intMonth = 0,intday = 0;
-			List<JSONObject> billableArray = new ArrayList<>();
-			List<JSONObject> nonbillableArray = new ArrayList<>();
-			List<JSONObject> beachArray = new ArrayList<>();
+
 			Double hours = 0.0;
 				if (userList != null && userList.size() > 0) {
 					JSONObject jsonObject = new JSONObject();
@@ -432,6 +435,41 @@ public class TasktrackApprovalServiceImpl implements TasktrackApprovalService {
 			userListObject.put("updatedBy", updatedBy);
 			jsonDataRes1.add(userListObject);
 
+		}
+		else {
+			
+			String uName = userService.getUserName(id);
+			String name = String.valueOf(uName).replace(",", " ");
+
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(startDate);
+			int diffInDays = (int) ((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+			int intMonth = 0,intday = 0;
+			for (int i = 0; i < diffInDays; i++) {
+				JSONObject jsonObject = new JSONObject();
+
+				intMonth = (cal.get(Calendar.MONTH) + 1);
+				intday = cal.get(Calendar.DAY_OF_MONTH);
+				String vl = cal.get(Calendar.YEAR) + "-" + ((intMonth < 10) ? "0" + intMonth : "" + intMonth) + "-"
+						+ ((intday < 10) ? "0" + intday : "" + intday);
+
+				jsonObject.put(vl, 0);
+				cal.add(Calendar.DATE, 1);
+				billableArray.add(jsonObject);
+				nonbillableArray.add(jsonObject);
+				beachArray.add(jsonObject);
+			}
+			userListObject.put("userName", name);
+			userListObject.put("userId", id);
+			userListObject.put("month", intMonth);
+			userListObject.put("billable", billableArray);;
+			userListObject.put("nonBillable", nonbillableArray);
+			userListObject.put("beach", beachArray);
+			userListObject.put("billableId", null);
+			userListObject.put("nonBillableId", null);
+			userListObject.put("beachId", null);
+			userListObject.put("updatedBy", null);
+			
 		}
 		return userListObject;
 	}
