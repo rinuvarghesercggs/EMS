@@ -1,5 +1,6 @@
 package com.EMS.service;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import javax.transaction.Transactional;
@@ -144,5 +145,11 @@ public class ProjectAllocationServiceImpl implements ProjectAllocationService{
 	public AllocationModel findById(Long id) {
 		AllocationModel model = projectAllocationRepository.getOne(id);
 		return model;
+	}
+
+	@Override
+	public List<AllocationModel> getAllocationListonDate(long projectId, LocalDate startDate, LocalDate endDate) {
+		List<AllocationModel> projList = projectAllocationRepository.getProjectDatewiseLists(projectId,startDate,endDate);
+		return projList;
 	}
 }

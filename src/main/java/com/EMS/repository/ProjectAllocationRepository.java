@@ -1,5 +1,6 @@
 package com.EMS.repository;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -51,6 +52,9 @@ public interface ProjectAllocationRepository extends JpaRepository<AllocationMod
 	
 	@Query("SELECT a.isBillable FROM AllocationModel a where a.user.userId = ?1 and a.project.projectId = ?2")
 	Boolean getIsBillable(Long id, Long projectId);
+
+	@Query(value="SELECT * FROM EMS.allocation where project_project_id=:projectId AND date(start_date)>=:startDate AND date(end_date)<=:endDate",nativeQuery=true)
+	List<AllocationModel> getProjectDatewiseLists(long projectId, LocalDate startDate, LocalDate endDate);
 	
 
 	

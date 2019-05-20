@@ -175,6 +175,13 @@ public class ProjectServiceImpl implements ProjectService {
 		return list;
 	}
 
+	@Override
+	public List<String> getclientLocation() {
+		List<String> location=client_repository.getLocation();
+		System.out.println("loca :"+location.size());
+		return location;
+	}
+
 
 
 

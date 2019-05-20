@@ -190,7 +190,7 @@ public class NewHireService {
 		Cell footcell1=createcell(footrow, 1, headstyle);
 		footcell1.setCellFormula("COUNTA(B6:B"+(rownum-1)+")");
 		
-//		return newhire;
+
 	}
 
 	

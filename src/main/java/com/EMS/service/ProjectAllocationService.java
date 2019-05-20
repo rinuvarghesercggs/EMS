@@ -1,5 +1,6 @@
 package com.EMS.service;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import com.EMS.model.AllocationModel;
@@ -30,6 +31,7 @@ public interface ProjectAllocationService {
 	public Boolean getIsBillable(Long id, Long projectId);	
 	
 	AllocationModel findById(Long id);
+	public List<AllocationModel> getAllocationListonDate(long projectId, LocalDate startDate, LocalDate endDate);
 	
 }
 
