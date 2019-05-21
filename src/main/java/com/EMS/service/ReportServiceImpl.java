@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.EMS.model.ApprovalTimeTrackReportModel;
 import com.EMS.repository.ProjectReportsRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -58,5 +60,14 @@ public class ReportServiceImpl implements ReportService {
 			exc.printStackTrace();
 		}
 		return list;
+	}
+	public List<ApprovalTimeTrackReportModel> getApprovalStatusReport(Date startDate,Date endDate,int monthIndex,int yearIndex) {
+		List<ApprovalTimeTrackReportModel> array = null;
+		try {
+			array = projectReportsRepository.getApprovalStatusReportDetails(startDate,endDate,monthIndex,yearIndex);
+		} catch (Exception exc) {
+			exc.printStackTrace();
+		}
+		return array;
 	}
 }

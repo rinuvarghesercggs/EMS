@@ -3,6 +3,7 @@ package com.EMS.controller;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.EMS.dto.Taskdetails;
+import com.EMS.model.ApprovalTimeTrackReportModel;
 import com.EMS.model.ExportProjectTaskReportModel;
 
 import com.EMS.service.ProjectAllocationService;
@@ -339,4 +341,87 @@ public class ReportController {
 		return new ResponseEntity( HttpStatus.OK);
 	}
 	
+	@PostMapping("/getApprovalTimeLogReport")
+	public JsonNode getApprovalTimeLogReport(@RequestBody JsonNode requestData) {
+		ArrayNode approvalReport = objectMapper.createArrayNode();
+		try {
+			String date1 = requestData.get("startDate").asText();
+			String date2 = requestData.get("endDate").asText();
+
+			SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
+			Date startDate = null, endDate = null;
+			if (!date1.isEmpty()) {
+				startDate = outputFormat.parse(date1);
+			}
+			if (!date2.isEmpty()) {
+				endDate = outputFormat.parse(date2);
+			}
+			Calendar cal = Calendar.getInstance();
+		
+			cal.setTime(startDate);
+			int monthIndex = (cal.get(Calendar.MONTH) + 1);
+			int yearIndex = cal.get(Calendar.YEAR);
+			List<ApprovalTimeTrackReportModel> data = reportServiceImpl.getApprovalStatusReport(startDate,endDate,monthIndex,yearIndex);
+					
+			ObjectNode jsonData = objectMapper.createObjectNode();
+			String prevname="";
+			for(ApprovalTimeTrackReportModel obj : data) {
+	
+			if(!prevname.equals(obj.getProjectName
+					())) {
+				if(jsonData.size()>0) {
+					if(jsonData.get("LoggedHours")==null) {
+						jsonData.put("LoggedHours", 0);
+					}
+					if(jsonData.get("BillableHours")==null) {
+						jsonData.put("BillableHours", 0);
+					}
+					approvalReport.add(jsonData);
+				}
+				jsonData = objectMapper.createObjectNode();
+				jsonData.put("projectName", obj.getProjectName());
+				if(obj.getLabel().equalsIgnoreCase("approved")) {
+					jsonData.put("BillableHours", obj.getBillableHours()!=null ? obj.getBillableHours() : 0);
+				}
+				if(obj.getLabel().equalsIgnoreCase("logged")) {
+					jsonData.put("LoggedHours", obj.getLoggedHours()!=null ? obj.getLoggedHours() : 0 );
+				}
+			}
+			else {
+				if(obj.getLabel().equalsIgnoreCase("approved")) {
+					jsonData.put("BillableHours", obj.getBillableHours()!=null ? obj.getBillableHours() : 0);
+				}
+				if(obj.getLabel().equalsIgnoreCase("logged")) {
+					jsonData.put("LoggedHours", obj.getLoggedHours()!=null ? obj.getLoggedHours() : 0 );
+				}
+				if(jsonData.get("LoggedHours")==null) {
+					jsonData.put("LoggedHours", 0);
+				}
+				if(jsonData.get("BillableHours")==null) {
+					jsonData.put("BillableHours", 0);
+				}
+				approvalReport.add(jsonData);
+				jsonData = objectMapper.createObjectNode();
+			}
+			prevname = obj.getProjectName();
+			}
+			
+			
+			ObjectNode dataNode = objectMapper.createObjectNode();
+			dataNode.set("approvalReport", approvalReport);
+
+			ObjectNode node = objectMapper.createObjectNode();
+			node.put("status", "success");
+			node.set("data", dataNode);
+			return node;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			ObjectNode node = objectMapper.createObjectNode();
+			node.put("status", "failure");
+			node.put("message",  "failed. " + e);
+			return node;
+		}
+		
+	}
 }

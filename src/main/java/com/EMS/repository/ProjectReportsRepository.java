@@ -6,9 +6,11 @@ import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.EMS.model.ApprovalTimeTrackReportModel;
 import com.EMS.model.BenchProjectReportModel;
 import com.EMS.model.ExportProjectTaskReportModel;
 import com.EMS.model.ProjectReportModel;
+import com.EMS.utility.ApprovalTimeTrackReportRowMapper;
 import com.EMS.utility.BenchReportRowMapper;
 import com.EMS.utility.DbConnectionUtility;
 import com.EMS.utility.ExportProjectTaskReportRowMapper;
@@ -67,6 +69,15 @@ public class ProjectReportsRepository extends DbConnectionUtility {
 		//sql = " SELECT id,CAST(`date`  AS DATE) AS taskDate,CONCAT(u.first_name,' ',u.last_name) AS resourceName,  `description` as taskDescription,hours , p.project_name as projectName,p.project_id as projectId,  (CASE 	WHEN a.is_billable IS NULL THEN '-' 	WHEN a.is_billable = '1' THEN 'Yes' 	ELSE 'No' END) AS billable  from tasktrack t  LEFT JOIN `user` u ON  u.user_id = t. user_user_id  LEFT JOIN allocation a ON a.project_project_id = t.project_project_id and a.user_user_id = t.user_user_id  LEFT JOIN project p on p.project_id = t.project_project_id  where CAST(`date`  AS DATE) BETWEEN ? AND ?  and t.project_project_id = ? order by TaskDate,ResourceName,hours";
 		sql = "SELECT CAST(`date`  AS DATE) AS taskDate,CONCAT(u.first_name,' ',u.last_name) AS resourceName,tm.task_name as taskCategory,  `description` as taskDescription,hours , p.project_name as projectName,  (CASE 	WHEN a.is_billable IS NULL THEN '-' 	WHEN a.is_billable = '1' THEN 'Yes' 	ELSE 'No' END) AS billable  from tasktrack t  LEFT JOIN `user` u ON  u.user_id = t. user_user_id  LEFT JOIN allocation a ON a.project_project_id = t.project_project_id and a.user_user_id = t.user_user_id  LEFT JOIN project p on p.project_id = t.project_project_id  LEFT JOIN task_master tm on tm.id = t.task_id  where CAST(`date`  AS DATE) BETWEEN ? AND ?  and t.project_project_id = ? order by TaskDate,ResourceName,hours";
 		list = jdbcTemplate.query(sql, new ExportProjectTaskReportRowMapper(), new Object[] {fromDate,toDate,projectId});	
+
+		return list;
+	}
+	public List<ApprovalTimeTrackReportModel> getApprovalStatusReportDetails (Date startDate,Date endDate,int monthIndex,int yearIndex){
+		String sql ="";
+		List<ApprovalTimeTrackReportModel> list = null;
+
+		sql = "SELECT projectName,hours,label FROM (SELECT p.project_name AS projectName, SUM((COALESCE(day1,0)+COALESCE(day2,0)+COALESCE(day3,0)+COALESCE(day4,0)+COALESCE(day5,0)+COALESCE(day6,0)+COALESCE(day7,0)+COALESCE(day8,0)+COALESCE(day9,0)+COALESCE(day10,0) +COALESCE(day11,0)+COALESCE(day12,0)+COALESCE(day13,0)+COALESCE(day14,0)+COALESCE(day15,0)+COALESCE(day16,0)+COALESCE(day17,0)+COALESCE(day18,0)+COALESCE(day19,0)+COALESCE(day20,0) +COALESCE(day21,0)+COALESCE(day22,0)+COALESCE(day23,0)+COALESCE(day24,0)+COALESCE(day25,0)+COALESCE(day26,0)+COALESCE(day27,0)+COALESCE(day28,0)+COALESCE(day29,0)+COALESCE(day30,0) +COALESCE(day31,0))) AS hours, 'approved' AS label FROM tasktrack_approval ta LEFT JOIN `user` u ON u.user_id = ta.user_user_id LEFT JOIN project p ON p.project_id = ta.project_project_id WHERE ta.month=? AND ta.year=? AND ta.project_type ='Billable' GROUP BY 1,3 UNION SELECT p.project_name AS projectName,SUM(tt.hours) AS hours,'logged' AS label FROM tasktrack tt LEFT JOIN `user` u ON u.user_id = tt.user_user_id LEFT JOIN project p ON p.project_id = tt.project_project_id WHERE CAST(tt.`date`  AS DATE) BETWEEN ? AND ? GROUP BY 1,3 ) t ORDER BY 1,2,3";
+		list = jdbcTemplate.query(sql, new ApprovalTimeTrackReportRowMapper(), new Object[] {monthIndex,yearIndex,startDate,endDate});	
 
 		return list;
 	}
