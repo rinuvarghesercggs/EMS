@@ -62,7 +62,7 @@ public class TasktrackApprovalServiceImpl implements TasktrackApprovalService {
 			List<JSONObject> loggedJsonArray,List<JSONObject> billableJsonArray,List<JSONObject> timeTrackJSONData, Boolean isExist,Long projectId) {
 		if (isExist) {
 			JSONObject userListObject = new JSONObject();
-            
+            System.out.println("loggedJsonArray parameters id="+id+"  startDate="+startDate+"  endDate=="+endDate+"  projectId=="+projectId);
     		userList =getUserListByProject(id, startDate, endDate,projectId);
 
     		loggedJsonArray = new ArrayList<>();
@@ -112,14 +112,15 @@ public class TasktrackApprovalServiceImpl implements TasktrackApprovalService {
 			userListObject.put("month", intMonth);
 			userListObject.put("logged", loggedJsonArray);
 			
-							
+				name = null;
+				cal.setTime(startDate);		
 				int monthIndex = (cal.get(Calendar.MONTH) + 1);
 				int yearIndex = cal.get(Calendar.YEAR);
+				System.out.println("billableJsonArray parameters id="+id+"  monthIndex="+monthIndex+"  monthIndex=="+monthIndex+"  projectId=="+projectId);
 				List<TaskTrackApproval> approvalUserList =getUserListForApproval(id,projectId,monthIndex,yearIndex);
 				billableJsonArray = new ArrayList<>();
 
-				name = null;
-				cal.setTime(startDate);
+				
 				diffInDays = (int) ((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
 				intMonth = 0;
 				intday = 0;
@@ -288,6 +289,7 @@ public class TasktrackApprovalServiceImpl implements TasktrackApprovalService {
 		if (isExist) {
 			
 			Calendar cal = Calendar.getInstance();
+			cal.setTime(startDate);
 			int monthIndex = (cal.get(Calendar.MONTH) + 1);
 			int yearIndex = cal.get(Calendar.YEAR);
 			userList =getUserListForApproval(id,projectId,monthIndex,yearIndex);
@@ -296,7 +298,7 @@ public class TasktrackApprovalServiceImpl implements TasktrackApprovalService {
 
 			String name = null;
 			Long billableId = null,nonBillableId=null,beachId=null,updatedBy=null;
-			cal.setTime(startDate);
+			
 			int diffInDays = (int) ((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
 			int intMonth = 0,intday = 0;
 
