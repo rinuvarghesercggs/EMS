@@ -70,4 +70,13 @@ public class ReportServiceImpl implements ReportService {
 		}
 		return array;
 	}
+	public List getProjectHourReportDetails(Date fromDate,Date toDate,int monthIndex,int yearIndex) {
+		List list = new ArrayList();
+		try {
+			list = projectReportsRepository.GenerateProjectHourReportForExporting(fromDate,toDate,monthIndex,yearIndex);
+		} catch (Exception exc) {
+			exc.printStackTrace();
+		}
+		return list;
+	}
 }

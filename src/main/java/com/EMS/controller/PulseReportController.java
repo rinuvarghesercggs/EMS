@@ -3,30 +3,29 @@ package com.EMS.controller;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.EMS.model.ExportProjectHourReportModel;
 import com.EMS.service.NewHireService;
+import com.EMS.service.ProjectExportService;
 import com.EMS.service.PulseReportService;
+import com.EMS.service.ReportService;
 import com.EMS.service.SummaryService;
 import com.EMS.service.TermService;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @RestController
 public class PulseReportController {
@@ -44,6 +43,12 @@ public class PulseReportController {
 	@Autowired
 	SummaryService summaryservice;
 
+	@Autowired
+	ProjectExportService projectExportService;
+	
+	@Autowired
+	ReportService reportService;
+	
 	private static String[] pReportHeading = { "Consultant", "Hire Date", "Emp. Type", "Client", "Project Name", "PM",
 			"Revenue/ Location", "CPP Level", "Start Date", "End Date", "Billing Type","Daily Bill Rate-INR","Loaded Daily Pay Rate-INR","Daily GM $","Daily GM %","Primary Skill Set","Hourly Bill Rate","Hourly Bill Rate in US$"};
 
@@ -62,8 +67,10 @@ public class PulseReportController {
 	public void pulseReport(@RequestBody JsonNode requestData, HttpServletResponse response) throws Exception {
 		String startdate = requestData.get("startDate").asText();
 		String enddate = requestData.get("endDate").asText();
+		String reportName = requestData.get("reportName").asText();
 
-		Workbook userbook = new HSSFWorkbook();
+		if(reportName.equalsIgnoreCase("pulseReport")) {//Added By Jinu On 22/05/19 for adding new reports under Other Reports.
+		Workbook userbook = new XSSFWorkbook();
 		OutputStream output = new FileOutputStream("PulseReport.xls");
 		Sheet summary = userbook.createSheet("Summary");
 		Sheet pulsedata = userbook.createSheet("PulseReport");
@@ -80,9 +87,42 @@ public class PulseReportController {
 		response.setContentType("application/vnd.ms-excel");
 		response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
 		response.setHeader("Content-Disposition", "filename=\"" + "PulseReport.xlsx" + "\"");
-		userbook.write(output);
-//		userbook.write(response.getOutputStream());
+		//userbook.write(output);
+		userbook.write(response.getOutputStream());
 		userbook.close();
-
+		}
+		else if(reportName.equalsIgnoreCase("hourReport")) {
+			
+			Date startDate = null, endDate = null;
+			SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
+			if (!startdate.isEmpty()) {
+				startDate = outputFormat.parse(startdate);
+			}
+			if (!enddate.isEmpty()) {
+				endDate = outputFormat.parse(enddate);
+			}
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(startDate);
+			
+			String[] monthName = {"January", "February","March", "April", "May", "June",
+					"July","August", "September", "October", "November", "December"};
+			String month = monthName[cal.get(Calendar.MONTH)];
+			
+			int monthIndex = (cal.get(Calendar.MONTH) + 1);
+			int yearIndex = cal.get(Calendar.YEAR);
+			String sheetName = month+" "+yearIndex;
+			
+			Workbook workrbook = new XSSFWorkbook();
+			Sheet sheet = workrbook.createSheet(sheetName);
+			
+			List <ExportProjectHourReportModel>exportData = reportService.getProjectHourReportDetails(startDate,endDate,monthIndex,yearIndex);
+			projectExportService.exportProjectHourReport(exportData,workrbook,sheet);
+			
+			response.setContentType("application/vnd.ms-excel");
+			response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
+			response.setHeader("Content-Disposition", "filename=\"" + "HourReport.xlsx" + "\"");
+			workrbook.write(response.getOutputStream());
+			workrbook.close();
+		}
 	}
 }

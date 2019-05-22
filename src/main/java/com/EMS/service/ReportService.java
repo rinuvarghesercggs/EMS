@@ -14,5 +14,6 @@ public interface ReportService {
 	public ArrayNode getBenchProjectReportDetails(Date fromDate, Date toDate);
 		
 	public List getProjectTaskReportDetails(Date fromDate,Date toDate,Long projectId);
+	public List getProjectHourReportDetails(Date fromDate,Date toDate,int monthIndex,int yearIndex);
 }
 
