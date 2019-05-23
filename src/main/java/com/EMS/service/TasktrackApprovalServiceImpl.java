@@ -62,7 +62,7 @@ public class TasktrackApprovalServiceImpl implements TasktrackApprovalService {
 			List<JSONObject> loggedJsonArray,List<JSONObject> billableJsonArray,List<JSONObject> timeTrackJSONData, Boolean isExist,Long projectId) {
 		if (isExist) {
 			JSONObject userListObject = new JSONObject();
-            System.out.println("loggedJsonArray parameters id="+id+"  startDate="+startDate+"  endDate=="+endDate+"  projectId=="+projectId);
+            
     		userList =getUserListByProject(id, startDate, endDate,projectId);
 
     		loggedJsonArray = new ArrayList<>();
@@ -116,7 +116,7 @@ public class TasktrackApprovalServiceImpl implements TasktrackApprovalService {
 				cal.setTime(startDate);		
 				int monthIndex = (cal.get(Calendar.MONTH) + 1);
 				int yearIndex = cal.get(Calendar.YEAR);
-				System.out.println("billableJsonArray parameters id="+id+"  monthIndex="+monthIndex+"  monthIndex=="+monthIndex+"  projectId=="+projectId);
+				
 				List<TaskTrackApproval> approvalUserList =getUserListForApproval(id,projectId,monthIndex,yearIndex);
 				billableJsonArray = new ArrayList<>();
 
@@ -283,6 +283,7 @@ public class TasktrackApprovalServiceImpl implements TasktrackApprovalService {
 		JSONObject userListObject = new JSONObject();
 		
 		List<JSONObject> billableArray = new ArrayList<>();
+		List<JSONObject> overTimeArray = new ArrayList<>();
 		List<JSONObject> nonbillableArray = new ArrayList<>();
 		List<JSONObject> beachArray = new ArrayList<>();
 		
@@ -297,7 +298,7 @@ public class TasktrackApprovalServiceImpl implements TasktrackApprovalService {
 			jsonArray = new ArrayList<>();
 
 			String name = null;
-			Long billableId = null,nonBillableId=null,beachId=null,updatedBy=null;
+			Long billableId = null,nonBillableId=null,beachId=null,overtimeId=null,updatedBy=null;
 			
 			int diffInDays = (int) ((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
 			int intMonth = 0,intday = 0;
@@ -400,6 +401,12 @@ public class TasktrackApprovalServiceImpl implements TasktrackApprovalService {
 							beachArray.add(jsonObject);
 							beachId = item.getId();
 						}
+						else if(item.getProjectType().equals("Overtime")) {
+							jsonObject = new JSONObject();
+							jsonObject.put(vl, hours);
+							overTimeArray.add(jsonObject);
+							overtimeId = item.getId();
+						}
 						cal.add(Calendar.DATE, 1);
 						
 						}
@@ -419,6 +426,7 @@ public class TasktrackApprovalServiceImpl implements TasktrackApprovalService {
 						billableArray.add(jsonObject);
 						nonbillableArray.add(jsonObject);
 						beachArray.add(jsonObject);
+						overTimeArray.add(jsonObject);
 						
 					cal.add(Calendar.DATE, 1);
 					
@@ -431,9 +439,11 @@ public class TasktrackApprovalServiceImpl implements TasktrackApprovalService {
 			userListObject.put("billable", billableArray);;
 			userListObject.put("nonBillable", nonbillableArray);
 			userListObject.put("beach", beachArray);
+			userListObject.put("overtime", overTimeArray);
 			userListObject.put("billableId", billableId);
 			userListObject.put("nonBillableId", nonBillableId);
 			userListObject.put("beachId", beachId);
+			userListObject.put("overtimeId", overtimeId);
 			userListObject.put("updatedBy", updatedBy);
 			jsonDataRes1.add(userListObject);
 
@@ -460,6 +470,7 @@ public class TasktrackApprovalServiceImpl implements TasktrackApprovalService {
 				billableArray.add(jsonObject);
 				nonbillableArray.add(jsonObject);
 				beachArray.add(jsonObject);
+				overTimeArray.add(jsonObject);
 			}
 			userListObject.put("userName", name);
 			userListObject.put("userId", id);
@@ -467,9 +478,11 @@ public class TasktrackApprovalServiceImpl implements TasktrackApprovalService {
 			userListObject.put("billable", billableArray);;
 			userListObject.put("nonBillable", nonbillableArray);
 			userListObject.put("beach", beachArray);
+			userListObject.put("overtime", overTimeArray);
 			userListObject.put("billableId", null);
 			userListObject.put("nonBillableId", null);
 			userListObject.put("beachId", null);
+			userListObject.put("overtimeId", null);
 			userListObject.put("updatedBy", null);
 			
 		}
