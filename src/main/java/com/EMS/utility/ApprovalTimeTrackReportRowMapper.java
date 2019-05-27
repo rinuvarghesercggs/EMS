@@ -16,13 +16,9 @@ public class ApprovalTimeTrackReportRowMapper implements RowMapper<ApprovalTimeT
 
 		ApprovalTimeTrackReportModel rpt = new ApprovalTimeTrackReportModel();
 		rpt.setProjectName(rs.getString("projectName"));
-		if(rs.getString("label").equalsIgnoreCase("approved")) {
-			rpt.setBillableHours(rs.getString("hours")!=null ? Double.parseDouble(rs.getString("hours")) : 0);
-		}
-		else if (rs.getString("label").equalsIgnoreCase("logged")) {
-			rpt.setLoggedHours(rs.getString("hours")!=null ? Double.parseDouble(rs.getString("hours")) : 0);
-		}
-		rpt.setLabel(rs.getString("label"));
+		rpt.setBillableHours(rs.getString("approved")!=null ? Double.parseDouble(rs.getString("approved")) : 0);
+		rpt.setLoggedHours(rs.getString("logged")!=null ? Double.parseDouble(rs.getString("logged")) : 0);
+		
 		return rpt;
 	}
 	

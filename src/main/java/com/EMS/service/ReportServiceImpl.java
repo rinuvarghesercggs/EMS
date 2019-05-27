@@ -61,10 +61,10 @@ public class ReportServiceImpl implements ReportService {
 		}
 		return list;
 	}
-	public List<ApprovalTimeTrackReportModel> getApprovalStatusReport(Date startDate,Date endDate,int monthIndex,int yearIndex) {
+	public List<ApprovalTimeTrackReportModel> getApprovalStatusReport(Date startDate,Date endDate,int startDateOfMonth,int endDateOfMonth,int month,int year) {
 		List<ApprovalTimeTrackReportModel> array = null;
 		try {
-			array = projectReportsRepository.getApprovalStatusReportDetails(startDate,endDate,monthIndex,yearIndex);
+			array = projectReportsRepository.getApprovalStatusReportDetails(startDate,endDate,startDateOfMonth,endDateOfMonth,month,year);
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}

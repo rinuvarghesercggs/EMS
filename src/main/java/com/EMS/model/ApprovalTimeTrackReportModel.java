@@ -6,7 +6,6 @@ public class ApprovalTimeTrackReportModel {
 	private String projectName ;
 	private Double billableHours;
 	private Double loggedHours;
-	private String label;
 
 	public String getProjectName() {
 		return projectName;
@@ -25,12 +24,6 @@ public class ApprovalTimeTrackReportModel {
 	}
 	public void setLoggedHours(Double loggedHours) {
 		this.loggedHours = loggedHours;
-	}
-	public String getLabel() {
-		return label;
-	}
-	public void setLabel(String label) {
-		this.label = label;
 	}
 	
 	

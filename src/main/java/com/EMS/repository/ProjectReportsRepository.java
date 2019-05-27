@@ -74,12 +74,87 @@ public class ProjectReportsRepository extends DbConnectionUtility {
 
 		return list;
 	}
-	public List<ApprovalTimeTrackReportModel> getApprovalStatusReportDetails (Date startDate,Date endDate,int monthIndex,int yearIndex){
+	public List<ApprovalTimeTrackReportModel> getApprovalStatusReportDetails (Date startDate,Date endDate,
+			int startdateIndex,int enddateIndex,int month,int year){
 		String sql ="";
 		List<ApprovalTimeTrackReportModel> list = null;
+		System.out.println("startdateIndex=="+startdateIndex+"  enddateIndex=="+enddateIndex+"  month=="+month+"  year=="+year);
+		StringBuffer buffer = new StringBuffer();
+		
+		buffer.append("SELECT ems1.projectName,COALESCE(SUM(ems1.approved),0) AS 'approved', SUM(ems1.logged) AS 'logged' FROM ( SELECT ems.projectName,CASE WHEN ems.label = 'approved' THEN hours END AS 'approved', CASE WHEN ems.label = 'logged' THEN hours END AS 'logged' FROM ( SELECT p.project_name AS projectName,SUM(");
+		
+		if(startdateIndex==1 && enddateIndex>=1) 
+			buffer.append("COALESCE(day1,0)+");
+		if(startdateIndex<=2 && enddateIndex>=2) 
+			buffer.append("COALESCE(day2,0)+");
+		if(startdateIndex<=3 && enddateIndex>=3) 
+			buffer.append("COALESCE(day3,0)+");	
+		if(startdateIndex<=4 && enddateIndex>=4) 
+			buffer.append("COALESCE(day4,0)+");	
+		if(startdateIndex<=5 && enddateIndex>=5) 
+			buffer.append("COALESCE(day5,0)+");	
+		if(startdateIndex<=6 && enddateIndex>=6) 
+			buffer.append("COALESCE(day6,0)+");
+		if(startdateIndex<=7 && enddateIndex>=7) 
+			buffer.append("COALESCE(day7,0)+");
+		if(startdateIndex<=8 && enddateIndex>=8) 
+			buffer.append("COALESCE(day8,0)+");
+		if(startdateIndex<=9 && enddateIndex>=9) 
+			buffer.append("COALESCE(day9,0)+");
+		if(startdateIndex<=10 && enddateIndex>=10) 
+			buffer.append("COALESCE(day10,0)+");
+		if(startdateIndex<=11 && enddateIndex>=11) 
+			buffer.append("COALESCE(day11,0)+");
+		if(startdateIndex<=12 && enddateIndex>=12) 
+			buffer.append("COALESCE(day12,0)+");
+		if(startdateIndex<=13 && enddateIndex>=13) 
+			buffer.append("COALESCE(day13,0)+");
+		if(startdateIndex<=14 && enddateIndex>=14) 
+			buffer.append("COALESCE(day14,0)+");
+		if(startdateIndex<=15 && enddateIndex>=15) 
+			buffer.append("COALESCE(day15,0)+");
+		if(startdateIndex<=16 && enddateIndex>=16) 
+			buffer.append("COALESCE(day16,0)+");
+		if(startdateIndex<=17 && enddateIndex>=17) 
+			buffer.append("COALESCE(day17,0)+");
+		if(startdateIndex<=18 && enddateIndex>=18) 
+			buffer.append("COALESCE(day18,0)+");
+		if(startdateIndex<=19 && enddateIndex>=19) 
+			buffer.append("COALESCE(day19,0)+");
+		if(startdateIndex<=20 && enddateIndex>=20) 
+			buffer.append("COALESCE(day20,0)+");
+		if(startdateIndex<=21 && enddateIndex>=21) 
+			buffer.append("COALESCE(day21,0)+");
+		if(startdateIndex<=22 && enddateIndex>=22) 
+			buffer.append("COALESCE(day22,0)+");
+		if(startdateIndex<=23 && enddateIndex>=23) 
+			buffer.append("COALESCE(day23,0)+");
+		if(startdateIndex<=24 && enddateIndex>=24) 
+			buffer.append("COALESCE(day24,0)+");
+		if(startdateIndex<=25 && enddateIndex>=25) 
+			buffer.append("COALESCE(day25,0)+");
+		if(startdateIndex<=26 && enddateIndex>=26) 
+			buffer.append("COALESCE(day26,0)+");
+		if(startdateIndex<=27 && enddateIndex>=27) 
+			buffer.append("COALESCE(day27,0)+");
+		if(startdateIndex<=28 && enddateIndex>=28) 
+			buffer.append("COALESCE(day28,0)+");
+		if(startdateIndex<=29 && enddateIndex>=29) 
+			buffer.append("COALESCE(day29,0)+");
+		if(startdateIndex<=30 && enddateIndex>=30) 
+			buffer.append("COALESCE(day30,0)+");
+		if(startdateIndex<=31 && enddateIndex==31) 
+			buffer.append("COALESCE(day31,0)+");
+		
+		buffer.append("0) AS hours,");
+		
+		buffer.append(" 'approved' AS label FROM tasktrack_approval ta LEFT JOIN `user` u ON u.user_id = ta.user_user_id LEFT JOIN project p ON p.project_id = ta.project_project_id WHERE ta.month=? AND ta.year=? AND ta.project_type ='Billable' GROUP BY 1,3 UNION  SELECT p.project_name AS projectName,SUM(tt.hours) AS hours,'logged' AS label FROM tasktrack tt LEFT JOIN `user` u ON u.user_id = tt.user_user_id LEFT JOIN project p ON p.project_id = tt.project_project_id WHERE CAST(tt.`date`  AS DATE) BETWEEN ? AND ? GROUP BY 1,3 ) ems )ems1 GROUP BY 1");
 
-		sql = "SELECT projectName,hours,label FROM (SELECT p.project_name AS projectName, SUM((COALESCE(day1,0)+COALESCE(day2,0)+COALESCE(day3,0)+COALESCE(day4,0)+COALESCE(day5,0)+COALESCE(day6,0)+COALESCE(day7,0)+COALESCE(day8,0)+COALESCE(day9,0)+COALESCE(day10,0) +COALESCE(day11,0)+COALESCE(day12,0)+COALESCE(day13,0)+COALESCE(day14,0)+COALESCE(day15,0)+COALESCE(day16,0)+COALESCE(day17,0)+COALESCE(day18,0)+COALESCE(day19,0)+COALESCE(day20,0) +COALESCE(day21,0)+COALESCE(day22,0)+COALESCE(day23,0)+COALESCE(day24,0)+COALESCE(day25,0)+COALESCE(day26,0)+COALESCE(day27,0)+COALESCE(day28,0)+COALESCE(day29,0)+COALESCE(day30,0) +COALESCE(day31,0))) AS hours, 'approved' AS label FROM tasktrack_approval ta LEFT JOIN `user` u ON u.user_id = ta.user_user_id LEFT JOIN project p ON p.project_id = ta.project_project_id WHERE ta.month=? AND ta.year=? AND ta.project_type ='Billable' GROUP BY 1,3 UNION SELECT p.project_name AS projectName,SUM(tt.hours) AS hours,'logged' AS label FROM tasktrack tt LEFT JOIN `user` u ON u.user_id = tt.user_user_id LEFT JOIN project p ON p.project_id = tt.project_project_id WHERE CAST(tt.`date`  AS DATE) BETWEEN ? AND ? GROUP BY 1,3 ) t ORDER BY 1,2,3";
-		list = jdbcTemplate.query(sql, new ApprovalTimeTrackReportRowMapper(), new Object[] {monthIndex,yearIndex,startDate,endDate});	
+		System.out.println("SQL==="+buffer.toString());
+		
+		//sql="SELECT ems1.projectName,COALESCE(SUM(ems1.approved),0) AS 'approved', SUM(ems1.logged) AS 'logged' FROM ( SELECT ems.projectName,CASE WHEN ems.label = 'approved' THEN hours END AS 'approved', CASE WHEN ems.label = 'logged' THEN hours END AS 'logged' FROM ( SELECT p.project_name AS projectName,SUM(COALESCE(day1,0)+COALESCE(day2,0)+COALESCE(day3,0)+COALESCE(day4,0)+COALESCE(day5,0)+COALESCE(day6,0)+COALESCE(day7,0)+COALESCE(day8,0)+COALESCE(day9,0)+COALESCE(day10,0) +COALESCE(day11,0)+COALESCE(day12,0)+COALESCE(day13,0)+COALESCE(day14,0)+COALESCE(day15,0)+COALESCE(day16,0)+COALESCE(day17,0)+COALESCE(day18,0)+COALESCE(day19,0)+COALESCE(day20,0) +COALESCE(day21,0)+COALESCE(day22,0)+COALESCE(day23,0)+COALESCE(day24,0)+COALESCE(day25,0)+COALESCE(day26,0)+COALESCE(day27,0)+COALESCE(day28,0)+COALESCE(day29,0)+COALESCE(day30,0) +COALESCE(day31,0)) AS hours, 'approved' AS label FROM tasktrack_approval ta LEFT JOIN `user` u ON u.user_id = ta.user_user_id LEFT JOIN project p ON p.project_id = ta.project_project_id WHERE ta.month=? AND ta.year=? AND ta.project_type ='Billable' GROUP BY 1,3 UNION  SELECT p.project_name AS projectName,SUM(tt.hours) AS hours,'logged' AS label FROM tasktrack tt LEFT JOIN `user` u ON u.user_id = tt.user_user_id LEFT JOIN project p ON p.project_id = tt.project_project_id WHERE CAST(tt.`date`  AS DATE) BETWEEN ? AND ? GROUP BY 1,3 ) ems )ems1 GROUP BY 1";
+		sql=buffer.toString();
+		list = jdbcTemplate.query(sql, new ApprovalTimeTrackReportRowMapper(), new Object[] {month,year,startDate,endDate});	
 
 		return list;
 	}

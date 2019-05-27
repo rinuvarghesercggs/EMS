@@ -5,11 +5,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -342,11 +345,11 @@ public class ReportController {
 	}
 	
 	@PostMapping("/getApprovalTimeLogReport")
-	public JsonNode getApprovalTimeLogReport(@RequestBody JsonNode requestData) {
-		ArrayNode approvalReport = objectMapper.createArrayNode();
+	public JSONObject getApprovalTimeLogReport(@RequestBody JSONObject requestData) {
+		JSONArray approvalReport = new JSONArray();
 		try {
-			String date1 = requestData.get("startDate").asText();
-			String date2 = requestData.get("endDate").asText();
+			String date1 = (String) requestData.get("startDate");
+			String date2 = (String) requestData.get("endDate");
 
 			SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
 			Date startDate = null, endDate = null;
@@ -357,67 +360,91 @@ public class ReportController {
 				endDate = outputFormat.parse(date2);
 			}
 			Calendar cal = Calendar.getInstance();
-		
 			cal.setTime(startDate);
-			int monthIndex = (cal.get(Calendar.MONTH) + 1);
-			int yearIndex = cal.get(Calendar.YEAR);
-			List<ApprovalTimeTrackReportModel> data = reportServiceImpl.getApprovalStatusReport(startDate,endDate,monthIndex,yearIndex);
-					
-			ObjectNode jsonData = objectMapper.createObjectNode();
-			String prevname="";
-			for(ApprovalTimeTrackReportModel obj : data) {
-	
-			if(!prevname.equals(obj.getProjectName
-					())) {
-				if(jsonData.size()>0) {
-					if(jsonData.get("LoggedHours")==null) {
-						jsonData.put("LoggedHours", 0);
-					}
-					if(jsonData.get("BillableHours")==null) {
-						jsonData.put("BillableHours", 0);
-					}
-					approvalReport.add(jsonData);
-				}
-				jsonData = objectMapper.createObjectNode();
-				jsonData.put("projectName", obj.getProjectName());
-				if(obj.getLabel().equalsIgnoreCase("approved")) {
-					jsonData.put("BillableHours", obj.getBillableHours()!=null ? obj.getBillableHours() : 0);
-				}
-				if(obj.getLabel().equalsIgnoreCase("logged")) {
-					jsonData.put("LoggedHours", obj.getLoggedHours()!=null ? obj.getLoggedHours() : 0 );
-				}
+			int startdateIndex = cal.get(Calendar.DAY_OF_MONTH);
+			int startmonthIndex = (cal.get(Calendar.MONTH) + 1);
+			int startyearIndex = cal.get(Calendar.YEAR);
+			
+			cal.setTime(endDate);
+			int enddateIndex = cal.get(Calendar.DAY_OF_MONTH);
+			int endmonthIndex = (cal.get(Calendar.MONTH) + 1);
+			int endyearIndex = cal.get(Calendar.YEAR);
+			
+			int startDateOfMonth=startdateIndex;
+			int endDateOfMonth=enddateIndex;
+			int month=startmonthIndex-1;
+			int endMonth=endmonthIndex;
+			
+			Map billableHourMap = new HashMap();
+			List projectList = new ArrayList();
+			for(int i=startmonthIndex;i<=endmonthIndex;i++) {
+
+			if(endmonthIndex>i) {//Multiple Month
+				System.out.println("Multiple Month");
+				if(i==startmonthIndex)
+					startDateOfMonth = startdateIndex;
+				else
+					startDateOfMonth = 1;
+				endDateOfMonth = 31;
+				month++;
 			}
 			else {
-				if(obj.getLabel().equalsIgnoreCase("approved")) {
-					jsonData.put("BillableHours", obj.getBillableHours()!=null ? obj.getBillableHours() : 0);
+				if(i==startmonthIndex) {//Within One Month
+					System.out.println("Within One Month");
+					startDateOfMonth=startdateIndex; 
+					endDateOfMonth=enddateIndex;
+					month = startmonthIndex;
 				}
-				if(obj.getLabel().equalsIgnoreCase("logged")) {
-					jsonData.put("LoggedHours", obj.getLoggedHours()!=null ? obj.getLoggedHours() : 0 );
+				else {//Multiple Month - Last Month
+					System.out.println("Multiple Month -Last Month");
+					startDateOfMonth=1; 
+					endDateOfMonth=enddateIndex;
+					month = endMonth;
 				}
-				if(jsonData.get("LoggedHours")==null) {
-					jsonData.put("LoggedHours", 0);
-				}
-				if(jsonData.get("BillableHours")==null) {
-					jsonData.put("BillableHours", 0);
-				}
-				approvalReport.add(jsonData);
-				jsonData = objectMapper.createObjectNode();
-			}
-			prevname = obj.getProjectName();
 			}
 			
-			
-			ObjectNode dataNode = objectMapper.createObjectNode();
-			dataNode.set("approvalReport", approvalReport);
+				List<ApprovalTimeTrackReportModel> data = reportServiceImpl.getApprovalStatusReport(startDate,endDate,
+						startDateOfMonth,endDateOfMonth,month,startyearIndex);
+				JSONObject jsonData = new JSONObject();
+				for(ApprovalTimeTrackReportModel obj : data) {
 
-			ObjectNode node = objectMapper.createObjectNode();
+					if(projectList.contains(obj.getProjectName())) {
+						for(int k = 0; k < approvalReport.size(); k++)
+						{
+							JSONObject objects = (JSONObject) approvalReport.get(k);
+							
+				     		if(objects.get("projectName").equals(obj.getProjectName())) {
+									double hr = (double) objects.get("BillableHours");
+									hr += obj.getBillableHours();
+									objects.remove("BillableHours");
+									objects.put("BillableHours", hr);
+								}			
+						}
+					}
+					else {
+						jsonData = new JSONObject();
+						billableHourMap.put(obj.getProjectName(),obj.getBillableHours()!=null ? obj.getBillableHours() : 0);
+						if(!projectList.contains(obj.getProjectName()))
+							projectList.add(obj.getProjectName());
+						
+						jsonData.put("projectName", obj.getProjectName());
+						jsonData.put("BillableHours", obj.getBillableHours()!=null ? obj.getBillableHours() : 0);
+						jsonData.put("LoggedHours", obj.getLoggedHours()!=null ? obj.getLoggedHours() : 0);
+						approvalReport.add(jsonData);
+					}
+				}
+			}		
+			JSONObject dataNode = new JSONObject();
+			dataNode.put("approvalReport", approvalReport);
+
+			JSONObject node = new JSONObject();
 			node.put("status", "success");
-			node.set("data", dataNode);
+			node.put("data", dataNode);
 			return node;
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-			ObjectNode node = objectMapper.createObjectNode();
+			JSONObject node = new JSONObject();
 			node.put("status", "failure");
 			node.put("message",  "failed. " + e);
 			return node;
