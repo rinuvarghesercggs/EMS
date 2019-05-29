@@ -3,15 +3,19 @@ package com.EMS.controller;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,23 +25,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.EMS.model.AllocationModel;
 import com.EMS.model.DepartmentModel;
 import com.EMS.model.PageRule;
 import com.EMS.model.RoleModel;
-import com.EMS.model.Tasktrack;
 import com.EMS.model.Technology;
 import com.EMS.model.UserModel;
 import com.EMS.model.UserTechnology;
+import com.EMS.repository.UserRepository;
+import com.EMS.security.jwt.JwtTokenProvider;
 import com.EMS.service.LoginService;
 import com.EMS.service.PageRuleService;
-import com.EMS.service.TasktrackService;
 import com.EMS.service.UserService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import javax.xml.bind.DatatypeConverter;
+
 
 @RestController
 @RequestMapping(value = "/login")
@@ -55,42 +58,51 @@ public class LoginController {
 	@Autowired
 	private UserService userService;
 
+    @Autowired
+    AuthenticationManager authenticationManager;
 
+    @Autowired
+    JwtTokenProvider jwtTokenProvider;
 	
-	// api call for admin login
+    @Autowired 
+    UserRepository userRepository;
+    
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+    
 	@PostMapping(value = "/getLoginCredentials")
 	@ResponseBody
 	public JsonNode adminLogin(@RequestBody ObjectNode requestdata, HttpServletResponse httpstatus) {
-
+		
 		ObjectNode response = objectMapper.createObjectNode();
 		ObjectNode data = objectMapper.createObjectNode();
 
-		// getting string value from json request
 		String username = requestdata.get("username").asText();
 		String password = requestdata.get("password").asText();
 		
 		try {
+			
+			if ((username != null) && (username.length() > 0) && (!username.equals(" ")) && (password != null)
+					&& (password.length() > 0)) {
 
-			MessageDigest md = MessageDigest.getInstance("MD5");
-			md.update(password.getBytes());
-			byte[] digest = md.digest();
-			String encPassword = DatatypeConverter.printHexBinary(digest).toUpperCase();
+				authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+	            String token = jwtTokenProvider.createToken(username, 
+	            		this.userRepository.findByUserName(username)
+	            		.orElseThrow(() -> new UsernameNotFoundException("Username " + username + "not found"))
+	            		.getRole().getroleName());
 
-			if ((username != null) && (username.length() > 0) && (!username.equals(" ")) && (encPassword != null)
-					&& (encPassword.length() > 0)) {
-
-				// Invoking user authentication method
-				UserModel usercheck = login_service.login_authentication(username, encPassword);
+				UserModel usercheck = login_service.login_authentication(username);
 
 				if (usercheck == null) {
-					// Setting status on json object
+					LOGGER.info("User Authentication Failed");
 					response.put("status", "Failed");
 					response.put("code", httpstatus.getStatus());
 					response.put("message", "Invalid user");
 					response.put("payload", "");
 				} else {
-
+					LOGGER.info("User Authentication Success");
 					response.put("status", "success");
 					response.put("code", httpstatus.getStatus());
 					response.put("message", "Valid user");
@@ -98,18 +110,17 @@ public class LoginController {
 					data.put("userId", usercheck.getUserId());
 					data.put("roleId", usercheck.getRole().getroleId());
 					data.put("roleName", usercheck.getRole().getroleName());
-					Long roleid=usercheck.getRole().getroleId();
-					//data.put("blockedPages", objectMapper.writeValueAsString(getBlockedPageList(usercheck.getrole().getroleId())));
 						
 					ObjectMapper mapper = new ObjectMapper();
 					ArrayNode array = mapper.valueToTree(getBlockedPageList(usercheck.getRole().getroleId()));
 					data.putArray("blockedPages").addAll(array);
-
-					// Setting data on json object
+					data.put("token", token);
+					
 					response.set("payload", data);
 				}
 
 			} else {
+				LOGGER.info("Invalid credientials");
 				response.put("status", "Failed");
 				response.put("code", httpstatus.getStatus());
 				response.put("message", "Invalid credientials");
@@ -117,7 +128,8 @@ public class LoginController {
 			}
 
 		} catch (Exception e) {
-			System.out.println("Exception : " + e);
+			LOGGER.info("Exception in adminLogin Method");
+			e.printStackTrace();
 			// Setting status on json object
 			response.put("status", "Failed");
 			response.put("code", httpstatus.getStatus());
@@ -186,10 +198,13 @@ public class LoginController {
 			user.setEmail(requestdata.get("email").asText());
 			
 			 String password = requestdata.get("password").toString().replace("\"", "");
+			 /*
 			 MessageDigest md = MessageDigest.getInstance("MD5");
 			 md.update(password.getBytes());
 			 byte[] digest = md.digest();
 			 String encPassword = DatatypeConverter.printHexBinary(digest).toUpperCase();
+			 */
+			 String encPassword = this.passwordEncoder.encode(password);
 			 user.setPassword(encPassword);  
 			
 			user.setQualification(requestdata.get("qualification").asText());
@@ -278,21 +293,22 @@ public class LoginController {
 		
 		try {
 			
-			String userId = requestdata.get("userId").toString();			
+			String userId = requestdata.get("userId").toString();		
+			String userName = requestdata.get("userName").toString();
 			String password = requestdata.get("password").toString();		
 			String newPassword = requestdata.get("newPassword").toString();		
-					
+			/*		
 			MessageDigest md = MessageDigest.getInstance("MD5");
 			md.update(password.getBytes());
 			byte[] digest = md.digest();
-			
-			String oldPassword = DatatypeConverter.printHexBinary(digest).toUpperCase();
-			UserModel usercheck = login_service.changePasswordAuthentication(Long.parseLong(userId), oldPassword);
+			*/
+			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userName, password));
+		
+			UserModel usercheck = login_service.login_authentication(userName);
 					
 			if (usercheck!= null) {			
-				md.update(newPassword.getBytes());
-				digest = md.digest();
-				String encPassword = DatatypeConverter.printHexBinary(digest).toUpperCase();
+				
+				String encPassword = this.passwordEncoder.encode(newPassword);
 				usercheck.setPassword(encPassword);
 				login_service.adduser(usercheck);
 				responsedata.put("status", "success");
