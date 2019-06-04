@@ -1,10 +1,12 @@
 package com.EMS.controller;
 
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +21,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.EMS.model.PageRule;
+import com.EMS.model.PasswordResetModel;
 import com.EMS.model.UserModel;
 import com.EMS.service.LoginService;
+import com.EMS.service.PageRuleService;
 import com.EMS.service.PasswordResetService;
 import com.EMS.service.UserService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @RestController
@@ -45,6 +51,9 @@ public class PasswordResetController {
 	
 	@Autowired
     PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	PageRuleService pageruleService;
 	
 	@PostMapping(value = "/resetPassword")
 	@ResponseBody
@@ -71,7 +80,7 @@ public class PasswordResetController {
 		}
 	    catch(Exception e) {
 	    	response.put("status", "Failed");
-	    	response.put("message", "Invalid User");
+	    	response.put("message", "Exception " + e);
 	    }
 	    return response;
 	}
@@ -100,17 +109,34 @@ public class PasswordResetController {
 	
 	@PostMapping(value = "/savePassword")
 	@ResponseBody
-	public JsonNode savePassword(Locale locale, @RequestBody ObjectNode requestdata) {
+	public JsonNode savePassword(HttpServletResponse httpstatus, @RequestBody ObjectNode requestdata) {
 		ObjectNode response = objectMapper.createObjectNode();
 		try {
-	    UserModel user = (UserModel) SecurityContextHolder.getContext()
-	                                  .getAuthentication().getPrincipal();
-	    String encPassword = this.passwordEncoder.encode(requestdata.get("newPassword").asText());
-	    user.setPassword(encPassword);
-	    login_service.adduser(user);
+			if(requestdata.get("newPassword") == null) {
+				response.put("status", "Failed");
+				response.put("message", "Invalid Password");
+				return response;
+			}
+//	    	UserModel user = (UserModel) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			long userId = requestdata.get("userId").asLong();
+			String token = requestdata.get("token").asText();
+			PasswordResetModel passwordResetModel = passwordResetService.validateBeforeResetPassword(userId, token);
+			if(passwordResetModel.getStatus() != null) {
+				response.put("status", "Failed");
+				response.put("message", passwordResetModel.getStatus());
+			}
+			else {
+				UserModel user = passwordResetModel.getUser();
+				String encPassword = this.passwordEncoder.encode(requestdata.get("newPassword").asText());
+			    user.setPassword(encPassword);
+			    login_service.adduser(user);
+			    passwordResetService.deletePasswordResetToken(passwordResetModel);
+			    response.put("status", "success");
+			    response.put("code", httpstatus.getStatus());
+			    response.put("username", user.getUserName());
+				response.put("message", "Password Changed Successfully");
+			}
 	    
-	    response.put("status", "Success");
-		response.put("message", "Password Changed Successfully");
 		}
 		catch (Exception e) {
 			response.put("status", "Failed");

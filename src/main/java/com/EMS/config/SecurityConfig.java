@@ -39,10 +39,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/login/getLoginCredentials").permitAll()
                 .antMatchers("/user/resetPassword*","/user/validateResetPassword*","/user/savePassword*").permitAll()
-                //.hasAuthority("CHANGE_PASSWORD_PRIVILEGE")
-                // .antMatchers("/report/getApprovalTimeLogReport").permitAll()
-              /*  .antMatchers(HttpMethod.DELETE, "/vehicles/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.GET, "/v1/vehicles/**").permitAll()*/
                 .anyRequest().authenticated()
             .and()
             .apply(new JwtConfigurer(jwtTokenProvider));

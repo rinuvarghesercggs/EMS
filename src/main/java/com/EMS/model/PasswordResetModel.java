@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 
 @Entity
 public class PasswordResetModel {
@@ -25,6 +26,9 @@ public class PasswordResetModel {
     private UserModel user;
   
     private Date expiryDate;
+    
+    @Transient
+    private String status;
 
     public PasswordResetModel() {
     	
@@ -66,6 +70,14 @@ public class PasswordResetModel {
 
 	public void setExpiryDate(Date expiryDate) {
 		this.expiryDate = expiryDate;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 }

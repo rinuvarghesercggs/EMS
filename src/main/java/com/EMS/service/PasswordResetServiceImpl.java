@@ -53,25 +53,51 @@ public class PasswordResetServiceImpl implements PasswordResetService{
 	}
 
 	@Override
+	public void deletePasswordResetToken(PasswordResetModel passwordResetModel) throws Exception {
+		if(passwordResetModel != null & passwordResetModel.getId() != 0) {
+			passwordResetRepository.delete(passwordResetModel);
+		}
+	}
+	
+	@Override
 	public String validatePasswordResetToken(long id, String token) throws Exception{
-	    PasswordResetModel passToken = passwordResetRepository.findByToken(token).get(0);
-	    if ((passToken == null) || (passToken.getUser().getUserId() != id)) {
-	        return "InvalidToken";
+		PasswordResetModel passToken = validateToken(id,token);
+	    if(passToken.getStatus() != null) {
+	    	return passToken.getStatus();
 	    }
-	 
-	    Calendar cal = Calendar.getInstance();
+//	    UserModel user = passToken.getUser();
+//	    Authentication auth = new UsernamePasswordAuthenticationToken(
+//	      user, null, Arrays.asList(
+//	      new SimpleGrantedAuthority("CHANGE_PASSWORD_PRIVILEGE")));
+//	    SecurityContextHolder.getContext().setAuthentication(auth);
+	    return null;
+	}
+	
+	@Override
+	public PasswordResetModel validateBeforeResetPassword(long id, String token) throws Exception {
+		PasswordResetModel passToken = validateToken(id,token);
+		return passToken;
+	}
+	
+	private PasswordResetModel validateToken(long id, String token) {
+		PasswordResetModel passToken = null;
+		List<PasswordResetModel> passTokenList = passwordResetRepository.findByToken(token);
+		if(passTokenList.size() > 0) {
+			passToken = passwordResetRepository.findByToken(token).get(0);
+		}
+		if ((passToken == null) || (passToken.getUser().getUserId() != id)) {
+			passToken = new PasswordResetModel();
+			passToken.setStatus("InvalidToken");
+	        return passToken;
+	    }
+		Calendar cal = Calendar.getInstance();
 	    if ((passToken.getExpiryDate()
 	        .getTime() - cal.getTime()
 	        .getTime()) <= 0) {
-	        return "Token Expired";
+	    	passToken.setStatus("Token Expired");
+	        return passToken;
 	    }
-	 
-	    UserModel user = passToken.getUser();
-	    Authentication auth = new UsernamePasswordAuthenticationToken(
-	      user, null, Arrays.asList(
-	      new SimpleGrantedAuthority("CHANGE_PASSWORD_PRIVILEGE")));
-	    SecurityContextHolder.getContext().setAuthentication(auth);
-	    return null;
+		return passToken;
 	}
 	
 	@Override
@@ -128,8 +154,10 @@ public class PasswordResetServiceImpl implements PasswordResetService{
 	  
 	    // Send message 
 	    Transport.send(message); 
-	    System.out.println("Yo it has been sent.."); 
-	    String msg = "Verification link has been successfully sent to your email ("+to+")";
+	    
+	    String msg = "Verification link has been successfully sent to your email \""+to+"\"";
+	    System.out.println(msg); 
 		return msg;
 	}
+
 }
