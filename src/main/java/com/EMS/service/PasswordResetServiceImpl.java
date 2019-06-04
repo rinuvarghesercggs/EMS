@@ -102,7 +102,9 @@ public class PasswordResetServiceImpl implements PasswordResetService{
 	
 	@Override
 	public String sendMail(String contextPath, Locale locale, String token, UserModel user)  throws Exception{ 
-		contextPath = contextPath.replace("user/resetPassword", "");
+//		contextPath = contextPath.replace("user/resetPassword", ""); // Local
+//		contextPath = "https://pms.titechdev.com"; // Production
+		contextPath = "https://stagingpms.titechdev.com"; // Staging
 		String url = contextPath+"pwdVerify?token=" + token + "&userId="+user.getUserId();
 		String subject = "Reset Password";
 		String mailBody = url;
