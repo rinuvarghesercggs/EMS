@@ -47,10 +47,5 @@ public interface UserService {
 
 	UserModel getUserdetailsbyId(long userId);
 
-	
-
-
-
-
-
+	UserModel getUserByUserName(String userName);
 }

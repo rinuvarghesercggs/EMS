@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -127,7 +128,17 @@ public class LoginController {
 				response.put("payload", "");
 			}
 
-		} catch (Exception e) {
+		}
+		catch(BadCredentialsException b) {
+			LOGGER.info("Exception in adminLogin Method");
+			b.printStackTrace();
+			// Setting status on json object
+			response.put("status", "Failed");
+			response.put("code", "Invalid credientials");
+			response.put("message", "Exception " + b);
+			response.put("payload", "");
+		}
+		catch (Exception e) {
 			LOGGER.info("Exception in adminLogin Method");
 			e.printStackTrace();
 			// Setting status on json object
@@ -320,7 +331,17 @@ public class LoginController {
 				responsedata.put("message", "Password Not Matching");
 				responsedata.put("code", httpstatus.getStatus());
 			}			
-		} catch (Exception e) {
+		}
+		catch(BadCredentialsException b) {
+			LOGGER.info("Exception in adminLogin Method");
+			b.printStackTrace();
+			// Setting status on json object
+			responsedata.put("status", "Failed");
+			responsedata.put("code", "Invalid credientials");
+			responsedata.put("message", "Exception " + b);
+			responsedata.put("payload", "");
+		}
+		catch (Exception e) {
 			responsedata.put("status", "Failed");
 			responsedata.put("message", "Exception : " + e);
 			responsedata.put("code", httpstatus.getStatus());

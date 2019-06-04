@@ -79,11 +79,11 @@ public class ReportController {
 	@PostMapping("/getBenchProjectReport")
 	public JsonNode getBenchProjectReport(@RequestBody Taskdetails requestdata) {
 
-		ArrayNode benchProjectReport = null;
-		if(requestdata.getuId()!=null) {
+		ArrayNode benchProjectReport = null;System.out.println("requestdata.getuId()="+requestdata.getuId());
+		if(requestdata.getuId()!=null) {System.out.println("if");
 			benchProjectReport = reportServiceImpl.getBenchProjectReportDetails(requestdata.getuId(),requestdata.getFromDate(),requestdata.getToDate());
 		}
-		else {
+		else {System.out.println("else");
 			benchProjectReport = reportServiceImpl.getBenchProjectReportDetails(requestdata.getFromDate(),requestdata.getToDate());
 		}
 		ObjectNode dataNode = objectMapper.createObjectNode();

@@ -2,10 +2,14 @@ package com.EMS.config;
 
 import com.EMS.security.jwt.JwtConfigurer;
 import com.EMS.security.jwt.JwtTokenProvider;
+
+import java.util.Properties;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -34,7 +38,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
                 .authorizeRequests()
                 .antMatchers("/login/getLoginCredentials").permitAll()
-               // .antMatchers("/report/getApprovalTimeLogReport").permitAll()
+                .antMatchers("/user/resetPassword*","/user/validateResetPassword*","/user/savePassword*").permitAll()
+                //.hasAuthority("CHANGE_PASSWORD_PRIVILEGE")
+                // .antMatchers("/report/getApprovalTimeLogReport").permitAll()
               /*  .antMatchers(HttpMethod.DELETE, "/vehicles/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET, "/v1/vehicles/**").permitAll()*/
                 .anyRequest().authenticated()
@@ -42,7 +48,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .apply(new JwtConfigurer(jwtTokenProvider));
         //@formatter:on
     }
-
-
+    
 }
 

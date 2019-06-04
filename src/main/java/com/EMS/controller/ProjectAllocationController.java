@@ -215,7 +215,10 @@ public class ProjectAllocationController {
 				for (AllocationModel item : allocationModel) {
 					String projectStartDate = df.format(item.getStartDate());
 					String projectEndDate = df.format(item.getEndDate());
-						if (df.parse(projectStartDate).compareTo(fromDate) <= 0 && df.parse(projectEndDate).compareTo(toDate) >= 0) {
+					if ((fromDate.compareTo(df.parse(projectStartDate)) >= 0 && fromDate.compareTo(df.parse(projectStartDate)) <= 0)||
+									(toDate.compareTo(df.parse(projectStartDate)) >= 0 && toDate.compareTo(df.parse(projectEndDate)) <= 0)||
+									(fromDate.compareTo(df.parse(projectStartDate)) >= 0 && toDate.compareTo(df.parse(projectEndDate)) <= 0)) {
+										
 						ObjectNode jsonObject = objectMapper.createObjectNode();
 						jsonObject.put("allocationId", item.getAllocId());
 						if (item.getproject() != null) {
@@ -483,7 +486,6 @@ public class ProjectAllocationController {
 					jsonArray.add(jsonObjectData);
 
 				}
-				System.out.println("total : "+totAlloc);
 				jsonObject.put("totalAllocation", totAlloc);
 				jsonObject.put("freeAlloc", freeAlloc);
 				jsonObject.put("project", jsonArray);

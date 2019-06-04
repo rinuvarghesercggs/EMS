@@ -8,9 +8,11 @@ import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.EMS.model.PasswordResetModel;
 import com.EMS.model.Technology;
 import com.EMS.model.UserModel;
 import com.EMS.model.UserTechnology;
+import com.EMS.repository.PasswordResetRepository;
 import com.EMS.repository.TechnologyRepository;
 import com.EMS.repository.UserRepository;
 import com.EMS.repository.UserTechnologyRepository;
@@ -152,11 +154,10 @@ public class UserServiceImpl implements UserService {
 		UserModel user=userRepository.getOne(userId);
 		return user;
 	}
-
 	
-
-	
-
-
-
+	@Override
+	public UserModel getUserByUserName(String userName) {
+		UserModel user = userRepository.findByUserName(userName).get();
+		return user;
+	}
 }
