@@ -150,7 +150,23 @@ public class TasktrackServiceImpl implements TasktrackService {
 			return new ArrayList<AllocationModel>();
 		}
 	}
-
+	
+	public List<AllocationModel> getProjectNamesForApproval(long uId) {
+		try {
+			return tasktrackRepository.getProjectNamesForApproval(uId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ArrayList<AllocationModel>();
+		}
+	}
+	public List<ProjectModel> getProjectNamesForApproval() {
+		try {
+			return tasktrackRepository.getProjectNamesForApproval();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ArrayList<ProjectModel>();
+		}
+	}
 	public List<Task> getTaskCategory(long uId) {
 		try {
 			return tasktrackRepository.getTaskCategories(uId);

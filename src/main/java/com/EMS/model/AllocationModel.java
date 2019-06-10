@@ -31,7 +31,7 @@ public class AllocationModel {
 	private Date startDate;
 	private Date endDate;
 	private Boolean isBillable;
-
+	private boolean active =true;
 	
 	
 	
@@ -90,6 +90,14 @@ public class AllocationModel {
 	
 	public void setIsBillable(Boolean isBillable) {
 		this.isBillable = isBillable;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 
 	

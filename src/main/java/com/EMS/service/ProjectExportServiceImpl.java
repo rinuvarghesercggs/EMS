@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Service;
 
+import com.EMS.model.ExportApprovalReportModel;
 import com.EMS.model.ExportProjectHourReportModel;
 import com.EMS.model.ExportProjectTaskReportModel;
 
@@ -238,6 +239,265 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 				cell.setCellValue(summary.getApproved());
 				cell.setCellStyle(borderedCellStyle);
 				
+			}
+			
+			// Resize all columns to fit the content size
+			for (int i = 0; i < headers.length; i++) {
+				sheet.autoSizeColumn(i);
+			}
+
+			//Adding filter menu in column headers
+			sheet.setAutoFilter(new CellRangeAddress(2, 13, 1, 4));
+
+	}
+	
+	@Override
+	public void exportApprovalReport(List <ExportApprovalReportModel> data,Workbook workbook,Sheet sheet,ArrayList<String> colNames) throws FileNotFoundException {
+		
+		String[] headers = new String[35];
+		headers[0] = "User Id";
+		headers[1] = "Last Name";
+		headers[2] = "First Name";
+		headers[3] = "Project Name";
+		int dayCount = colNames.size();
+		for(int i=0;i<dayCount;i++) {
+			headers[i+4] = colNames.get(i);
+		}
+
+			List<ExportApprovalReportModel> Listdata = new ArrayList<ExportApprovalReportModel>();
+			
+			  for(ExportApprovalReportModel obj : data) {
+				Listdata.add(new ExportApprovalReportModel
+						(obj.getId(),obj.getProjectName(),obj.getFirstName(),obj.getLastName()
+						,obj.getDay1(),obj.getDay2(),obj.getDay3(),obj.getDay4(),obj.getDay5(),
+						obj.getDay6(),obj.getDay7(),obj.getDay8(),obj.getDay9(),obj.getDay10(),
+						obj.getDay11(),obj.getDay12(),obj.getDay13(),obj.getDay14(),obj.getDay15(),
+						obj.getDay16(),obj.getDay17(),obj.getDay18(),obj.getDay19(),obj.getDay20(),
+						obj.getDay21(),obj.getDay22(),obj.getDay23(),obj.getDay24(),obj.getDay25(),
+						obj.getDay26(),obj.getDay27(),obj.getDay28(),obj.getDay29(),obj.getDay30(),
+						obj.getDay31()));
+			  }
+
+			//Removing grids
+			sheet.setDisplayGridlines(false);
+			//Freezing columns and rows from scrooling
+			sheet.createFreezePane(0,3);
+			
+			//Bordered Cell Style
+			CellStyle borderedCellStyle = workbook.createCellStyle();
+			borderedCellStyle.setBorderLeft(BorderStyle.THIN);  
+			borderedCellStyle.setLeftBorderColor(IndexedColors.BLACK.getIndex()); 
+			borderedCellStyle.setBorderRight(BorderStyle.THIN);  
+			borderedCellStyle.setRightBorderColor(IndexedColors.BLACK.getIndex());  
+			borderedCellStyle.setBorderTop(BorderStyle.THIN);  
+			borderedCellStyle.setTopBorderColor(IndexedColors.BLACK.getIndex()); 
+			borderedCellStyle.setBorderBottom(BorderStyle.THIN);  
+			borderedCellStyle.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+
+			//Title Cell Style
+			CellStyle titleCellStyle = workbook.createCellStyle();
+			//titleCellStyle.setFont((org.apache.poi.ss.usermodel.Font) headerFont);
+			
+			Row titleRow = sheet.createRow(0);
+			Cell titleCell = titleRow.createCell(0);
+			titleCell.setCellValue("PROJECT APPROVAL REPORT");
+			titleCell.setCellStyle(titleCellStyle);
+
+			titleRow = sheet.createRow(1);
+			titleCell = titleRow.createCell(1);
+			titleCell.setCellValue("");
+
+			// Header Cell Style
+			CellStyle headerCellStyle = workbook.createCellStyle();
+			headerCellStyle.cloneStyleFrom(borderedCellStyle);
+			headerCellStyle.setBorderTop(BorderStyle.THICK);
+			
+			Row headerRow = sheet.createRow(2);
+			int widthInChars = 50;
+		    sheet.setColumnWidth(4, widthInChars);
+			for (int i = 0; i < headers.length; i++) {
+				Cell cell = headerRow.createCell(i);
+				cell.setCellValue(headers[i]);
+				cell.setCellStyle(headerCellStyle);
+			}
+
+			// Create Other rows and cells with contacts data
+			int rowNum = 3;
+			ExportApprovalReportModel totalSummary = new ExportApprovalReportModel();
+			for (ExportApprovalReportModel summary : Listdata) {
+				Row row = sheet.createRow(rowNum++);
+				
+				Cell cell = row.createCell(0);
+				cell.setCellValue(summary.getId());
+				cell.setCellStyle(borderedCellStyle);
+				
+				cell = row.createCell(1);
+				cell.setCellValue(summary.getLastName());
+				cell.setCellStyle(borderedCellStyle);
+				
+				cell = row.createCell(2);
+				cell.setCellValue(summary.getFirstName());
+				cell.setCellStyle(borderedCellStyle);
+				
+				cell = row.createCell(3);
+				cell.setCellValue(summary.getProjectName());
+				cell.setCellStyle(borderedCellStyle);
+				
+				if(dayCount>0) {
+				cell = row.createCell(4);
+				cell.setCellValue(summary.getDay1());
+				cell.setCellStyle(borderedCellStyle);
+				}
+				if(dayCount>1) {
+				cell = row.createCell(5);
+				cell.setCellValue(summary.getDay2());
+				cell.setCellStyle(borderedCellStyle);
+				}
+				if(dayCount>2) {
+				cell = row.createCell(6);
+				cell.setCellValue(summary.getDay3());
+				cell.setCellStyle(borderedCellStyle);
+				}
+				if(dayCount>3) {
+				cell = row.createCell(7);
+				cell.setCellValue(summary.getDay4());
+				cell.setCellStyle(borderedCellStyle);
+				}
+				if(dayCount>4) {
+				cell = row.createCell(8);
+				cell.setCellValue(summary.getDay5());
+				cell.setCellStyle(borderedCellStyle);
+				}
+				if(dayCount>5) {
+				cell = row.createCell(9);
+				cell.setCellValue(summary.getDay6());
+				cell.setCellStyle(borderedCellStyle);
+				}
+				if(dayCount>6) {
+				cell = row.createCell(10);
+				cell.setCellValue(summary.getDay7());
+				cell.setCellStyle(borderedCellStyle);
+				}
+				if(dayCount>7) {
+				cell = row.createCell(11);
+				cell.setCellValue(summary.getDay8());
+				cell.setCellStyle(borderedCellStyle);
+				}
+				if(dayCount>8) {
+				cell = row.createCell(12);
+				cell.setCellValue(summary.getDay9());
+				cell.setCellStyle(borderedCellStyle);
+				}
+				if(dayCount>9) {
+				cell = row.createCell(13);
+				cell.setCellValue(summary.getDay10());
+				cell.setCellStyle(borderedCellStyle);
+				}
+				if(dayCount>10) {
+				cell = row.createCell(14);
+				cell.setCellValue(summary.getDay11());
+				cell.setCellStyle(borderedCellStyle);
+				}
+				if(dayCount>11) {
+				cell = row.createCell(15);
+				cell.setCellValue(summary.getDay12());
+				cell.setCellStyle(borderedCellStyle);
+				}
+				if(dayCount>12) {
+				cell = row.createCell(16);
+				cell.setCellValue(summary.getDay13());
+				cell.setCellStyle(borderedCellStyle);
+				}
+				if(dayCount>13) {
+				cell = row.createCell(17);
+				cell.setCellValue(summary.getDay14());
+				cell.setCellStyle(borderedCellStyle);
+				}
+				if(dayCount>14) {
+				cell = row.createCell(18);
+				cell.setCellValue(summary.getDay15());
+				cell.setCellStyle(borderedCellStyle);
+				}
+				if(dayCount>15) {
+				cell = row.createCell(19);
+				cell.setCellValue(summary.getDay16());
+				cell.setCellStyle(borderedCellStyle);
+				}
+				if(dayCount>16) {
+				cell = row.createCell(20);
+				cell.setCellValue(summary.getDay17());
+				cell.setCellStyle(borderedCellStyle);
+				}
+				if(dayCount>17) {
+				cell = row.createCell(21);
+				cell.setCellValue(summary.getDay18());
+				cell.setCellStyle(borderedCellStyle);
+				}
+				if(dayCount>18) {
+				cell = row.createCell(22);
+				cell.setCellValue(summary.getDay19());
+				cell.setCellStyle(borderedCellStyle);
+				}
+				if(dayCount>19) {
+				cell = row.createCell(23);
+				cell.setCellValue(summary.getDay20());
+				cell.setCellStyle(borderedCellStyle);
+				}
+				if(dayCount>20) {
+				cell = row.createCell(24);
+				cell.setCellValue(summary.getDay21());
+				cell.setCellStyle(borderedCellStyle);
+				}
+				if(dayCount>21) {
+				cell = row.createCell(25);
+				cell.setCellValue(summary.getDay22());
+				cell.setCellStyle(borderedCellStyle);
+				}
+				if(dayCount>22) {
+				cell = row.createCell(26);
+				cell.setCellValue(summary.getDay23());
+				cell.setCellStyle(borderedCellStyle);
+				}
+				if(dayCount>23) {
+				cell = row.createCell(27);
+				cell.setCellValue(summary.getDay24());
+				cell.setCellStyle(borderedCellStyle);
+				}
+				if(dayCount>24) {
+				cell = row.createCell(28);
+				cell.setCellValue(summary.getDay25());
+				cell.setCellStyle(borderedCellStyle);
+				}
+				if(dayCount>25) {
+				cell = row.createCell(29);
+				cell.setCellValue(summary.getDay26());
+				cell.setCellStyle(borderedCellStyle);
+				}
+				if(dayCount>26) {
+				cell = row.createCell(30);
+				cell.setCellValue(summary.getDay27());
+				cell.setCellStyle(borderedCellStyle);
+				}
+				if(dayCount>27) {
+				cell = row.createCell(31);
+				cell.setCellValue(summary.getDay28());
+				cell.setCellStyle(borderedCellStyle);
+				}
+				if(dayCount>28) {
+				cell = row.createCell(32);
+				cell.setCellValue(summary.getDay29());
+				cell.setCellStyle(borderedCellStyle);
+				}
+				if(dayCount>29) {
+				cell = row.createCell(33);
+				cell.setCellValue(summary.getDay30());
+				cell.setCellStyle(borderedCellStyle);
+				}
+				if(dayCount>30) {
+				cell = row.createCell(34);
+				cell.setCellValue(summary.getDay31());
+				cell.setCellStyle(borderedCellStyle);
+				}
 			}
 			
 			// Resize all columns to fit the content size

@@ -74,7 +74,7 @@ public class PasswordResetController {
 		    }
 		    String token = UUID.randomUUID().toString();
 		    passwordResetService.createPasswordResetTokenForUser(user, token);
-		    String msg = passwordResetService.sendMail(request.getRequestURL().toString(), request.getLocale(), token, user);
+		    String msg = passwordResetService.sendMail(token, user);
 		    response.put("status", "success");
 	    	response.put("message", msg);
 		}
@@ -134,7 +134,7 @@ public class PasswordResetController {
 			    response.put("status", "success");
 			    response.put("code", httpstatus.getStatus());
 			    response.put("username", user.getUserName());
-				response.put("message", "Password Changed Successfully");
+				response.put("message", "Password Changed Successfully. Please Login.");
 			}
 	    
 		}

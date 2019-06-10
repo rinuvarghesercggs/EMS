@@ -44,7 +44,7 @@ public interface ProjectAllocationRepository extends JpaRepository<AllocationMod
 //	@Query(value ="SELECT EMS.allocation.user_user_id FROM EMS.allocation where EMS.allocation.project_project_id = ?1 LIMIT ?3,?2",nativeQuery = true)
 //	List<Object[]> getUserIdByProject(Long projectId, Long pageSize, Long limit);
 	
-	@Query("select u.user.userId from AllocationModel u where u.project.projectId = ?1")
+	@Query("select u.user.userId from AllocationModel u where u.project.projectId = ?1 and u.user.active = true and u.active = true")
 	List<Object[]> getUserIdByProject(Long projectId);
 
 	@Query(value = "SELECT COUNT(EMS.allocation.user_user_id) FROM EMS.allocation where EMS.allocation.project_project_id = ?1",nativeQuery = true)

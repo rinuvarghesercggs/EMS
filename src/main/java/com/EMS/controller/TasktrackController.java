@@ -1564,4 +1564,37 @@ public class TasktrackController {
 		}
 		return jsonDataRes;
 	}
+	@GetMapping("/getProjectNamesForApproval")
+	public JsonNode getProjectNamesForApproval(@RequestParam("uId") Long uId) {
+		ArrayNode projectTitle = objectMapper.createArrayNode();
+		
+		UserModel user = userService.getUserDetailsById(uId);
+
+		if(user.getRole().getroleName().equals("FINANCE")) {//Finance
+			for (ProjectModel alloc : tasktrackServiceImpl.getProjectNamesForApproval()) {
+
+				ObjectNode node = objectMapper.createObjectNode();
+				node.put("id", alloc.getProjectId());
+				node.put("value", alloc.getProjectName());
+				projectTitle.add(node);
+			}
+		}
+		else {
+			for (AllocationModel alloc : tasktrackServiceImpl.getProjectNamesForApproval(uId)) {
+
+				ObjectNode node = objectMapper.createObjectNode();
+				node.put("id", alloc.getproject().getProjectId());
+				node.put("value", alloc.getproject().getProjectName());
+				projectTitle.add(node);
+			}
+		}
+		ObjectNode dataNode = objectMapper.createObjectNode();
+		dataNode.set("projectTitle", projectTitle);
+
+		ObjectNode node = objectMapper.createObjectNode();
+		node.put("status", "success");
+		node.set("data", dataNode);
+		return node;
+
+	}
 }

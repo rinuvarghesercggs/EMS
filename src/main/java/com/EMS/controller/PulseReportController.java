@@ -3,6 +3,7 @@ package com.EMS.controller;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -18,7 +19,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.EMS.model.ExportApprovalReportModel;
 import com.EMS.model.ExportProjectHourReportModel;
+import com.EMS.model.TaskTrackApproval;
+import com.EMS.repository.TimeTrackApprovalRepository;
 import com.EMS.service.NewHireService;
 import com.EMS.service.ProjectExportService;
 import com.EMS.service.PulseReportService;
@@ -48,6 +52,9 @@ public class PulseReportController {
 	
 	@Autowired
 	ReportService reportService;
+	
+	@Autowired
+	TimeTrackApprovalRepository timeTrackApprovalRepository;
 	
 	private static String[] pReportHeading = { "Consultant", "Hire Date", "Emp. Type", "Client", "Project Name", "PM",
 			"Revenue/ Location", "CPP Level", "Start Date", "End Date", "Billing Type","Daily Bill Rate-INR","Loaded Daily Pay Rate-INR","Daily GM $","Daily GM %","Primary Skill Set","Hourly Bill Rate","Hourly Bill Rate in US$"};
@@ -121,6 +128,48 @@ public class PulseReportController {
 			response.setContentType("application/vnd.ms-excel");
 			response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
 			response.setHeader("Content-Disposition", "filename=\"" + "HourReport.xlsx" + "\"");
+			workrbook.write(response.getOutputStream());
+			workrbook.close();
+		}
+		else if(reportName.equalsIgnoreCase("approvalReport")) {
+			
+			Date startDate = null, endDate = null;
+			SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
+			if (!startdate.isEmpty()) {
+				startDate = outputFormat.parse(startdate);
+			}
+			if (!enddate.isEmpty()) {
+				endDate = outputFormat.parse(enddate);
+			}
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(startDate);
+			
+			String[] monthName = {"January", "February","March", "April", "May", "June",
+					"July","August", "September", "October", "November", "December"};
+			String month = monthName[cal.get(Calendar.MONTH)];
+			
+			int monthIndex = (cal.get(Calendar.MONTH) + 1);
+			int yearIndex = cal.get(Calendar.YEAR);
+			
+			int maxDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+	     			
+	        String sheetName = month+" "+yearIndex;
+			
+	        ArrayList<String> colNames = new ArrayList<String>();
+	        
+	        for(int i=1;i<=maxDay;i++) {
+	        	colNames.add(yearIndex+"-"+month+"-"+(i<10? "0"+i : i));
+	        }
+	        
+			Workbook workrbook = new XSSFWorkbook();
+			Sheet sheet = workrbook.createSheet(sheetName);
+			
+			List <ExportApprovalReportModel>exportData = timeTrackApprovalRepository.getApprovalReportData(monthIndex,yearIndex);
+			projectExportService.exportApprovalReport(exportData,workrbook,sheet,colNames);
+			
+			response.setContentType("application/vnd.ms-excel");
+			response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
+			response.setHeader("Content-Disposition", "filename=\"" + "ApprovalReport.xlsx" + "\"");
 			workrbook.write(response.getOutputStream());
 			workrbook.close();
 		}

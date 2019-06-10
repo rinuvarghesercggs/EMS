@@ -101,21 +101,25 @@ public class PasswordResetServiceImpl implements PasswordResetService{
 	}
 	
 	@Override
-	public String sendMail(String contextPath, Locale locale, String token, UserModel user)  throws Exception{ 
-//		contextPath = contextPath.replace("user/resetPassword", ""); // Local
-//		contextPath = "https://pms.titechdev.com/"; // Production
-		contextPath = "https://stagingpms.titechdev.com/"; // Staging
-		String url = contextPath+"pwdVerify?token=" + token + "&userId="+user.getUserId();
+	public String sendMail(String token, UserModel user)  throws Exception{
+		String contextPath = "";
+		contextPath = "http://192.168.15.55:4200"; // Local
+//		contextPath = "https://pms.titechdev.com"; // Production
+//		contextPath = "https://stagingpms.titechdev.com"; // Staging
+		String url = contextPath+"/pwdVerify?token=" + token + "&userId="+user.getUserId();
 		String subject = "Reset Password";
-		String mailBody = ""+url;
+		StringBuilder mailBody = new StringBuilder("Hi "+user.getFirstName()+" "+user.getLastName()+",");
+		mailBody.append("<br/><br/>To reset your password click the link below:");
+		mailBody.append("<br/><br/> <a href='"+url+"'>Reset password</a>");
+		mailBody.append("<br/><br/>This link will expire in 10 minutes");
 		
 		String to = user.getEmail();
-        String from = "jinu.n@titechglobal.in";  
-        String host = "mail.titechglobal.in"; 
-        final String username = "jinu.n@titechglobal.in";
-        final String password = "titech@2018";  
+        String from = "noreply@titechnologies.in";  
+        String host = "smtp.gmail.com"; 
+        final String username = "noreply@titechnologies.in";
+        final String password = "Noreply!@#";  
         
-        System.out.println("TLSEmail Start"); 
+        System.out.println("TLS Email Start"); 
         
         Properties properties = System.getProperties();  
           
@@ -152,7 +156,8 @@ public class PasswordResetServiceImpl implements PasswordResetService{
 	    message.addRecipient(Message.RecipientType.TO,  
 	                          new InternetAddress(to)); 
 	    message.setSubject(subject); 
-	    message.setText(mailBody); 
+//	    message.setText(mailBody);
+	    message.setContent(mailBody.toString(),"text/html");
 	  
 	    // Send message 
 	    Transport.send(message); 

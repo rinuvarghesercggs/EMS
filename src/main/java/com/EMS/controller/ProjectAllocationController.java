@@ -162,14 +162,15 @@ public class ProjectAllocationController {
 				Long id = requestdata.get("id").asLong();
 				Double allocatedVal = requestdata.get("allocatedPerce").asDouble();
 				Boolean isBillable = requestdata.get("isBillable").asBoolean();
-
+				Boolean isActive = true;//requestdata.get("active").asBoolean();
 
 			//Method invocation for getting allocation details
 			AllocationModel allocationModel = projectAllocation.findDataById(id);
 			if (allocationModel != null) {
 				allocationModel.setAllocatedPerce(allocatedVal);
                 allocationModel.setIsBillable(isBillable);
-
+                allocationModel.setActive(isActive);
+                
                 //Updating allcation details
 				projectAllocation.updateData(allocationModel);
 				jsonDataRes.put("status", "success");
@@ -522,4 +523,32 @@ public class ProjectAllocationController {
 		}
 		
 	}	
+	@PutMapping(value = "/editAllocationstatus")
+	public ObjectNode editAllocationstatus(@RequestBody ObjectNode requestdata, HttpServletResponse httpstatus) {
+
+		ObjectNode jsonDataRes = objectMapper.createObjectNode();
+		
+		try {
+				Long id = requestdata.get("id").asLong();
+				Boolean isActive = requestdata.get("isActive").asBoolean();
+
+			//Method invocation for getting allocation details
+			AllocationModel allocationModel = projectAllocation.findDataById(id);
+			if (allocationModel != null) {
+                allocationModel.setActive(isActive);
+
+                //Updating allcation details
+				projectAllocation.updateData(allocationModel);
+				jsonDataRes.put("status", "success");
+				jsonDataRes.put("code", httpstatus.getStatus());
+				jsonDataRes.put("message", "updated successfully");
+			}
+		} catch (Exception e) {
+			jsonDataRes.put("status", "failure");
+			jsonDataRes.put("code", httpstatus.getStatus());
+			jsonDataRes.put("message", "updation failed. " + e);
+		}
+		return jsonDataRes;
+
+	}
 }

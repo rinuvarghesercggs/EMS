@@ -14,7 +14,7 @@ public interface PasswordResetService {
 	
 	void deletePasswordResetToken(PasswordResetModel passwordResetModel) throws Exception;
 	
-	String sendMail(String contextPath, Locale locale, String token, UserModel user) throws Exception;
+	String sendMail(String token, UserModel user) throws Exception;
 	
 	String validatePasswordResetToken(long id, String token) throws Exception;
 	
