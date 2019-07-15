@@ -155,7 +155,8 @@ public class ReportController {
 				count = projectAllocationService.getUserCount(projectId);
 //				jsonDataRes.put("userCount", count);
 //				userIdList = projectAllocationService.getUserIdByProject(projectId,pageSize,startingIndex);
-				userIdList = projectAllocationService.getUserIdByProject(projectId);
+				//userIdList = projectAllocationService.getUserIdByProject(projectId);
+				userIdList = projectAllocationService.getUserIdByProjectAndDate(projectId,startDate,endDate);
 
 				getUserDataForReport(userIdList, startDate, endDate, jsonDataRes, jsonDataRes1, jsonArray,projectId);
 			}
@@ -248,7 +249,8 @@ public class ReportController {
 //			Long count = projectAllocationService.getUserCount(projectId);
 
 //			userIdList = projectAllocationService.getUserIdByProject(projectId,pageSize,startingIndex);
-			userIdList = projectAllocationService.getUserIdByProject(projectId);
+			//userIdList = projectAllocationService.getUserIdByProject(projectId);
+			userIdList = projectAllocationService.getUserIdByProjectAndDate(projectId,startDate,endDate);
 
 			System.out.println("userIdList size : "+userIdList.size());
 			
