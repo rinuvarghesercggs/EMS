@@ -150,6 +150,14 @@ public class TasktrackServiceImpl implements TasktrackService {
 			return new ArrayList<AllocationModel>();
 		}
 	}
+	public List<AllocationModel> getProjectNamesByMonth(long uId,Date startdate,Date enddate) {
+		try {
+			return tasktrackRepository.getProjectNamesByMonth(uId,startdate,enddate);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ArrayList<AllocationModel>();
+		}
+	}
 	
 	public List<AllocationModel> getProjectNamesForApproval(long uId) {
 		try {
@@ -159,6 +167,7 @@ public class TasktrackServiceImpl implements TasktrackService {
 			return new ArrayList<AllocationModel>();
 		}
 	}
+
 	public List<ProjectModel> getProjectNamesForApproval() {
 		try {
 			return tasktrackRepository.getProjectNamesForApproval();
