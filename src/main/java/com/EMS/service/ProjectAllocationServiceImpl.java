@@ -128,6 +128,11 @@ public class ProjectAllocationServiceImpl implements ProjectAllocationService{
 		return userIdList;
 	}
 
+	public List<Object[]>getUserIdByProjectAndDate(Long projectId,Date startDate, Date endDate){
+		List<Object[]> userIdList = projectAllocationRepository.getUserIdByProjectAndDate(projectId,startDate,endDate);
+		return userIdList;
+	}
+
 	@Override
 	public Long getUserCount(Long projectId) {
 		Long count = projectAllocationRepository.getUserCount(projectId);

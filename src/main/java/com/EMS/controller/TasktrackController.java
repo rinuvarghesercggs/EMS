@@ -2,6 +2,10 @@ package com.EMS.controller;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
+import java.time.temporal.ValueRange;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -64,7 +68,7 @@ public class TasktrackController {
 	ProjectAllocationService projectAllocationService;
 	
 	@Autowired TasktrackApprovalService tasktrackApprovalService;
-	
+
 	@PostMapping(value = "/getTaskDetails")
 	public JsonNode getByDate(@RequestBody Taskdetails requestdata) {
 		/*
@@ -241,6 +245,44 @@ public class TasktrackController {
 
 	}
 
+	@PostMapping("/getProjectNamesByMonth")
+	public JsonNode getProjectNamesByMonth(@RequestBody JsonNode requestData) throws ParseException {
+		String currentmonth = requestData.get("currentmonth").asText();
+		String currentyear  = requestData.get("currentyear").asText();
+		int  uId          = requestData.get("uid").asInt();
+		/*Calendar cal = Calendar.getInstance();
+		int lastDate = cal.getActualMaximum(Calendar.DATE);
+		return lastDate;*/
+		String fromdate = currentyear+"-"+currentmonth+"-01";
+		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.US);
+		LocalDate date = LocalDate.parse(fromdate, dateFormat);
+		ValueRange range = date.range(ChronoField.DAY_OF_MONTH);
+		Long max = range.getMaximum();
+		String todate = String.format("%s-%s-%d", currentyear, currentmonth, max);
+		SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date startdate = outputFormat.parse(fromdate);
+		Date enddate = outputFormat.parse(todate);
+		//LocalDate newDate = date.withDayOfMonth(max.intValue());
+		//return enddate;
+		ArrayNode projectTitle = objectMapper.createArrayNode();
+		for (AllocationModel alloc : tasktrackServiceImpl.getProjectNamesByMonth(uId,startdate,enddate)) {
+
+			ObjectNode node = objectMapper.createObjectNode();
+			node.put("id", alloc.getproject().getProjectId());
+			node.put("value", alloc.getproject().getProjectName());
+			projectTitle.add(node);
+		}
+
+		ObjectNode dataNode = objectMapper.createObjectNode();
+		dataNode.set("projectTitle", projectTitle);
+
+		ObjectNode node = objectMapper.createObjectNode();
+		node.put("status", "success");
+		node.set("data", dataNode);
+		return node;
+
+	}
+
 	@GetMapping("/getTaskCategories")
 	public JsonNode getTaskCategories(@RequestParam("uId") int uId) {
 		ArrayNode taskTypes = objectMapper.createArrayNode();
@@ -397,7 +439,8 @@ public class TasktrackController {
 			List<Object[]> userIdList = null;
 			
 			if (startDate != null && endDate != null ) {
-				userIdList = projectAllocationService.getUserIdByProject(projectId);
+				//userIdList = projectAllocationService.getUserIdByProject(projectId);
+				userIdList = projectAllocationService.getUserIdByProjectAndDate(projectId,startDate,endDate);
 				getUserDataForReport(userIdList, startDate, endDate, jsonDataRes, timeTrackJSONData, loggedJsonArray,billableJsonArray,projectId);
 			}
 			
