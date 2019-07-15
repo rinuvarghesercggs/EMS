@@ -12,14 +12,20 @@ import org.springframework.stereotype.Service;
 import com.EMS.model.PasswordResetModel;
 import com.EMS.model.Technology;
 import com.EMS.model.UserModel;
+import com.EMS.model.TaskCategory;
+import com.EMS.model.UserTaskCategory;
 import com.EMS.model.UserTechnology;
 import com.EMS.repository.PasswordResetRepository;
 import com.EMS.repository.TechnologyRepository;
 import com.EMS.repository.UserRepository;
 import com.EMS.repository.UserTechnologyRepository;
+import com.EMS.repository.UserTaskCategoryRepository;
+import com.EMS.repository.TaskRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+
+import javax.transaction.Transactional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -34,10 +40,30 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private TechnologyRepository technologyRepository;
+
+	@Autowired
+	private TaskRepository TaskRepository;
+
+	@Autowired
+	private UserTaskCategoryRepository UserTaskCategoryRepository;
 	
 	@Override
 	public UserModel getUserDetailsById(Long id) {
 		return userRepository.getActiveUser(id);
+
+	}
+
+	//@Override
+	public TaskCategory getTaskDetailsById(Long taskid) {
+
+		TaskCategory task =TaskRepository.findByTaskId(taskid);
+		/*TaskCategory taskcat = new TaskCategory();
+		//taskcat.setId(Long.parseLong(task[0].toString()));
+		taskcat.setId(Long.parseLong(task[0].toString()));
+		taskcat.setDescription(task[1].toString());
+        taskcat.setName(task[2].toString());*/
+
+		return task;
 
 	}
 
@@ -164,5 +190,11 @@ public class UserServiceImpl implements UserService {
 			user = userList.get();
 		}
 		return user;
+	}
+
+	public void updateUserTaskCategory(UserTaskCategory usertask) {
+
+		UserTaskCategoryRepository.save(usertask);
+
 	}
 }

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.EMS.model.Task;
+import com.EMS.model.TaskCategory;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
 	
@@ -41,7 +42,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 //	@Query(value = "SELECT EMS.user.first_name,EMS.user.last_name,EMS.tasktrack.hours,Date(EMS.tasktrack.date) FROM EMS.tasktrack JOIN EMS.user ON EMS.user.user_id = EMS.tasktrack.user_user_id where (date(EMS.tasktrack.date) <=?3 and date(EMS.tasktrack.date) >= ?2) and (EMS.tasktrack.user_user_id =?1) and (EMS.tasktrack.project_project_id = ?4) order by EMS.tasktrack.date DESC",nativeQuery = true)
 	@Query(value = "SELECT EMS.user.first_name,EMS.user.last_name,EMS.tasktrack.hours,Date(EMS.tasktrack.date) FROM EMS.tasktrack JOIN EMS.user ON EMS.user.user_id = EMS.tasktrack.user_user_id where (date(EMS.tasktrack.date) <=date(?3) and date(EMS.tasktrack.date) >= date(?2)) and (EMS.tasktrack.user_user_id =?1) and (EMS.tasktrack.project_project_id = ?4) order by EMS.tasktrack.date ASC",nativeQuery = true)
 	List<Object[]> getUserListByProject(Long id, Date startDate, Date endDate, Long projectId);
-	
 
+	@Query("SELECT tasks FROM TaskCategory tasks where tasks.id = ?1")
+	TaskCategory findByTaskId(Long taskId);
 }
 

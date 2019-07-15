@@ -7,12 +7,18 @@ import org.json.simple.JSONObject;
 import com.EMS.model.Technology;
 import com.EMS.model.UserModel;
 import com.EMS.model.UserTechnology;
+import com.EMS.model.TaskCategory;
+import com.EMS.model.UserTaskCategory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 public interface UserService {
 	
 	UserModel getUserDetailsById(Long uId);
+
+	TaskCategory getTaskDetailsById(Long taskid);
+
+	public void updateUserTaskCategory(UserTaskCategory usertask);
 
 	List<UserModel> getUserByDeptId(Long deptId);
 

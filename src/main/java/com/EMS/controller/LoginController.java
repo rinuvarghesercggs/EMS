@@ -32,6 +32,8 @@ import com.EMS.model.RoleModel;
 import com.EMS.model.Technology;
 import com.EMS.model.UserModel;
 import com.EMS.model.UserTechnology;
+import com.EMS.model.UserTaskCategory;
+import com.EMS.model.TaskCategory;
 import com.EMS.repository.UserRepository;
 import com.EMS.security.jwt.JwtTokenProvider;
 import com.EMS.service.LoginService;
@@ -231,9 +233,75 @@ public class LoginController {
 				}
 				else {
 
+					Long user_id = user.getUserId();
+
+					UserTaskCategory usertask = new UserTaskCategory();
+
+					long task_Id = 0;
+
+					if(user_id !=null) {
+
+						if (departId == 1) {
+
+							 task_Id = 1;
+
+						}else if(departId == 2) {
+
+							task_Id = 10;
+
+						}else if(departId == 3){
+
+							task_Id = 1;
+
+						}else if(departId == 4 ){
+
+							task_Id = 4;
+
+						}else if(departId == 5){
+
+							task_Id = 2;
+
+						}else if(departId == 6){
+
+							task_Id = 3;
+
+						}else if(departId == 7){
+
+							task_Id = 7;
+
+						}else if(departId == 8){
+
+							task_Id = 4;
+
+						}else if(departId == 11) {
+
+							task_Id = 7;
+						}else {
+
+							task_Id = 0;
+						}
+
+						if(task_Id != 0) {
+
+							UserModel newuser = userService.getUserDetailsById(user_id);
+
+							TaskCategory taskcategory = userService.getTaskDetailsById(task_Id);
+
+							usertask.setTaskCategory(taskcategory);
+							usertask.setUser(newuser);
+
+							//adding details in user task category based on department
+							userService.updateUserTaskCategory(usertask);
+
+						}
+
+					}
+
 					// adding details in user technology
 					ArrayNode usertechnology = (ArrayNode) requestdata.get("userTechnology");
+
 					if (!usertechnology.equals(null)) {
+
 
 //						responseflag = 1;
 //						responsedata.put("message", "Technology insertion failed");
@@ -244,6 +312,7 @@ public class LoginController {
 
 							Long techId = node.get("technology").asLong();
 							Technology technology = null;
+
 
 							if (techId != null)
 								technology = login_service.findtechnology(techId);
@@ -314,7 +383,7 @@ public class LoginController {
 			byte[] digest = md.digest();
 			*/
 			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userName, password));
-		
+
 			UserModel usercheck = login_service.login_authentication(userName);
 					
 			if (usercheck!= null) {			
