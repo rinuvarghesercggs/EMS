@@ -1613,7 +1613,7 @@ public class TasktrackController {
 		
 		UserModel user = userService.getUserDetailsById(uId);
 
-		if(user.getRole().getroleName().equals("FINANCE")) {//Finance
+		if(user.getRole().getroleName().equals("FINANCE") || user.getRole().getroleName().equals("ADMIN") ) {//Finance
 			for (ProjectModel alloc : tasktrackServiceImpl.getProjectNamesForApproval()) {
 
 				ObjectNode node = objectMapper.createObjectNode();
