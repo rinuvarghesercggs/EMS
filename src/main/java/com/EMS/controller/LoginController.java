@@ -233,65 +233,68 @@ public class LoginController {
 				}
 				else {
 
+					//inserting task category against user during user creation
 					Long user_id = user.getUserId();
 
-					UserTaskCategory usertask = new UserTaskCategory();
-
-					long task_Id = 0;
+					long[] taskArray;
 
 					if(user_id !=null) {
 
-						if (departId == 1) {
+						if (departId == 1) {            //department - production
 
-							 task_Id = 1;
+							taskArray= new long[]{1,7};
 
-						}else if(departId == 2) {
+						}else if(departId == 2) {      //department - Design and Graphics
 
-							task_Id = 10;
+							taskArray= new long[]{10,7};
 
-						}else if(departId == 3){
+						}else if(departId == 3) {       //department - Mobile
 
-							task_Id = 1;
+							taskArray= new long[]{1,7};
 
-						}else if(departId == 4 ){
+						}else if(departId == 4 ) {      //department - Testing
+							taskArray= new long[]{4,7};
 
-							task_Id = 4;
+						}else if(departId == 5) {       //department - Sales and marketing
 
-						}else if(departId == 5){
+							taskArray= new long[]{2,7};
 
-							task_Id = 2;
+						}else if(departId == 6) {       //department - Human Resource
 
-						}else if(departId == 6){
+							taskArray= new long[]{3,7};
 
-							task_Id = 3;
+						}else if(departId == 7) {       //department - Administration
 
-						}else if(departId == 7){
+							taskArray= new long[]{7};
 
-							task_Id = 7;
+						}else if(departId == 8){       //department - Quality Assurance
 
-						}else if(departId == 8){
+							taskArray= new long[]{4,7};
 
-							task_Id = 4;
+						}else if(departId == 11) {    // department - House Keeping Association
 
-						}else if(departId == 11) {
+							taskArray= new long[]{7};
 
-							task_Id = 7;
 						}else {
 
-							task_Id = 0;
+							taskArray = null;
 						}
 
-						if(task_Id != 0) {
+						if(taskArray != null) {
 
-							UserModel newuser = userService.getUserDetailsById(user_id);
+							for(long tasks : taskArray) {
 
-							TaskCategory taskcategory = userService.getTaskDetailsById(task_Id);
+								UserTaskCategory usertask   = new UserTaskCategory();
 
-							usertask.setTaskCategory(taskcategory);
-							usertask.setUser(newuser);
+								UserModel newuser           = userService.getUserDetailsById(user_id);
+								TaskCategory taskcategory   = userService.getTaskDetailsById(tasks);
 
-							//adding details in user task category based on department
-							userService.updateUserTaskCategory(usertask);
+								usertask.setTaskCategory(taskcategory);
+								usertask.setUser(newuser);
+
+								//adding details in user task category based on department
+								userService.updateUserTaskCategory(usertask);
+							}
 
 						}
 
