@@ -42,7 +42,7 @@ public interface TasktrackRepository extends JpaRepository<Tasktrack, Long> {
 
 	//@Query(value="SELECT a from AllocationModel a where a.user.userId=:uId AND  ((a.startDate BETWEEN :startdate AND :enddate) OR (a.endDate BETWEEN :startdate AND :enddate)) order by a.project.projectName",nativeQuery=true)
 	//@Query("SELECT a from AllocationModel a where a.user.userId=?1 and  ((a.startDate between ?2 and ?3) OR (a.endDate between ?2 and ?3)) order by a.project.projectName")
-	@Query("SELECT a from AllocationModel a where a.user.userId=?1 and  a.startDate <=?2 and a.endDate >=?3 order by a.project.projectName")
+	@Query("SELECT a from AllocationModel a where a.user.userId=?1 and  a.startDate <=?3 and a.endDate >=?2 order by a.project.projectName")
 	//@Query(value="SELECT a from AllocationModel a where a.user.userId=?1 AND  (a.startDate >=?2 AND a.endDate <=?3) order by a.project.projectName",nativeQuery=true)
 	public List<AllocationModel> getProjectNamesByMonth(long uId,Date startdate,Date enddate) throws Exception;
 	
