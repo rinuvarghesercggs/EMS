@@ -12,6 +12,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.EMS.model.PasswordResetModel;
@@ -24,6 +25,9 @@ public class PasswordResetServiceImpl implements PasswordResetService{
 	
 	@Autowired
 	private PasswordResetRepository passwordResetRepository;
+
+	@Value("${CONTEXT_PATH}")
+	private String CONTEXT_PATH;
 	
 	@Override
 	public void createPasswordResetTokenForUser(UserModel user, String token) throws Exception{
@@ -87,7 +91,7 @@ public class PasswordResetServiceImpl implements PasswordResetService{
 	
 	@Override
 	public String sendMail(String token, UserModel user)  throws Exception{
-		String url = Constants.CONTEXT_PATH+"/pwdVerify?token=" + token + "&userId="+user.getUserId();
+		String url = CONTEXT_PATH+"/pwdVerify?token=" + token + "&userId="+user.getUserId();
 		String subject = "Reset Password";
 		StringBuilder mailBody = new StringBuilder("Hi "+user.getFirstName()+" "+user.getLastName()+",");
 		mailBody.append("<br/><br/>To reset your password click the link below:");

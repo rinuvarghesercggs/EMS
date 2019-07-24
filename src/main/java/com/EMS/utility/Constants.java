@@ -6,6 +6,6 @@ public class Constants {
 	
 //	public static String CONTEXT_PATH = "http://192.168.15.55:4200"; // Local
 //	public static String CONTEXT_PATH = "https://pms.titechdev.com"; // Production
-	public static String CONTEXT_PATH = "https://stagingpms.titechdev.com";
+	//public static String CONTEXT_PATH = "https://stagingpms.titechdev.com";//Staging
 
 }
