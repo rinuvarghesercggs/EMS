@@ -14,7 +14,7 @@ public interface ProjectAllocationService {
 	public void save(AllocationModel allocationModel);
 	public List<AllocationModel> getList();
 	public AllocationModel findDataById(Long id);
-	public void remove(Long id);
+	public Boolean remove(Long id);
 	public AllocationModel updateData(AllocationModel allocationModel);
 	public AllocationModel updatePartially(AllocationModel allocationModel, Long id);
 	public List<AllocationModel> getAllocationList(Long projectId);

@@ -50,8 +50,17 @@ public class ProjectAllocationServiceImpl implements ProjectAllocationService{
 	}
 
 	@Override
-	public void remove(Long id) {
-		projectAllocationRepository.deleteById(id);
+	public Boolean remove(Long id) {
+		// projectAllocationRepository.deleteById(id);
+		boolean result = false;
+		try {
+			projectAllocationRepository.deleteById(id);
+			result = true;
+		} catch (Exception exc) {
+			exc.printStackTrace();
+		}
+
+		return result;
 	}
 
 	@Override

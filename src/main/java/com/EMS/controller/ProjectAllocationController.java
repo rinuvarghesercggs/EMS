@@ -11,18 +11,14 @@ import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.fasterxml.jackson.databind.JsonNode;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.EMS.model.AllocationModel;
 import com.EMS.model.DepartmentModel;
 import com.EMS.model.ProjectModel;
@@ -547,6 +543,131 @@ public class ProjectAllocationController {
 			jsonDataRes.put("status", "failure");
 			jsonDataRes.put("code", httpstatus.getStatus());
 			jsonDataRes.put("message", "updation failed. " + e);
+		}
+		return jsonDataRes;
+
+	}
+	@DeleteMapping("/deleteAllocationById")
+	public JsonNode deleteTaskById(@RequestParam("allocationId") Long id) {
+		ObjectNode node = objectMapper.createObjectNode();
+
+		if (projectAllocation.remove(id)) {
+			node.put("status", "success");
+		} else {
+			node.put("status", "failure");
+		}
+
+		return node;
+	}
+
+	@PutMapping(value = "/v2/editAllocation")
+	public ObjectNode updateDataV2(@RequestBody ObjectNode requestdata, HttpServletResponse httpstatus) {
+
+		ObjectNode jsonDataRes = objectMapper.createObjectNode();
+
+		try {
+			Long id = requestdata.get("id").asLong();
+			String date1 = requestdata.get("startDate").asText();
+			String date2 = requestdata.get("endDate").asText();
+			TimeZone zone = TimeZone.getTimeZone("MST");
+			SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+			outputFormat.setTimeZone(zone);
+
+			// Formating the date values
+			Date startDate = null, endDate = null;
+			if (!date1.isEmpty()) {
+				startDate = outputFormat.parse(date1);
+			}
+			if (!date2.isEmpty()) {
+				endDate = outputFormat.parse(date2);
+			}
+			Double allocatedVal = requestdata.get("allocatedPerce").asDouble();
+			Boolean isBillable = requestdata.get("isBillable").asBoolean();
+			Boolean isActive = true;//requestdata.get("active").asBoolean();
+
+			//Method invocation for getting allocation details
+			AllocationModel allocationModel = projectAllocation.findDataById(id);
+			if (allocationModel != null) {
+				allocationModel.setStartDate(startDate);
+				allocationModel.setEndDate(endDate);
+				allocationModel.setAllocatedPerce(allocatedVal);
+				allocationModel.setIsBillable(isBillable);
+				allocationModel.setActive(isActive);
+
+				//Updating allcation details
+				projectAllocation.updateData(allocationModel);
+				jsonDataRes.put("status", "success");
+				jsonDataRes.put("code", httpstatus.getStatus());
+				jsonDataRes.put("message", "updated successfully");
+			}
+		} catch (Exception e) {
+			jsonDataRes.put("status", "failure");
+			jsonDataRes.put("code", httpstatus.getStatus());
+			jsonDataRes.put("message", "updation failed. " + e);
+		}
+		return jsonDataRes;
+
+	}
+
+	@PostMapping(value = "/v2/getResourceListBasedonProject")
+	public ObjectNode getAllocationListsBasedonProjectV2(@RequestBody ObjectNode requestData,HttpServletResponse httpstatus) {
+
+		// Method invocation for getting allocation list based on the project
+		Long projectId = requestData.get("projectId").asLong();
+		String startDate = requestData.get("startDate").asText();
+		String endDate = requestData.get("endDate").asText();
+		Date fromDate=null,toDate=null;
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+
+		List<AllocationModel> allocationModel = projectAllocation.getAllocationList(projectId);
+
+		ArrayNode jsonArray = objectMapper.createArrayNode();
+		ObjectNode jsonData = objectMapper.createObjectNode();
+		ObjectNode jsonDataRes = objectMapper.createObjectNode();
+		try {
+			fromDate = df.parse(startDate);
+			toDate = df.parse(endDate);
+			if (!(allocationModel.isEmpty() && allocationModel.size() > 0)) {
+				for (AllocationModel item : allocationModel) {
+					String projectStartDate = df.format(item.getStartDate());
+					String projectEndDate = df.format(item.getEndDate());
+					if ((fromDate.compareTo(df.parse(projectStartDate)) >= 0 && fromDate.compareTo(df.parse(projectStartDate)) <= 0)||
+							(toDate.compareTo(df.parse(projectStartDate)) >= 0 && toDate.compareTo(df.parse(projectEndDate)) <= 0)||
+							(fromDate.compareTo(df.parse(projectStartDate)) >= 0 && toDate.compareTo(df.parse(projectEndDate)) <= 0)) {
+
+						ObjectNode jsonObject = objectMapper.createObjectNode();
+						jsonObject.put("allocationId", item.getAllocId());
+						if (item.getproject() != null) {
+							jsonObject.put("projectTitle", item.getproject().getProjectName());
+							jsonObject.put("projectCategory", item.getproject().getProjectCategory());
+						}
+						if (item.getuser() != null) {
+							jsonObject.put("userId",item.getuser().getUserId());
+							jsonObject.put("firstName", item.getuser().getFirstName());
+							jsonObject.put("lastName", item.getuser().getLastName());
+							jsonObject.put("role", item.getuser().getRole().getroleId());
+						}
+						jsonObject.put("startDate",projectStartDate);
+						jsonObject.put("endDate", projectEndDate);
+						jsonObject.put("allocatedVal", item.getAllocatedPerce());
+						jsonObject.put("isBillable", item.getIsBillable());
+
+						if (item.getuser() != null && item.getuser().getDepartment() != null)
+							jsonObject.put("departmentName", item.getuser().getDepartment().getdepartmentName());
+						jsonArray.add(jsonObject);
+					}
+				}
+				jsonData.set("resourceList", jsonArray);
+			}
+			jsonDataRes.put("status", "success");
+			jsonDataRes.put("code", httpstatus.getStatus());
+			jsonDataRes.put("message", "success ");
+			jsonDataRes.set("data", jsonData);
+
+		} catch (Exception e) {
+			jsonDataRes.put("status", "failure");
+			jsonDataRes.put("code", httpstatus.getStatus());
+			jsonDataRes.put("message", "failed. " + e);
 		}
 		return jsonDataRes;
 
