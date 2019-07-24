@@ -72,7 +72,7 @@ public class UserTechnologyRepository extends DbConnectionUtility{
 
 	public List<Technology> getPrimarySkills(long userId) {
 		
-		String sql="SELECT user_technology.technology_technology_id,technology.technology_name FROM EMS.user_technology INNER JOIN technology ON user_technology.technology_technology_id=technology.technology_id where user_technology.user_user_id='"+userId+"'";
+		String sql="SELECT user_technology.technology_technology_id,technology.technology_name FROM user_technology INNER JOIN technology ON user_technology.technology_technology_id=technology.technology_id where user_technology.user_user_id='"+userId+"'";
 		
 		List<Technology> result = jdbcTemplate.query(sql, new RowMapper<Technology>(){
 

@@ -45,6 +45,11 @@ public interface TasktrackService {
 	List<JSONObject> getUserTaskDetails(Long id, Date startDate, Date endDate, List<Object[]> userList,
 			List<JSONObject> jsonArray, List<JSONObject> jsonDataRes1, Boolean isExist,Long projectId);
 
+	List<JSONObject> getUserTaskDetailsByuser(Long id, Date startDate, Date endDate, List<Object[]> userList,
+										List<JSONObject> jsonArray, List<JSONObject> jsonDataRes1, Boolean isExist,Long projectId,String projectName);
+
+	List<Object[]> getProjectListByUserAndDate(Long id, Date startDate, Date endDate);
+
 	List<Object[]> getUserTaskList(Long id, Date startDate, Date endDate, Long projectId);
 		
 }

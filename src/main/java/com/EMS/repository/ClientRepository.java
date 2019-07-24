@@ -9,7 +9,7 @@ import com.EMS.model.ClientModel;
 
 public interface ClientRepository extends JpaRepository<ClientModel, Long>{
 
-	@Query(value="SELECT distinct client_country FROM EMS.client",nativeQuery=true)
+	@Query(value="SELECT distinct client_country FROM client",nativeQuery=true)
 	List<String> getLocation();
 
 }

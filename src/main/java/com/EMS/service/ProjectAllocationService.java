@@ -28,11 +28,14 @@ public interface ProjectAllocationService {
 //	public List<Object[]> getUserIdByProject(Long projectId, Long pageSize, Long limit);
 	public List<Object[]> getUserIdByProject(Long projectId);
 	public List<Object[]>getUserIdByProjectAndDate(Long projectId,Date startDate, Date endDate);
+	public List<Object[]>getProjectListByUserAndDate(Long userId,Date startDate,Date endDate);
 	public Long getUserCount(Long projectId);
-	public Boolean getIsBillable(Long id, Long projectId);	
+	public Boolean getIsBillable(Long id, Long projectId);
 	
 	AllocationModel findById(Long id);
 	public List<AllocationModel> getAllocationListonDate(long projectId, LocalDate startDate, LocalDate endDate);
+
+
 	
 }
 

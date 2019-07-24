@@ -51,7 +51,7 @@ public class ProjectAllocationServiceImpl implements ProjectAllocationService{
 
 	@Override
 	public void remove(Long id) {
-		 projectAllocationRepository.deleteById(id);
+		projectAllocationRepository.deleteById(id);
 	}
 
 	@Override
@@ -132,6 +132,10 @@ public class ProjectAllocationServiceImpl implements ProjectAllocationService{
 		List<Object[]> userIdList = projectAllocationRepository.getUserIdByProjectAndDate(projectId,startDate,endDate);
 		return userIdList;
 	}
+	public List<Object[]>getProjectListByUserAndDate(Long projectId,Date startDate, Date endDate){
+		List<Object[]> projectList = projectAllocationRepository.getProjectListByUserAndDate(projectId,startDate,endDate);
+		return projectList;
+	}
 
 	@Override
 	public Long getUserCount(Long projectId) {
@@ -157,4 +161,6 @@ public class ProjectAllocationServiceImpl implements ProjectAllocationService{
 		List<AllocationModel> projList = projectAllocationRepository.getProjectDatewiseLists(projectId,startDate,endDate);
 		return projList;
 	}
+
+
 }

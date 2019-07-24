@@ -1,5 +1,6 @@
 package com.EMS.service;
 
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -324,6 +325,98 @@ public class TasktrackServiceImpl implements TasktrackService {
 		return jsonDataRes1;
 	}
 
+	@Override
+	public List<JSONObject> getUserTaskDetailsByuser(Long id, Date startDate, Date endDate, List<Object[]> userList,
+											   List<JSONObject> jsonArray, List<JSONObject> jsonDataRes1, Boolean isExist, Long projectId,String projectName) {
+
+		if (isExist) {
+			JSONObject userListObject = new JSONObject();
+
+			JSONObject userObject = new JSONObject();
+
+			jsonArray = new ArrayList<>();
+
+			String name = null;
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(startDate);
+			int diffInDays = (int) ((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+			for (int i = 0; i < diffInDays; i++) {
+
+				int intMonth = (cal.get(Calendar.MONTH) + 1);
+				int intday = cal.get(Calendar.DAY_OF_MONTH);
+				String vl = cal.get(Calendar.YEAR) + "-" + ((intMonth < 10) ? "0" + intMonth : "" + intMonth) + "-"
+						+ ((intday < 10) ? "0" + intday : "" + intday);
+
+				Double hours = 0.0;
+
+				userList = taskRepository.getUserTaskByProjectAndDate(id, projectId, startDate, endDate);
+				if (userList != null && userList.size() > 0) {
+					JSONObject jsonObject = new JSONObject();
+						for (Object[] items : userList) {
+						String st = String.valueOf(items[3]);
+
+						if (st.equals(vl)) {
+							hours = hours + (Double) items[2];
+
+						}
+						name = (String) items[0] + " " + items[1];
+						}
+						userListObject.put("date", jsonArray);
+						userListObject.put("projectName", projectName);
+
+					jsonObject.put(vl, hours);
+					cal.add(Calendar.DATE, 1);
+					jsonArray.add(jsonObject);
+
+				}
+
+				else {
+					JSONObject jsonObject = new JSONObject();
+					String uName = userService.getUserName(id);
+					name = String.valueOf(uName).replace(",", " ");
+					jsonObject.put(vl, 0);
+					cal.add(Calendar.DATE, 1);
+					jsonArray.add(jsonObject);
+				}
+
+			}
+			userListObject.put("userName", name);
+			userListObject.put("date", jsonArray);
+
+			jsonDataRes1.add(userListObject);
+
+		} else {
+			System.out.println("caseee 22");
+			jsonArray = new ArrayList<>();
+			JSONObject userListObject = new JSONObject();
+
+			String uName = userService.getUserName(id);
+			String name = String.valueOf(uName).replace(",", " ");
+
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(startDate);
+			int diffInDays = (int) ((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+			for (int i = 0; i < diffInDays; i++) {
+				JSONObject jsonObject = new JSONObject();
+
+				int intMonth = (cal.get(Calendar.MONTH) + 1);
+				int intday = cal.get(Calendar.DAY_OF_MONTH);
+				String vl = cal.get(Calendar.YEAR) + "-" + ((intMonth < 10) ? "0" + intMonth : "" + intMonth) + "-"
+						+ ((intday < 10) ? "0" + intday : "" + intday);
+
+				jsonObject.put(vl, 0);
+				cal.add(Calendar.DATE, 1);
+				jsonArray.add(jsonObject);
+			}
+			userListObject.put("userName", name);
+			System.out.println("name : " + name);
+			userListObject.put("date", jsonArray);
+
+			jsonDataRes1.add(userListObject);
+		}
+		return jsonDataRes1;
+	}
+
 	private List<Object[]> getUserListByProject(Long id, Date startDate, Date endDate, Long projectId) {
 		List<Object[]> userTaskList = taskRepository.getUserListByProject(id,startDate,endDate,projectId);
 		return userTaskList;
@@ -333,5 +426,12 @@ public class TasktrackServiceImpl implements TasktrackService {
 	public List<Object[]> getUserTaskList(Long id, Date startDate, Date endDate, Long projectId) {
 		List<Object[]> userTaskList = taskRepository.getUserTaskList(id,startDate,endDate,projectId);
 		return userTaskList;
+	}
+
+	public List<Object[]> getProjectListByUserAndDate(Long id, Date startDate, Date endDate)
+	{
+		List<Object[]> projectList = taskRepository.getProjectListByUserAndDate(id, startDate, endDate);
+		return projectList;
+
 	}
 }

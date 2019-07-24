@@ -64,7 +64,7 @@ public class TasktrackApprovalServiceImpl implements TasktrackApprovalService {
 			JSONObject userListObject = new JSONObject();
             
     		userList =getUserListByProject(id, startDate, endDate,projectId);
-
+			System.out.println("userList  : "+userList);
     		loggedJsonArray = new ArrayList<>();
 
 			String name = null;
@@ -111,7 +111,7 @@ public class TasktrackApprovalServiceImpl implements TasktrackApprovalService {
 			userListObject.put("userId", id);
 			userListObject.put("month", intMonth);
 			userListObject.put("logged", loggedJsonArray);
-			
+			System.out.println("logged has data  : "+loggedJsonArray);
 				name = null;
 				cal.setTime(startDate);		
 				int monthIndex = (cal.get(Calendar.MONTH) + 1);
@@ -208,6 +208,7 @@ public class TasktrackApprovalServiceImpl implements TasktrackApprovalService {
 								jsonObject.put(vl, hours);
 								billableJsonArray.add(jsonObject);
 							}
+
 							cal.add(Calendar.DATE, 1);
 							
 							}
@@ -266,7 +267,465 @@ public class TasktrackApprovalServiceImpl implements TasktrackApprovalService {
 			userListObject.put("month", intMonth);
 			userListObject.put("logged", loggedJsonArray);
 			userListObject.put("billable", billableJsonArray);
-			
+			System.out.println("logged is empty  : "+loggedJsonArray);
+			timeTrackJSONData.add(userListObject);
+		}
+		return timeTrackJSONData;
+	}
+
+
+	@Override
+	public List<JSONObject> getTimeTrackUserTaskDetailsByProject(Long id, Date startDate, Date endDate, List<Object[]> userList,
+														List<JSONObject> loggedJsonArray,List<JSONObject> billableJsonArray,List<JSONObject> nonBillableJsonArray,List<JSONObject> timeTrackJSONData, Boolean isExist,Long projectId) {
+		if (isExist) {
+			JSONObject userListObject = new JSONObject();
+
+			userList =getUserListByProject(id, startDate, endDate,projectId);
+
+			loggedJsonArray = new ArrayList<>();
+
+			String name = null;
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(startDate);
+			int diffInDays = (int) ((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+			int intMonth = 0,intday = 0;
+			for (int i = 0; i < diffInDays; i++) {
+				intMonth = (cal.get(Calendar.MONTH) + 1);
+				intday = cal.get(Calendar.DAY_OF_MONTH);
+				String vl = cal.get(Calendar.YEAR) + "-" + ((intMonth < 10) ? "0" + intMonth : "" + intMonth) + "-"
+						+ ((intday < 10) ? "0" + intday : "" + intday);
+
+				Double hours = 0.0;
+				if (userList != null && userList.size() > 0) {
+					JSONObject jsonObject = new JSONObject();
+					for (Object[] item : userList) {
+
+						String st = String.valueOf(item[3]);
+
+						if (st.equals(vl)) {
+							hours = hours + (Double) item[2];
+
+						}
+						name = (String) item[0] + " " + item[1];
+					}
+					jsonObject.put(vl, hours);
+					cal.add(Calendar.DATE, 1);
+					loggedJsonArray.add(jsonObject);
+
+				}
+
+				else {
+					JSONObject jsonObject = new JSONObject();
+					String uName = userService.getUserName(id);
+					name = String.valueOf(uName).replace(",", " ");
+					jsonObject.put(vl, 0);
+					cal.add(Calendar.DATE, 1);
+					loggedJsonArray.add(jsonObject);
+				}
+
+			}
+			userListObject.put("userName", name);
+			userListObject.put("userId", id);
+			userListObject.put("month", intMonth);
+			userListObject.put("logged", loggedJsonArray);
+
+			name = null;
+			cal.setTime(startDate);
+			int monthIndex = (cal.get(Calendar.MONTH) + 1);
+			int yearIndex = cal.get(Calendar.YEAR);
+
+			List<TaskTrackApproval> approvalUserList =getUserListForApproval(id,projectId,monthIndex,yearIndex);
+			billableJsonArray = new ArrayList<>();
+			nonBillableJsonArray = new ArrayList<>();
+
+
+			diffInDays = (int) ((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+			intMonth = 0;
+			intday = 0;
+			Double hours = 0.0;
+			if (approvalUserList != null && approvalUserList.size() > 0) {
+				JSONObject jsonObject = new JSONObject();
+
+				for (TaskTrackApproval item : approvalUserList) {
+					cal.setTime(startDate);
+
+					for (int i = 0; i < diffInDays; i++) {
+
+						intMonth = (cal.get(Calendar.MONTH) + 1);
+						intday = cal.get(Calendar.DAY_OF_MONTH);
+						String vl = cal.get(Calendar.YEAR) + "-" + ((intMonth < 10) ? "0" + intMonth : "" + intMonth) + "-"
+								+ ((intday < 10) ? "0" + intday : "" + intday);
+
+						if(i==0)
+							hours=(Double)item.getDay1();
+						else if(i==1)
+							hours=(Double)item.getDay2();
+						else if(i==2)
+							hours=(Double)item.getDay3();
+						else if(i==3)
+							hours=(Double)item.getDay4();
+						else if(i==4)
+							hours=(Double)item.getDay5();
+						else if(i==5)
+							hours=(Double)item.getDay6();
+						else if(i==6)
+							hours=(Double)item.getDay7();
+						else if(i==7)
+							hours=(Double)item.getDay8();
+						else if(i==8)
+							hours=(Double)item.getDay9();
+						else if(i==9)
+							hours=(Double)item.getDay10();
+						else if(i==10)
+							hours=(Double)item.getDay11();
+						else if(i==11)
+							hours=(Double)item.getDay12();
+						else if(i==12)
+							hours=(Double)item.getDay13();
+						else if(i==13)
+							hours=(Double)item.getDay14();
+						else if(i==14)
+							hours=(Double)item.getDay15();
+						else if(i==15)
+							hours=(Double)item.getDay16();
+						else if(i==16)
+							hours=(Double)item.getDay17();
+						else if(i==17)
+							hours=(Double)item.getDay18();
+						else if(i==18)
+							hours=(Double)item.getDay19();
+						else if(i==19)
+							hours=(Double)item.getDay20();
+						else if(i==20)
+							hours=(Double)item.getDay21();
+						else if(i==21)
+							hours=(Double)item.getDay22();
+						else if(i==22)
+							hours=(Double)item.getDay23();
+						else if(i==23)
+							hours=(Double)item.getDay24();
+						else if(i==24)
+							hours=(Double)item.getDay25();
+						else if(i==25)
+							hours=(Double)item.getDay26();
+						else if(i==26)
+							hours=(Double)item.getDay27();
+						else if(i==27)
+							hours=(Double)item.getDay28();
+						else if(i==28)
+							hours=(Double)item.getDay29();
+						else if(i==29)
+							hours=(Double)item.getDay30();
+						else if(i==30)
+							hours=(Double)item.getDay31();
+
+						name = (String) item.getFirstName() + " " + item.getLastName();
+
+						if(item.getProjectType().equals("Billable")) {
+							jsonObject = new JSONObject();
+							jsonObject.put(vl, hours);
+							billableJsonArray.add(jsonObject);
+						}
+						if(item.getProjectType().equals("Non-Billable")) {
+							jsonObject = new JSONObject();
+							jsonObject.put(vl, hours);
+							nonBillableJsonArray.add(jsonObject);
+						}
+
+						cal.add(Calendar.DATE, 1);
+
+					}
+				}
+			}
+			else {
+				cal.setTime(startDate);
+				for (int i = 0; i < diffInDays; i++) {
+
+					intMonth = (cal.get(Calendar.MONTH) + 1);
+					intday = cal.get(Calendar.DAY_OF_MONTH);
+					String vl = cal.get(Calendar.YEAR) + "-" + ((intMonth < 10) ? "0" + intMonth : "" + intMonth) + "-"
+							+ ((intday < 10) ? "0" + intday : "" + intday);
+
+					JSONObject jsonObject = new JSONObject();
+					jsonObject.put(vl, 0);
+					billableJsonArray.add(jsonObject);
+					nonBillableJsonArray.add(jsonObject);
+
+					cal.add(Calendar.DATE, 1);
+
+				}
+			}
+			userListObject.put("billable", billableJsonArray);
+			userListObject.put("nonbillable", nonBillableJsonArray);
+
+
+
+			timeTrackJSONData.add(userListObject);
+
+		} else {
+			loggedJsonArray = new ArrayList<>();
+			billableJsonArray = new ArrayList<>();
+			JSONObject userListObject = new JSONObject();
+
+			String uName = userService.getUserName(id);
+			String name = String.valueOf(uName).replace(",", " ");
+
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(startDate);
+			int diffInDays = (int) ((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+			int intMonth = 0,intday = 0;
+			for (int i = 0; i < diffInDays; i++) {
+				JSONObject jsonObject = new JSONObject();
+
+				intMonth = (cal.get(Calendar.MONTH) + 1);
+				intday = cal.get(Calendar.DAY_OF_MONTH);
+				String vl = cal.get(Calendar.YEAR) + "-" + ((intMonth < 10) ? "0" + intMonth : "" + intMonth) + "-"
+						+ ((intday < 10) ? "0" + intday : "" + intday);
+
+				jsonObject.put(vl, 0);
+				cal.add(Calendar.DATE, 1);
+				loggedJsonArray.add(jsonObject);
+				billableJsonArray.add(jsonObject);
+				nonBillableJsonArray.add(jsonObject);
+			}
+			userListObject.put("userName", name);
+			userListObject.put("userId", id);
+			userListObject.put("month", intMonth);
+			userListObject.put("logged", loggedJsonArray);
+			userListObject.put("billable", billableJsonArray);
+			userListObject.put("nonbillable", nonBillableJsonArray);
+
+			timeTrackJSONData.add(userListObject);
+		}
+		return timeTrackJSONData;
+	}
+
+	@Override
+	public List<JSONObject> getTimeTrackUserProjectTaskDetails(Long projectId,String projectName, Date startDate, Date endDate, List<Object[]> projectList,
+														List<JSONObject> loggedJsonArray,List<JSONObject> billableJsonArray,List<JSONObject> nonBillableJsonArray,List<JSONObject> timeTrackJSONData, Boolean isExist,Long userId) {
+		if (isExist) {
+
+			JSONObject userListObject = new JSONObject();
+
+			projectList =getUserListByProject(userId, startDate, endDate,projectId);
+
+			loggedJsonArray = new ArrayList<>();
+
+			String name = null;
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(startDate);
+			int diffInDays = (int) ((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+			int intMonth = 0,intday = 0;
+			for (int i = 0; i < diffInDays; i++) {
+				intMonth = (cal.get(Calendar.MONTH) + 1);
+				intday = cal.get(Calendar.DAY_OF_MONTH);
+				String vl = cal.get(Calendar.YEAR) + "-" + ((intMonth < 10) ? "0" + intMonth : "" + intMonth) + "-"
+						+ ((intday < 10) ? "0" + intday : "" + intday);
+
+				Double hours = 0.0;
+				if (projectList != null && projectList.size() > 0) {
+					JSONObject jsonObject = new JSONObject();
+					for (Object[] item : projectList) {
+
+						String st = String.valueOf(item[3]);
+
+						if (st.equals(vl)) {
+							hours = hours + (Double) item[2];
+
+						}
+						name = (String) item[0] + " " + item[1];
+					}
+					jsonObject.put(vl, hours);
+					cal.add(Calendar.DATE, 1);
+					loggedJsonArray.add(jsonObject);
+
+				}
+
+				else {
+					JSONObject jsonObject = new JSONObject();
+					String uName = userService.getUserName(userId);
+					name = String.valueOf(uName).replace(",", " ");
+					jsonObject.put(vl, 0);
+					cal.add(Calendar.DATE, 1);
+					loggedJsonArray.add(jsonObject);
+				}
+
+			}
+			if(projectName !=null) {
+				userListObject.put("projectName", projectName);
+			}
+			else {
+				userListObject.put("userName", name);
+			}
+			userListObject.put("userId", userId);
+			userListObject.put("month", intMonth);
+			userListObject.put("logged", loggedJsonArray);
+
+			name = null;
+			cal.setTime(startDate);
+			int monthIndex = (cal.get(Calendar.MONTH) + 1);
+			int yearIndex = cal.get(Calendar.YEAR);
+
+			List<TaskTrackApproval> approvalUserList =getUserListForApproval(userId,projectId,monthIndex,yearIndex);
+			billableJsonArray = new ArrayList<>();
+			nonBillableJsonArray = new ArrayList<>();
+
+
+			diffInDays = (int) ((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+			intMonth = 0;
+			intday = 0;
+			Double hours = 0.0;
+			if (approvalUserList != null && approvalUserList.size() > 0) {
+				JSONObject jsonObject = new JSONObject();
+
+				for (TaskTrackApproval item : approvalUserList) {
+					cal.setTime(startDate);
+
+					for (int i = 0; i < diffInDays; i++) {
+
+						intMonth = (cal.get(Calendar.MONTH) + 1);
+						intday = cal.get(Calendar.DAY_OF_MONTH);
+						String vl = cal.get(Calendar.YEAR) + "-" + ((intMonth < 10) ? "0" + intMonth : "" + intMonth) + "-"
+								+ ((intday < 10) ? "0" + intday : "" + intday);
+
+						if(i==0)
+							hours=(Double)item.getDay1();
+						else if(i==1)
+							hours=(Double)item.getDay2();
+						else if(i==2)
+							hours=(Double)item.getDay3();
+						else if(i==3)
+							hours=(Double)item.getDay4();
+						else if(i==4)
+							hours=(Double)item.getDay5();
+						else if(i==5)
+							hours=(Double)item.getDay6();
+						else if(i==6)
+							hours=(Double)item.getDay7();
+						else if(i==7)
+							hours=(Double)item.getDay8();
+						else if(i==8)
+							hours=(Double)item.getDay9();
+						else if(i==9)
+							hours=(Double)item.getDay10();
+						else if(i==10)
+							hours=(Double)item.getDay11();
+						else if(i==11)
+							hours=(Double)item.getDay12();
+						else if(i==12)
+							hours=(Double)item.getDay13();
+						else if(i==13)
+							hours=(Double)item.getDay14();
+						else if(i==14)
+							hours=(Double)item.getDay15();
+						else if(i==15)
+							hours=(Double)item.getDay16();
+						else if(i==16)
+							hours=(Double)item.getDay17();
+						else if(i==17)
+							hours=(Double)item.getDay18();
+						else if(i==18)
+							hours=(Double)item.getDay19();
+						else if(i==19)
+							hours=(Double)item.getDay20();
+						else if(i==20)
+							hours=(Double)item.getDay21();
+						else if(i==21)
+							hours=(Double)item.getDay22();
+						else if(i==22)
+							hours=(Double)item.getDay23();
+						else if(i==23)
+							hours=(Double)item.getDay24();
+						else if(i==24)
+							hours=(Double)item.getDay25();
+						else if(i==25)
+							hours=(Double)item.getDay26();
+						else if(i==26)
+							hours=(Double)item.getDay27();
+						else if(i==27)
+							hours=(Double)item.getDay28();
+						else if(i==28)
+							hours=(Double)item.getDay29();
+						else if(i==29)
+							hours=(Double)item.getDay30();
+						else if(i==30)
+							hours=(Double)item.getDay31();
+
+						name = (String) item.getFirstName() + " " + item.getLastName();
+
+						if(item.getProjectType().equals("Billable")) {
+							jsonObject = new JSONObject();
+							jsonObject.put(vl, hours);
+							billableJsonArray.add(jsonObject);
+						}
+						if(item.getProjectType().equals("Non-Billable")) {
+							jsonObject = new JSONObject();
+							jsonObject.put(vl, hours);
+							nonBillableJsonArray.add(jsonObject);
+						}
+						cal.add(Calendar.DATE, 1);
+
+					}
+				}
+			}
+			else {
+				cal.setTime(startDate);
+				for (int i = 0; i < diffInDays; i++) {
+
+					intMonth = (cal.get(Calendar.MONTH) + 1);
+					intday = cal.get(Calendar.DAY_OF_MONTH);
+					String vl = cal.get(Calendar.YEAR) + "-" + ((intMonth < 10) ? "0" + intMonth : "" + intMonth) + "-"
+							+ ((intday < 10) ? "0" + intday : "" + intday);
+
+					JSONObject jsonObject = new JSONObject();
+					jsonObject.put(vl, 0);
+					billableJsonArray.add(jsonObject);
+					nonBillableJsonArray.add(jsonObject);
+					cal.add(Calendar.DATE, 1);
+
+				}
+			}
+			userListObject.put("billable", billableJsonArray);
+			userListObject.put("nonbillable", nonBillableJsonArray);
+
+
+
+			timeTrackJSONData.add(userListObject);
+
+		} else {
+
+			loggedJsonArray = new ArrayList<>();
+			billableJsonArray = new ArrayList<>();
+			JSONObject userListObject = new JSONObject();
+
+			String uName = userService.getUserName(userId);
+			String name = String.valueOf(uName).replace(",", " ");
+
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(startDate);
+			int diffInDays = (int) ((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+			int intMonth = 0,intday = 0;
+			for (int i = 0; i < diffInDays; i++) {
+				JSONObject jsonObject = new JSONObject();
+
+				intMonth = (cal.get(Calendar.MONTH) + 1);
+				intday = cal.get(Calendar.DAY_OF_MONTH);
+				String vl = cal.get(Calendar.YEAR) + "-" + ((intMonth < 10) ? "0" + intMonth : "" + intMonth) + "-"
+						+ ((intday < 10) ? "0" + intday : "" + intday);
+
+				jsonObject.put(vl, 0);
+				cal.add(Calendar.DATE, 1);
+				loggedJsonArray.add(jsonObject);
+				billableJsonArray.add(jsonObject);
+				nonBillableJsonArray.add(jsonObject);
+			}
+			userListObject.put("userName", name);
+			userListObject.put("userId", userId);
+			userListObject.put("month", intMonth);
+			userListObject.put("logged", loggedJsonArray);
+			userListObject.put("billable", billableJsonArray);
+			userListObject.put("nonbillable", nonBillableJsonArray);
+
 			timeTrackJSONData.add(userListObject);
 		}
 		return timeTrackJSONData;

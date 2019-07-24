@@ -14,12 +14,12 @@ import com.EMS.model.LeaveModel;
 
 public interface LeaveRepository extends JpaRepository<LeaveModel, Long> {
 
-	@Query(value = "select Date(EMS.user_leave.leave_from) AS leaveFrom,Date(EMS.user_leave.leave_to) AS leaveTo,EMS.user_leave.leave_reason AS leaveReason,EMS.user_leave.status AS status,EMS.user_leave.leave_type AS leaveType,EMS.user_leave.leave_count AS leaveCount from EMS.user_leave where EMS.user_leave.user_user_id = ?1 and (EMS.user_leave.leave_from >= ?2 and EMS.user_leave.leave_to <= ?3)",nativeQuery = true)
+	@Query(value = "select Date(user_leave.leave_from) AS leaveFrom,Date(user_leave.leave_to) AS leaveTo,user_leave.leave_reason AS leaveReason,user_leave.status AS status,user_leave.leave_type AS leaveType,user_leave.leave_count AS leaveCount from user_leave where user_leave.user_user_id = ?1 and (user_leave.leave_from >= ?2 and user_leave.leave_to <= ?3)",nativeQuery = true)
 	List<Object[]> getUserLeaveList(Long userId, LocalDate firstDayOfYear, LocalDate lastDayOfYear);
 	
 //	@Query(value="SELECT * FROM EMS.user_leave where (date(leave_from) >=:startdate1 AND date(leave_to)<=:enddate1) OR (date(leave_from) <=:startdate1 AND (date(leave_to)<=:enddate1 AND date(leave_to)>=:startdate1)) OR (date(leave_to) >=:enddate1 AND (date(leave_from)>=:startdate1 AND date(leave_from)<=:enddate1)) OR (date(leave_from)<:startdate1 AND date(leave_to)>:enddate1)",nativeQuery=true)
 //	@Query(value="SELECT user_leave_id,date(leave_from),date(leave_to),leave_count,leave_type,user_user_id,leave_reason,status  FROM EMS.user_leave where (date(leave_from) >=:startdate1 AND date(leave_to)<=:enddate1) OR (date(leave_from) <=:startdate1 AND (date(leave_to)<=:enddate1 AND date(leave_to)>=:startdate1)) OR (date(leave_to) >=:enddate1 AND (date(leave_from)>=:startdate1 AND date(leave_from)<=:enddate1)) OR (date(leave_from)<:startdate1 AND date(leave_to)>:enddate1)",nativeQuery=true)
-	@Query(value="SELECT user_leave_id,applied_date,approved_date,leave_count,date(leave_from),leave_reason,date(leave_to),leave_type,status,user_user_id  FROM EMS.user_leave where (date(leave_from) >=:startdate1 AND date(leave_to)<=:enddate1) OR (date(leave_from) <=:startdate1 AND (date(leave_to)<=:enddate1 AND date(leave_to)>=:startdate1)) OR (date(leave_to) >=:enddate1 AND (date(leave_from)>=:startdate1 AND date(leave_from)<=:enddate1)) OR (date(leave_from)<:startdate1 AND date(leave_to)>:enddate1)",nativeQuery=true)
+	@Query(value="SELECT user_leave_id,applied_date,approved_date,leave_count,date(leave_from),leave_reason,date(leave_to),leave_type,status,user_user_id  FROM user_leave where (date(leave_from) >=:startdate1 AND date(leave_to)<=:enddate1) OR (date(leave_from) <=:startdate1 AND (date(leave_to)<=:enddate1 AND date(leave_to)>=:startdate1)) OR (date(leave_to) >=:enddate1 AND (date(leave_from)>=:startdate1 AND date(leave_from)<=:enddate1)) OR (date(leave_from)<:startdate1 AND date(leave_to)>:enddate1)",nativeQuery=true)
 	List<Object[]> getweeklyleavelist(Date startdate1,Date enddate1);
 //	List<LeaveModel> getweeklyleavelist(Date startdate1,Date enddate1);
 	
@@ -33,7 +33,7 @@ public interface LeaveRepository extends JpaRepository<LeaveModel, Long> {
 	@Query(value="Select * from user_leave where leave_from >=:startDate1 AND leave_to<=:endDate1",nativeQuery=true)
 	List<LeaveModel> getyearlyleavelist(Date startDate1, Date endDate1);
 
-	@Query(value = "select Date(EMS.user_leave.leave_from) AS leaveFrom,Date(EMS.user_leave.leave_to) AS leaveTo,EMS.user_leave.leave_reason AS leaveReason,EMS.user_leave.status AS status,EMS.user_leave.leave_type AS leaveType,EMS.user_leave.leave_count AS leaveCount  from EMS.user_leave where EMS.user_leave.user_user_id = ?1 and (EMS.user_leave.leave_from >= ?2 and EMS.user_leave.leave_to <= ?3) and EMS.user_leave.leave_type = ?4",nativeQuery = true)
+	@Query(value = "select Date(user_leave.leave_from) AS leaveFrom,Date(user_leave.leave_to) AS leaveTo,user_leave.leave_reason AS leaveReason,user_leave.status AS status,user_leave.leave_type AS leaveType,user_leave.leave_count AS leaveCount  from user_leave where user_leave.user_user_id = ?1 and (user_leave.leave_from >= ?2 and user_leave.leave_to <= ?3) and user_leave.leave_type = ?4",nativeQuery = true)
 	List<Object[]> getUsersLeaveLeaveListByType(Long userId, LocalDate firstDayOfYear, LocalDate lastDayOfYear, String type);
 
 	@Modifying

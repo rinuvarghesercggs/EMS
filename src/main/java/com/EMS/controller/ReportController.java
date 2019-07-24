@@ -1,5 +1,6 @@
 package com.EMS.controller;
 
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -100,9 +101,9 @@ public class ReportController {
 	
 	
 	
-	
-	
-	
+
+
+
 	@PostMapping("/getUserReport")
 	public JSONObject getUserreport(@RequestBody JsonNode requestdata, HttpServletResponse httpstatus)
 			throws ParseException {
@@ -190,8 +191,124 @@ public class ReportController {
 		return jsonDataRes;
 	}
 
+
+	@PostMapping("/getUserReportByUserIdorProject")
+	public JSONObject getUserreportByUserIdorProject(@RequestBody JsonNode requestdata, HttpServletResponse httpstatus)
+			throws ParseException {
+
+		JSONObject jsonDataRes = new JSONObject();
+		List<JSONObject> jsonDataRes1 = new ArrayList<>();
+		List<JSONObject> jsonArray = new ArrayList<>();
+		Long userId = null, projectId = null;
+//		Long pageSize = 50L;
+//		Long pageIndex = null;
+
+
+		try {
+			if (requestdata.get("userId") != null && requestdata.get("userId").asText() != "") {
+				userId = requestdata.get("userId").asLong();
+			}
+
+			if (requestdata.get("projectId") != null && requestdata.get("projectId").asText() != "") {
+				projectId = requestdata.get("projectId").asLong();
+			}
+
+//			if (requestdata.get("pageIndex") != null && requestdata.get("pageIndex").asText() != "") {
+//				pageIndex = requestdata.get("pageIndex").asLong();
+//			}
+//			Long startingIndex = (pageSize*pageIndex)+1;
+			String date1 = requestdata.get("startDate").asText();
+			String date2 = requestdata.get("endDate").asText();
+
+			SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
+			Date startDate = null, endDate = null;
+			if (!date1.isEmpty()) {
+				startDate = outputFormat.parse(date1);
+			}
+			if (!date2.isEmpty()) {
+				endDate = outputFormat.parse(date2);
+			}
+
+			List<Object[]> userIdList = null;
+			List<Object[]> projectList = null;
+			Long count = null;
+			if (startDate != null && endDate != null && projectId == null && userId == null) {
+				count = userService.getCount();
+//				jsonDataRes.put("userCount", count);
+//				userIdList = userService.getUserIdLists(pageSize,startingIndex);
+				userIdList = userService.getUserIdLists();
+				getUserDataForReport(userIdList, startDate, endDate, jsonDataRes, jsonDataRes1, jsonArray,projectId);
+
+			}
+
+			else if (startDate != null && endDate != null && projectId != null && userId == null) {
+				count = projectAllocationService.getUserCount(projectId);
+//				jsonDataRes.put("userCount", count);
+//				userIdList = projectAllocationService.getUserIdByProject(projectId,pageSize,startingIndex);
+				//userIdList = projectAllocationService.getUserIdByProject(projectId);
+				userIdList = projectAllocationService.getUserIdByProjectAndDate(projectId,startDate,endDate);
+
+				getUserDataForReport(userIdList, startDate, endDate, jsonDataRes, jsonDataRes1, jsonArray,projectId);
+			}
+
+			else if (startDate != null && endDate != null && projectId == null && userId != null) {
+				List<Object[]> userList = null;
+//				jsonDataRes.put("userCount", "1");
+				Boolean isExist = taskTrackService.checkIsUserExists(userId);
+				System.out.println("aaaaa");
+				/*List<JSONObject> jsonDataRes11 = taskTrackService.getUserTaskDetails(userId, startDate, endDate,
+						userList, jsonArray, jsonDataRes1, isExist,projectId);*/
+				/*List<JSONObject> jsonDataRes11 = taskTrackService.getUserTaskDetailsByuser(userId, startDate, endDate,
+						userList, jsonArray, jsonDataRes1, isExist,projectId);*/
+				projectList = taskTrackService.getProjectListByUserAndDate(userId, startDate, endDate);
+				getUserDataForReportByProject(projectList,startDate,endDate,jsonDataRes,jsonDataRes1,jsonArray,userId);
+				/*List<JSONObject> jsonDataRes11 = taskTrackService.getUserTaskDetailsByuser(userId, startDate, endDate,
+						userList, jsonArray, jsonDataRes1, isExist,projectId);*/
+			}
+
+			else if (startDate != null && endDate != null && projectId != null && userId != null) {
+				List<Object[]> userList = null;
+//				jsonDataRes.put("userCount", "1");
+				Boolean isExist = taskTrackService.checkExistanceOfUser(projectId, userId);
+				List<JSONObject> jsonDataRes11 = taskTrackService.getUserTaskDetails(userId, startDate, endDate,
+						userList, jsonArray, jsonDataRes1, isExist,projectId);
+
+			}
+			jsonDataRes.put("data", jsonDataRes1);
+			jsonDataRes.put("status", "success");
+			jsonDataRes.put("message", "success. ");
+			jsonDataRes.put("code", httpstatus.getStatus());
+		} catch (Exception e) {
+			jsonDataRes.put("status", "failure");
+			jsonDataRes.put("code", httpstatus.getStatus());
+			jsonDataRes.put("message", "failed. " + e);
+		}
+
+		return jsonDataRes;
+	}
+
+
+
+	private void getUserDataForReportByProject(List<Object[]> projectList, Date startDate, Date endDate, JSONObject jsonDataRes,
+											   List<JSONObject> jsonDataRes1, List<JSONObject> jsonArray,Long userId) {
+		Long projectId = null;
+		String projectName = null;
+		for (Object[] item : projectList) {
+
+			projectId = ((BigInteger) item[0]).longValue();
+			projectName = (String)item[1];
+
+			List<Object[]> userList = null;
+			Boolean isExist = taskTrackService.checkIsUserExists(userId);
+			List<JSONObject> jsonDataRes11 = taskTrackService.getUserTaskDetailsByuser(userId, startDate, endDate,
+					userList, jsonArray, jsonDataRes1, isExist,projectId,projectName);
+
+		}
+	}
+
+
 	private void getUserDataForReport(List<Object[]> userIdList, Date startDate, Date endDate, JSONObject jsonDataRes,
-			List<JSONObject> jsonDataRes1, List<JSONObject> jsonArray,Long projectId) {
+									  List<JSONObject> jsonDataRes1, List<JSONObject> jsonArray,Long projectId) {
 
 		for (Object userItem : userIdList) {
 
@@ -200,7 +317,7 @@ public class ReportController {
 
 			List<Object[]> userList = null;
 			Boolean isExist = taskTrackService.checkIsUserExists(id);
-			 List<JSONObject> jsonDataRes11 = taskTrackService.getUserTaskDetails(id, startDate, endDate, userList, jsonArray, jsonDataRes1, isExist,projectId);
+			List<JSONObject> jsonDataRes11 = taskTrackService.getUserTaskDetails(id, startDate, endDate, userList, jsonArray, jsonDataRes1, isExist,projectId);
 
 		}
 	}

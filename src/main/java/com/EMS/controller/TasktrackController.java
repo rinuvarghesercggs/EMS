@@ -1,5 +1,6 @@
 package com.EMS.controller;
 
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -37,6 +38,7 @@ import com.EMS.model.Task;
 import com.EMS.model.TaskTrackApproval;
 import com.EMS.model.Tasktrack;
 import com.EMS.model.UserModel;
+import com.EMS.repository.TaskRepository;
 import com.EMS.service.ProjectAllocationService;
 import com.EMS.service.ProjectService;
 import com.EMS.service.TasktrackApprovalService;
@@ -60,6 +62,9 @@ public class TasktrackController {
 	TasktrackServiceImpl tasktrackServiceImpl;
 	@Autowired
 	UserService userService;
+
+	@Autowired
+	TaskRepository taskRepository;
 
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -456,6 +461,78 @@ public class TasktrackController {
 
 		return jsonDataRes;
 	}
+	@PostMapping("/getTaskTrackDataByProjectorUser")
+	public JSONObject getTaskTrackDataByProjectorUser(@RequestBody JsonNode requestdata, HttpServletResponse httpstatus) throws ParseException {
+
+		JSONObject jsonDataRes = new JSONObject();
+		JSONObject returnJsonData = new JSONObject();
+		List<JSONObject> timeTrackJSONData = new ArrayList<>();
+		List<JSONObject> loggedJsonArray = new ArrayList<>();
+		List<JSONObject> billableJsonArray = new ArrayList<>();
+		List<JSONObject> nonBillableJsonArray = new ArrayList<>();
+		List<JSONObject> timeTrackJsonData = new ArrayList<>();
+		Long projectId = null;
+		Long userId = null;
+
+		try {
+
+			if (requestdata.get("projectId") != null && requestdata.get("projectId").asText() != "") {
+				projectId = requestdata.get("projectId").asLong();
+			}
+
+			if (requestdata.get("userId") != null && requestdata.get("userId").asText() != "") {
+				userId = requestdata.get("userId").asLong();
+			}
+
+			String date1 = requestdata.get("startDate").asText();
+			String date2 = requestdata.get("endDate").asText();
+
+			SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
+			Date startDate = null, endDate = null;
+			if (!date1.isEmpty()) {
+				startDate = outputFormat.parse(date1);
+			}
+			if (!date2.isEmpty()) {
+				endDate = outputFormat.parse(date2);
+			}
+
+			List<Object[]> userIdList = null;
+			List<Object[]> projectList = null;
+
+			if (startDate != null && endDate != null && projectId != null && userId == null) {
+				//userIdList = projectAllocationService.getUserIdByProject(projectId);
+				userIdList = projectAllocationService.getUserIdByProjectAndDate(projectId,startDate,endDate);
+				getUserDataForReportByProject(userIdList, startDate, endDate, jsonDataRes, timeTrackJSONData, loggedJsonArray,billableJsonArray,nonBillableJsonArray,projectId);
+			}
+			else if (startDate != null && endDate != null && projectId == null && userId != null) {
+				//userIdList = projectAllocationService.getUserIdByProject(projectId);
+				//projectIdList = projectAllocationService.getProjectIdByUserAndDate(userId,startDate,endDate);
+				projectList = projectAllocationService.getProjectListByUserAndDate(userId, startDate, endDate);
+				getProjectDataForReport(projectList, startDate, endDate, jsonDataRes, timeTrackJSONData, loggedJsonArray,billableJsonArray,nonBillableJsonArray,userId);
+			}
+			else if (startDate != null && endDate != null && projectId != null && userId != null) {
+				//userIdList = projectAllocationService.getUserIdByProject(projectId);
+			//	List<Object[]> projectList = null;
+				String projectName = null;
+				Boolean isExist = tasktrackApprovalService.checkIsUserExists(userId);
+				//Data From Time track
+				projectList =taskRepository.getUserListByProject(userId, startDate, endDate,projectId);
+				if (projectList != null && projectList.size() > 0) {
+					timeTrackJsonData = tasktrackApprovalService.getTimeTrackUserProjectTaskDetails(projectId, projectName, startDate, endDate, projectList, loggedJsonArray, billableJsonArray, nonBillableJsonArray, timeTrackJSONData, isExist, userId);
+				}
+			}
+			jsonDataRes.put("data", timeTrackJSONData);
+			jsonDataRes.put("status", "success");
+			jsonDataRes.put("message", "success. ");
+			jsonDataRes.put("code", httpstatus.getStatus());
+		} catch (Exception e) {
+			jsonDataRes.put("status", "failure");
+			jsonDataRes.put("code", httpstatus.getStatus());
+			jsonDataRes.put("message", "failed. " + e);
+		}
+
+		return jsonDataRes;
+	}
 	private void getUserDataForReport(List<Object[]> userIdList, Date startDate, Date endDate, JSONObject jsonDataRes,
 			List<JSONObject> timeTrackJSONData, List<JSONObject> loggedJsonArray,List<JSONObject> billableJsonArray,Long projectId) {
 		
@@ -471,6 +548,60 @@ public class TasktrackController {
 			timeTrackJsonData = tasktrackApprovalService.getTimeTrackUserTaskDetails(id, startDate, endDate, userList, loggedJsonArray,billableJsonArray, timeTrackJSONData, isExist,projectId);	
 		}
 		
+	}
+	private void getUserDataForReportByProjectandUser(List<Object[]> userIdList, Date startDate, Date endDate, JSONObject jsonDataRes,
+									  List<JSONObject> timeTrackJSONData, List<JSONObject> loggedJsonArray,List<JSONObject> billableJsonArray,List<JSONObject> nonBillableJsonArray,Long projectId) {
+
+		JSONObject resultData = new JSONObject();
+		List<JSONObject> timeTrackJsonData = new ArrayList<>();
+		List<JSONObject> approvalJsonData = new ArrayList<>();
+		for (Object userItem : userIdList) {
+
+			Long id = (Long) userItem;
+			List<Object[]> userList = null;
+			Boolean isExist = tasktrackApprovalService.checkIsUserExists(id);
+			//Data From Time track
+			timeTrackJsonData = tasktrackApprovalService.getTimeTrackUserTaskDetailsByProject(id, startDate, endDate, userList, loggedJsonArray,billableJsonArray,nonBillableJsonArray, timeTrackJSONData, isExist,projectId);
+		}
+
+	}
+	private void getUserDataForReportByProject(List<Object[]> userIdList, Date startDate, Date endDate, JSONObject jsonDataRes,
+											   List<JSONObject> timeTrackJSONData, List<JSONObject> loggedJsonArray,List<JSONObject> billableJsonArray,List<JSONObject> nonBillableJsonArray,Long projectId) {
+
+		JSONObject resultData = new JSONObject();
+		List<JSONObject> timeTrackJsonData = new ArrayList<>();
+		List<JSONObject> approvalJsonData = new ArrayList<>();
+		for (Object userItem : userIdList) {
+
+			Long id = (Long) userItem;
+			List<Object[]> userList = null;
+			Boolean isExist = tasktrackApprovalService.checkIsUserExists(id);
+			//Data From Time track
+			timeTrackJsonData = tasktrackApprovalService.getTimeTrackUserTaskDetailsByProject(id, startDate, endDate, userList, loggedJsonArray,billableJsonArray,nonBillableJsonArray, timeTrackJSONData, isExist,projectId);
+		}
+
+	}
+
+	private void getProjectDataForReport(List<Object[]> projectIdList, Date startDate, Date endDate, JSONObject jsonDataRes,
+									  List<JSONObject> timeTrackJSONData, List<JSONObject> loggedJsonArray,List<JSONObject> billableJsonArray,List<JSONObject> nonBillableJsonArray,Long userId) {
+
+		JSONObject resultData = new JSONObject();
+		List<JSONObject> timeTrackJsonData = new ArrayList<>();
+		List<JSONObject> approvalJsonData = new ArrayList<>();
+		Long projectId = null;
+		String projectName = null;
+		for (Object[] projectItem : projectIdList) {
+
+			projectId = ((BigInteger) projectItem[0]).longValue();
+			projectName = (String)projectItem[1];
+			System.out.println(projectId);
+			System.out.println(projectName);
+			List<Object[]> projectList = null;
+			Boolean isExist = tasktrackApprovalService.checkIsUserExists(userId);
+			//Data From Time track
+			timeTrackJsonData = tasktrackApprovalService.getTimeTrackUserProjectTaskDetails(projectId,projectName, startDate, endDate, projectList, loggedJsonArray,billableJsonArray,nonBillableJsonArray,timeTrackJSONData, isExist,userId);
+		}
+
 	}
 	
 	@PostMapping("/getTaskTrackDataByUserId")

@@ -17,7 +17,7 @@ import com.EMS.utility.DbConnectionUtility;
 public class TermRepository extends DbConnectionUtility{
 
 	public List<UserTermination> getTerminationList(Date startDate,Date endDate) {
-		String sql = "SELECT * FROM EMS.user_termination where date(termination_date) between '2019-01-01' AND '2019-05-01'";
+		String sql = "SELECT * FROM user_termination where date(termination_date) between '2019-01-01' AND '2019-05-01'";
 
 		List<UserTermination> result = jdbcTemplate.query(sql, new RowMapper<UserTermination>() {
 

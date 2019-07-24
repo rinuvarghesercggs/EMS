@@ -12,14 +12,14 @@ import com.EMS.model.LeaveBalanceModel;
 
 public interface LeaveBalanceRepository extends JpaRepository<LeaveBalanceModel, Long> {
 
-	@Query(value = "SELECT * FROM EMS.leave_balance where EMS.leave_balance.user_user_id = ?1 and EMS.leave_balance.quarter = ?2 and EMS.leave_balance.year = ?3",nativeQuery = true)
+	@Query(value = "SELECT * FROM leave_balance where leave_balance.user_user_id = ?1 and leave_balance.quarter = ?2 and leave_balance.year = ?3",nativeQuery = true)
 	LeaveBalanceModel getLeaveBalance(Long userId, int quater, int year);
 
-	@Query(value="SELECT DISTINCT user_user_id FROM EMS.leave_balance",nativeQuery=true)
+	@Query(value="SELECT DISTINCT user_user_id FROM leave_balance",nativeQuery=true)
 	List<Long> getUserId();
 
-	@Query(value="SELECT * FROM EMS.leave_balance where quarter=:quarter AND user_user_id=:userId AND year=:year",nativeQuery=true)
-//	@Query(value="SELECT * FROM EMS.leave_balance where quarter=1 AND user_user_id=73 AND year=2019",nativeQuery=true)
+	@Query(value="SELECT * FROM leave_balance where quarter=:quarter AND user_user_id=:userId AND year=:year",nativeQuery=true)
+//	@Query(value="SELECT * FROM leave_balance where quarter=1 AND user_user_id=73 AND year=2019",nativeQuery=true)
 	LeaveBalanceModel getuserLeaveBalance(long year, int quarter, long userId);
 
 	@Query(value="SELECT COUNT(*) FROM leave_balance WHERE user_user_id=:userId AND quarter=:quarter AND year=:year",nativeQuery=true)
