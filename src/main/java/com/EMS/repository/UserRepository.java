@@ -68,4 +68,7 @@ public interface UserRepository extends JpaRepository<UserModel, Long>{
 //	@Query("select u from UserModel u where u.userName = ?1")
 	Optional<UserModel> findByUserName(String username);
 
+	@Query(value = "SELECT user_id,first_name,last_name FROM user where role_role_id in('2','3','5') and  department_department_id in('1','2','3','4','8') AND active = true",nativeQuery = true)
+	List<Object[]> getUserList();
+
 }

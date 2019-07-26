@@ -2,6 +2,7 @@ package com.EMS.controller;
 
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -55,7 +56,8 @@ public class PulseReportController {
 	
 	@Autowired
 	TimeTrackApprovalRepository timeTrackApprovalRepository;
-	
+
+
 	private static String[] pReportHeading = { "Consultant", "Hire Date", "Emp. Type", "Client", "Project Name", "PM",
 			"Revenue/ Location", "CPP Level", "Start Date", "End Date", "Billing Type","Daily Bill Rate-INR","Loaded Daily Pay Rate-INR","Daily GM $","Daily GM %","Primary Skill Set","Hourly Bill Rate","Hourly Bill Rate in US$"};
 
@@ -212,6 +214,127 @@ public class PulseReportController {
 			response.setContentType("application/vnd.ms-excel");
 			response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
 			response.setHeader("Content-Disposition", "filename=\"" + "NonApprovalReport.xlsx" + "\"");
+			workrbook.write(response.getOutputStream());
+			workrbook.close();
+		}
+
+		else if(reportName.equalsIgnoreCase("allReport")) {
+
+			Date startDate = null, endDate = null;
+			SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
+			if (!startdate.isEmpty()) {
+				startDate = outputFormat.parse(startdate);
+			}
+			if (!enddate.isEmpty()) {
+				endDate = outputFormat.parse(enddate);
+			}
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(startDate);
+
+			String[] monthName = {"January", "February","March", "April", "May", "June",
+					"July","August", "September", "October", "November", "December"};
+			String month = monthName[cal.get(Calendar.MONTH)];
+
+			int monthIndex = (cal.get(Calendar.MONTH) + 1);
+			int yearIndex = cal.get(Calendar.YEAR);
+
+			int maxDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+			String sheetName = month+" "+yearIndex;
+			String reportType = "monthly";
+
+			ArrayList<String> colNames = new ArrayList<String>();
+
+			for(int i=1;i<=maxDay;i++) {
+				colNames.add(yearIndex+"-"+month+"-"+(i<10? "0"+i : i));
+			}
+			/*List<Object[]> userList = userRepository.getUserList();
+
+			System.out.println(userList.size());
+
+			//List <ExportApprovalReportModel>exportData2 = timeTrackApprovalRepository.getAllReportData(monthIndex,yearIndex);
+
+			for(Object[] item : userList) {
+				Long id = ((BigInteger) item[0]).longValue();
+				System.out.println(id);
+				List<Object[]> loggedData = timeTrackApprovalJPARepository.getTimeTrackApprovalDataByUserId(monthIndex,yearIndex,id);
+
+			}*/
+
+
+			Workbook workrbook = new XSSFWorkbook();
+			Sheet sheet        = workrbook.createSheet("Billable");
+			String nameofReport   = "PROJECT APPROVAL REPORT";
+			List <ExportApprovalReportModel>exportData = timeTrackApprovalRepository.getApprovalReportData(monthIndex,yearIndex);
+			projectExportService.exportAllReport(exportData,workrbook,sheet,colNames,nameofReport);
+
+			Sheet sheet1 = workrbook.createSheet("Non-billable");
+			String nameofReport1   = "PROJECT NON-BILLABLE  REPORT";
+			List <ExportApprovalReportModel>exportData1 = timeTrackApprovalRepository.getNonApprovalReportData(monthIndex,yearIndex);
+			projectExportService.exportAllReport(exportData1,workrbook,sheet1,colNames,nameofReport1);
+
+			Sheet sheet2 = workrbook.createSheet("Beach");
+			String nameofReport2   = "BENCH PROJECT REPORT";
+			//List <ExportApprovalReportModel>exportData2 = timeTrackApprovalRepository.getNonApprovalReportData(monthIndex,yearIndex);
+			projectExportService.exportBenchReport(workrbook,sheet2,colNames,nameofReport2,monthIndex,yearIndex,reportType);
+
+			response.setContentType("application/vnd.ms-excel");
+			response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
+			response.setHeader("Content-Disposition", "filename=\"" + sheetName+".xlsx" + "\"");
+			workrbook.write(response.getOutputStream());
+			workrbook.close();
+		}
+		else if(reportName.equalsIgnoreCase("midMonthReport")) {
+
+			Date startDate = null, endDate = null;
+			SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
+			if (!startdate.isEmpty()) {
+				startDate = outputFormat.parse(startdate);
+			}
+			if (!enddate.isEmpty()) {
+				endDate = outputFormat.parse(enddate);
+			}
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(startDate);
+
+			String[] monthName = {"January", "February","March", "April", "May", "June",
+					"July","August", "September", "October", "November", "December"};
+			String month = monthName[cal.get(Calendar.MONTH)];
+
+			int monthIndex = (cal.get(Calendar.MONTH) + 1);
+			int yearIndex = cal.get(Calendar.YEAR);
+
+			int maxDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+			String sheetName = month+"-Mid"+" "+yearIndex;
+			String reportType = "midmonth";
+
+			ArrayList<String> colNames = new ArrayList<String>();
+
+			for(int i=1;i<=15;i++) {
+				colNames.add(yearIndex+"-"+month+"-"+(i<10? "0"+i : i));
+			}
+
+
+			Workbook workrbook = new XSSFWorkbook();
+			Sheet sheet        = workrbook.createSheet("Billable");
+			String nameofReport   = "PROJECT APPROVAL REPORT";
+			List <ExportApprovalReportModel>exportData = timeTrackApprovalRepository.getApprovalReportData(monthIndex,yearIndex);
+			projectExportService.exportAllReport(exportData,workrbook,sheet,colNames,nameofReport);
+
+			Sheet sheet1 = workrbook.createSheet("Non-billable");
+			String nameofReport1   = "PROJECT NON-BILLABLE  REPORT";
+			List <ExportApprovalReportModel>exportData1 = timeTrackApprovalRepository.getNonApprovalReportData(monthIndex,yearIndex);
+			projectExportService.exportAllReport(exportData1,workrbook,sheet1,colNames,nameofReport1);
+
+			Sheet sheet2 = workrbook.createSheet("Beach");
+			String nameofReport2   = "BENCH PROJECT REPORT";
+			//List <ExportApprovalReportModel>exportData2 = timeTrackApprovalRepository.getNonApprovalReportData(monthIndex,yearIndex);
+			projectExportService.exportBenchReport(workrbook,sheet2,colNames,nameofReport2,monthIndex,yearIndex,reportType);
+
+			response.setContentType("application/vnd.ms-excel");
+			response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
+			response.setHeader("Content-Disposition", "filename=\"" + sheetName+".xlsx" + "\"");
 			workrbook.write(response.getOutputStream());
 			workrbook.close();
 		}

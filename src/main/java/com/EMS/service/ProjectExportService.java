@@ -18,4 +18,10 @@ public interface ProjectExportService {
 	public void exportProjectHourReport(List <ExportProjectHourReportModel> data,Workbook workbook,Sheet sheet) throws FileNotFoundException;
 
 	public void exportApprovalReport(List <ExportApprovalReportModel> data,Workbook workbook,Sheet sheet, ArrayList<String> colNames) throws FileNotFoundException;
+
+	public void exportAllReport(List <ExportApprovalReportModel> data,Workbook workbook,Sheet sheet, ArrayList<String> colNames, String reportName) throws FileNotFoundException;
+
+	public void exportBenchReport(Workbook workbook,Sheet sheet, ArrayList<String> colNames, String reportName,Integer monthIndex,Integer yearIndex,String reportType) throws FileNotFoundException;
+
+
 }
