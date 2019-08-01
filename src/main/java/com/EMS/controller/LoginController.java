@@ -643,4 +643,126 @@ public class LoginController {
 		return responseData;
 		
 	}
+
+	@PutMapping(value = "v2/editUserDetails")
+	public JsonNode setuserDataV2(@RequestBody ObjectNode requestdata, HttpServletResponse httpstatus) {
+		ObjectNode responseData = objectMapper.createObjectNode();
+		try {
+
+			Long userId  = requestdata.get("userId").asLong();
+			UserModel user = userService.getUserDetailsById(userId);
+			if ( user != null) {
+				user.setFirstName(requestdata.get("firstName").asText());
+				user.setLastName(requestdata.get("lastName").asText());
+				user.setContact(requestdata.get("contact").asLong());
+				user.setUserName(requestdata.get("userName").asText());
+				user.setBloodGroup(requestdata.get("bloodGroup").asText());
+				user.setGender(requestdata.get("gender").asInt());
+				user.setEmploymentType(requestdata.get("employment").asText());
+				user.setActive(requestdata.get("active").asBoolean());
+
+				Long departId = requestdata.get("department").asLong();
+				DepartmentModel department = null;
+				if (departId != null)
+					department = login_service.getDepartment(departId);
+
+				if (department != null)
+					user.setDepartment(department);
+
+				Long roleId = requestdata.get("role").asLong();
+				RoleModel role = null;
+				if (roleId != null)
+					role = login_service.getRole(roleId);
+				if (role != null)
+					user.setRole(role);
+
+				String dob = requestdata.get("dob").asText();
+				String joindate = requestdata.get("joiningDate").asText();
+
+				// Formatting the dates before storing
+				DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
+				Date date1 = null, date2 = null;
+
+				if (!dob.isEmpty()) {
+					date2 = formatter.parse(dob);
+					user.setDob(date2);
+
+				}
+				if (!joindate.isEmpty()) {
+					date1 = formatter.parse(joindate);
+					user.setJoiningDate(date1);
+
+				}
+
+				user.setEmpId(requestdata.get("empId").asLong());
+				user.setEmail(requestdata.get("email").asText());
+				user.setQualification(requestdata.get("qualification").asText());
+				String newpassword = requestdata.get("newPassword").asText();
+				if(!newpassword.isEmpty()) {
+					String encPassword = this.passwordEncoder.encode(newpassword);
+					user.setPassword(encPassword);
+				}
+
+				UserModel userModel = userService.updateUser(user);
+				int  result = 1;
+				Boolean isExist = userService.checkExistanceOfUserId(userId);
+
+				if(isExist) {
+					result = userService.deleteTechnology(userId);
+				}
+
+
+				if(result != 0) {
+					ArrayNode usertechnology = (ArrayNode) requestdata.get("userTechnology");
+					if (!usertechnology.equals(null)) {
+
+						for (JsonNode node : usertechnology) {
+
+							// checking for technology using ID
+
+							Long techId = node.get("technology").asLong();
+							Technology technology = null;
+
+							if (techId != null)
+								technology = login_service.findtechnology(techId);
+
+							UserTechnology usertech = new UserTechnology();
+							if (technology != null)
+								usertech.setTechnology(technology);
+							else {
+								responseData.put("message",
+										"user technology insertion failed due to missing technology value");
+							}
+							usertech.setUser(userModel);
+							usertech.setExperience(node.get("experience").asDouble());
+							int userTechnology = login_service.addusertechnology(usertech);
+
+						}
+
+					}
+				}
+
+
+				responseData.put("message", "Updated successfully");
+
+
+
+			}
+			else {
+				responseData.put("message", "user not exist");
+			}
+			responseData.put("status", "success");
+			responseData.put("code", httpstatus.getStatus());
+
+
+		}
+		catch (Exception e) {
+			responseData.put("status", "failure");
+			responseData.put("code", httpstatus.getStatus());
+		}
+		return responseData;
+
+	}
+
+
 }
