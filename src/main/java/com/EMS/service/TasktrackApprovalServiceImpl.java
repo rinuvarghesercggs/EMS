@@ -111,7 +111,7 @@ public class TasktrackApprovalServiceImpl implements TasktrackApprovalService {
 			userListObject.put("userId", id);
 			userListObject.put("month", intMonth);
 			userListObject.put("logged", loggedJsonArray);
-			System.out.println("logged has data  : "+loggedJsonArray);
+			//System.out.println("logged has data  : "+loggedJsonArray);
 				name = null;
 				cal.setTime(startDate);		
 				int monthIndex = (cal.get(Calendar.MONTH) + 1);
@@ -267,7 +267,7 @@ public class TasktrackApprovalServiceImpl implements TasktrackApprovalService {
 			userListObject.put("month", intMonth);
 			userListObject.put("logged", loggedJsonArray);
 			userListObject.put("billable", billableJsonArray);
-			System.out.println("logged is empty  : "+loggedJsonArray);
+			//System.out.println("logged is empty  : "+loggedJsonArray);
 			timeTrackJSONData.add(userListObject);
 		}
 		return timeTrackJSONData;
