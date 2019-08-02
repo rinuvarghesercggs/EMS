@@ -294,7 +294,7 @@ public class ProjectAllocationController {
 			allocationModel.setAllocatedPerce(val);
 			allocationModel.setIsBillable(isBillable);
 			// Check whether the user is already allocated to the project.If so update the previous entry of the user otherwise new entry is created.
-			Long allocId = projectAllocation.getAllocId(projectId,userId);
+			/*Long allocId = projectAllocation.getAllocId(projectId,userId);
 			if(allocId != null) {
 				AllocationModel oldAlloc = projectAllocation.findDataById(allocId);
 				if(oldAlloc != null) {
@@ -306,11 +306,11 @@ public class ProjectAllocationController {
 				}
 
 			}
-			else {
+			else {*/
 				
 				projectAllocation.save(allocationModel);
 
-			}
+			//}
 		
 			jsonDataRes.put("status", "success");
 			jsonDataRes.put("code", httpstatus.getStatus());
