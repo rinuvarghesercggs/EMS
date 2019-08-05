@@ -70,4 +70,7 @@ public interface TasktrackRepository extends JpaRepository<Tasktrack, Long> {
 
 	@Query("SELECT count(*) > 0 FROM Tasktrack s WHERE s.user.userId = ?2 and s.project.projectId = ?1")
 	Boolean checkExistanceOfUser(Long projectId, Long userId);
+
+	@Query("SELECT DISTINCT a.project.projectName,a.project.projectId from AllocationModel a where a.user.userId=?1 and a.project.isBillable =1 order by a.project.projectName")
+	public List<Object[]> getProjectNamesForApprovalnew(long uId) throws Exception;
 }

@@ -49,7 +49,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
+import com.EMS.repository.TasktrackRepository;
 @RestController
 @RequestMapping(value = { "/tasktrack" })
 public class TasktrackController {
@@ -65,6 +65,9 @@ public class TasktrackController {
 
 	@Autowired
 	TaskRepository taskRepository;
+
+	@Autowired
+	TasktrackRepository tasktrackRepository;
 
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -1739,7 +1742,7 @@ public class TasktrackController {
 		return jsonDataRes;
 	}
 	@GetMapping("/getProjectNamesForApproval")
-	public JsonNode getProjectNamesForApproval(@RequestParam("uId") Long uId) {
+	public JsonNode getProjectNamesForApproval(@RequestParam("uId") Long uId) throws Exception {
 		ArrayNode projectTitle = objectMapper.createArrayNode();
 		
 		UserModel user = userService.getUserDetailsById(uId);
@@ -1754,11 +1757,12 @@ public class TasktrackController {
 			}
 		}
 		else {
-			for (AllocationModel alloc : tasktrackServiceImpl.getProjectNamesForApproval(uId)) {
+			List<Object[]> projectList = tasktrackRepository.getProjectNamesForApprovalnew(uId);
+			for (Object[] alloc : projectList) {
 
 				ObjectNode node = objectMapper.createObjectNode();
-				node.put("id", alloc.getproject().getProjectId());
-				node.put("value", alloc.getproject().getProjectName());
+				node.put("id", (Long) alloc[1]);
+				node.put("value",(String) alloc[0]);
 				projectTitle.add(node);
 			}
 		}
