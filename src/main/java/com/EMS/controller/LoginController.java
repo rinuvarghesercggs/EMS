@@ -34,6 +34,7 @@ import com.EMS.model.UserModel;
 import com.EMS.model.UserTechnology;
 import com.EMS.model.UserTaskCategory;
 import com.EMS.model.TaskCategory;
+import com.EMS.model.UserTermination;
 import com.EMS.repository.UserRepository;
 import com.EMS.security.jwt.JwtTokenProvider;
 import com.EMS.service.LoginService;
@@ -331,7 +332,7 @@ public class LoginController {
 							usertech.setUser(userdata);
 							usertech.setExperience(node.get("experience").asDouble());
 							int userTechnology = login_service.addusertechnology(usertech);
-							System.out.println("userTechnology :"+userTechnology);
+							//System.out.println("userTechnology :"+userTechnology);
 							if (userTechnology == 0)
 								responseflag = 1;
 						}
@@ -479,8 +480,9 @@ public class LoginController {
 
 		try {
 			JsonNode userData = userService.getUserdetails(userId);
+			String terminationType = login_service.getUserTerminationType(userId);
+			((ObjectNode) userData).put("terminationType", terminationType);
 			userNode.set("userList", userData);
-			
 			List<Object[]> technologyList = userService.getUserTechnologyList(userId);
 			for(Object[] item : technologyList) {
 				ObjectNode responseData=objectMapper.createObjectNode();
@@ -702,7 +704,13 @@ public class LoginController {
 					String encPassword = this.passwordEncoder.encode(newpassword);
 					user.setPassword(encPassword);
 				}
+				String terminationDate = requestdata.get("terminationDate").asText();
+				Date date3 = null;
+				if (!terminationDate.isEmpty()) {
+					date3 = formatter.parse(terminationDate);
 
+				}
+				user.setTerminationDate(date3);
 				UserModel userModel = userService.updateUser(user);
 				int  result = 1;
 				Boolean isExist = userService.checkExistanceOfUserId(userId);
@@ -740,6 +748,27 @@ public class LoginController {
 						}
 
 					}
+
+				}
+
+				String terminationType = requestdata.get("terminationType").asText();
+				Boolean isExist1 = login_service.checkExistanceOfUserIdInTermination(userId);
+				if(isExist1)
+				{
+					login_service.updateUserTerm(terminationType,date3,userId);
+				}
+				else {
+					if (!terminationType.isEmpty() && terminationType != "null") {
+						UserTermination userterm = new UserTermination();
+						userterm.setTermType(terminationType);
+						if (!terminationDate.isEmpty()) {
+							userterm.setTerminationDate(date3);
+						}
+						userterm.setConsultant(userModel);
+						UserTermination userTermination = login_service.addusertermination(userterm);
+					}
+
+
 				}
 
 

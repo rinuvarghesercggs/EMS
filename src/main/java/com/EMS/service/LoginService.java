@@ -3,13 +3,10 @@ package com.EMS.service;
 
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import com.EMS.model.DepartmentModel;
-import com.EMS.model.RoleModel;
-import com.EMS.model.Technology;
-import com.EMS.model.UserModel;
-import com.EMS.model.UserTechnology;
+import com.EMS.model.*;
 
 public interface LoginService {
 
@@ -40,6 +37,13 @@ public interface LoginService {
 
 	Boolean checkEmpIDDuplication(long empId);
 
+	UserTermination addusertermination(UserTermination requestdata);
+
+	String getUserTerminationType(long userId);
+
+	Boolean checkExistanceOfUserIdInTermination(Long userId);
+
+	void updateUserTerm(String terminationType, Date date3, long userId);
 	
 
 }

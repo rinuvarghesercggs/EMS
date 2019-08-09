@@ -57,6 +57,7 @@ public class UserModel implements UserDetails{
 	private int gender;
 	private boolean active;
 	private String empCategory,cppLevel,Recruiter,referredBy;
+	private Date terminationDate;
 	
 	
 	
@@ -231,6 +232,14 @@ public class UserModel implements UserDetails{
 
 	public void setEmploymentType(String employmentType) {
 		this.employmentType = employmentType;
+	}
+
+	public Date getTerminationDate() {
+		return terminationDate;
+	}
+
+	public void setTerminationDate(Date terminationDate) {
+		this.terminationDate = terminationDate;
 	}
 
 	public UserModel() {

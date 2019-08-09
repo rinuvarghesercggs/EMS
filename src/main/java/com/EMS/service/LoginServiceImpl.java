@@ -1,22 +1,20 @@
 package com.EMS.service;
 
 
+import java.util.Date;
 import java.util.List;
 
+import com.EMS.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.EMS.model.DepartmentModel;
-import com.EMS.model.RoleModel;
-import com.EMS.model.Technology;
-import com.EMS.model.UserModel;
-import com.EMS.model.UserTechnology;
 import com.EMS.repository.UserTechnologyRepository;
 
 import com.EMS.repository.DepartmentRepository;
 import com.EMS.repository.RoleRepository;
 import com.EMS.repository.TechnologyRepository;
 import com.EMS.repository.UserRepository;
+import com.EMS.repository.UserTerminationRepository;
 
 @Service
 public class LoginServiceImpl implements LoginService {
@@ -35,6 +33,9 @@ public class LoginServiceImpl implements LoginService {
 	
 	@Autowired
 	RoleRepository role_repository;
+
+	@Autowired
+	UserTerminationRepository userTerminationRepository;
 
 
 //	 Implementation for authenticating user with role
@@ -144,6 +145,55 @@ public class LoginServiceImpl implements LoginService {
 		return isUsernameExist;
 	}
 
+
+	public UserTermination addusertermination(UserTermination requestdata) {
+		UserTermination userTermination=null;
+		try {
+
+			userTermination=userTerminationRepository.save(requestdata);
+			return userTermination;
+		}catch(Exception e) {
+			System.out.println("Exception : "+e);
+			return userTermination;
+		}
+
+	}
+
+	public String getUserTerminationType(long userId){
+		String userTermType = null;
+		try {
+
+			userTermType=userTerminationRepository.getTermType(userId);
+			return userTermType;
+		}catch(Exception e) {
+			System.out.println("Exception : "+e);
+			return userTermType;
+		}
+	}
+
+	public Boolean checkExistanceOfUserIdInTermination(Long userId) {
+		int result = 0;
+		result = userTerminationRepository.checkExistanceOfUserId(userId);
+		System.out.println("result "+result);
+
+		if(result>0)
+			return true;
+		else
+			return false;
+	}
+
+	public void updateUserTerm(String terminationType, Date date3, long userId){
+
+
+		try {
+			userTerminationRepository.updateUserTerm(terminationType,date3,userId);
+
+		}catch(Exception e) {
+			System.out.println("Exception : "+e);
+
+		}
+
+	}
 	
 
 }
