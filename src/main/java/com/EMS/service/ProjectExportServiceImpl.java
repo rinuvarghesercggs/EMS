@@ -13,6 +13,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -324,10 +325,16 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 		titleCell = titleRow.createCell(1);
 		titleCell.setCellValue("");
 
+		XSSFFont font = (XSSFFont) workbook.createFont();
+		font.setFontName("Liberation Sans");
+		font.setFontHeightInPoints((short)10);
+		font.setBold(true);
+
 		// Header Cell Style
 		CellStyle headerCellStyle = workbook.createCellStyle();
 		headerCellStyle.cloneStyleFrom(borderedCellStyle);
 		headerCellStyle.setBorderTop(BorderStyle.THICK);
+		headerCellStyle.setFont(font);
 
 		Row headerRow = sheet.createRow(2);
 		int widthInChars = 50;
@@ -543,8 +550,8 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 		}
 		headers[dayCount+4] = "Total Hours";
 		List<ExportApprovalReportModel> Listdata = new ArrayList<ExportApprovalReportModel>();
-
 		for(ExportApprovalReportModel obj : data) {
+
 			Listdata.add(new ExportApprovalReportModel
 					(obj.getId(),obj.getProjectName(),obj.getFirstName(),obj.getLastName()
 							,obj.getDay1(),obj.getDay2(),obj.getDay3(),obj.getDay4(),obj.getDay5(),
@@ -585,10 +592,17 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 		titleCell = titleRow.createCell(1);
 		titleCell.setCellValue("");
 
+		XSSFFont font = (XSSFFont) workbook.createFont();
+		font.setFontName("Liberation Sans");
+		font.setFontHeightInPoints((short)10);
+		font.setBold(true);
+
+
 		// Header Cell Style
 		CellStyle headerCellStyle = workbook.createCellStyle();
 		headerCellStyle.cloneStyleFrom(borderedCellStyle);
 		headerCellStyle.setBorderTop(BorderStyle.THICK);
+		headerCellStyle.setFont(font);
 
 		Row headerRow = sheet.createRow(2);
 		int widthInChars = 50;
@@ -602,9 +616,18 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 		// Create Other rows and cells with contacts data
 		int rowNum = 3;
 
-
+		String tmp_pjctName =" ";
 		ExportApprovalReportModel totalSummary = new ExportApprovalReportModel();
 		for (ExportApprovalReportModel summary : Listdata) {
+			if (!tmp_pjctName .equals(" ") && !tmp_pjctName.equals(summary.getProjectName())) {
+				Row row1 = sheet.createRow(rowNum++);
+				int j;
+				for(j=0;j<dayCount+5;j++){
+					Cell cell = row1.createCell(j);
+					cell.setCellValue("");
+					cell.setCellStyle(borderedCellStyle);
+				}
+			}
 			Row row = sheet.createRow(rowNum++);
 
 			Cell cell = row.createCell(0);
@@ -841,7 +864,7 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 				cell.setCellStyle(borderedCellStyle);
 				totalHour =totalHour+summary.getDay31();
 			}
-
+			 tmp_pjctName =summary.getProjectName();
 			cell = row.createCell(cellcount+1);
 			cell.setCellValue(totalHour);
 			cell.setCellStyle(borderedCellStyle);
@@ -858,7 +881,7 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 	}
 
 	@Override
-	public void exportBenchReport(Workbook workbook,Sheet sheet,ArrayList<String> colNames,String reportName,Integer monthIndex,Integer yearIndex,String reportType) throws FileNotFoundException {
+	public void exportBenchReport(Workbook workbook,Sheet sheet,ArrayList<String> colNames,String reportName,Integer monthIndex,Integer yearIndex,String reportType,Date endDate) throws FileNotFoundException {
 
 		String[] headers = new String[4];
 		headers[0] = "User Id";
@@ -878,7 +901,7 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 		int totalHours = workingDays*8;
 		double totalWorkingHours = totalHours;
 		double benchHour = 0.0;
-		List<Object[]> userList = userRepository.getUserList();
+		List<Object[]> userList = userRepository.getUserList(endDate);
 		List<Object[]> Listdata = new ArrayList<>();
 
 		for(Object[] item : userList) {
@@ -945,10 +968,16 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 		titleCell = titleRow.createCell(1);
 		titleCell.setCellValue("");
 
+		XSSFFont font = (XSSFFont) workbook.createFont();
+		font.setFontName("Liberation Sans");
+		font.setFontHeightInPoints((short)10);
+		font.setBold(true);
+
 		// Header Cell Style
 		CellStyle headerCellStyle = workbook.createCellStyle();
 		headerCellStyle.cloneStyleFrom(borderedCellStyle);
 		headerCellStyle.setBorderTop(BorderStyle.THICK);
+		headerCellStyle.setFont(font);
 
 		Row headerRow = sheet.createRow(2);
 		int widthInChars = 50;

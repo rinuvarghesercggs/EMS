@@ -1,6 +1,7 @@
 package com.EMS.repository;
 
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,7 +69,7 @@ public interface UserRepository extends JpaRepository<UserModel, Long>{
 //	@Query("select u from UserModel u where u.userName = ?1")
 	Optional<UserModel> findByUserName(String username);
 
-	@Query(value = "SELECT user_id,first_name,last_name FROM user where role_role_id in('2','3','5') and  department_department_id in('1','2','3','4','8') AND active = true",nativeQuery = true)
-	List<Object[]> getUserList();
+	@Query(value = "SELECT user_id,first_name,last_name FROM user where role_role_id in('2','3','5') and  department_department_id in('1','2','3','4','8') and (termination_date >= ?1 or termination_date IS NULL)",nativeQuery = true)
+	List<Object[]> getUserList(Date endDate);
 
 }

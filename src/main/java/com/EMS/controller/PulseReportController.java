@@ -276,7 +276,7 @@ public class PulseReportController {
 			Sheet sheet2 = workrbook.createSheet("Beach");
 			String nameofReport2   = "BENCH PROJECT REPORT";
 			//List <ExportApprovalReportModel>exportData2 = timeTrackApprovalRepository.getNonApprovalReportData(monthIndex,yearIndex);
-			projectExportService.exportBenchReport(workrbook,sheet2,colNames,nameofReport2,monthIndex,yearIndex,reportType);
+			projectExportService.exportBenchReport(workrbook,sheet2,colNames,nameofReport2,monthIndex,yearIndex,reportType,endDate);
 
 			response.setContentType("application/vnd.ms-excel");
 			response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
@@ -330,7 +330,7 @@ public class PulseReportController {
 			Sheet sheet2 = workrbook.createSheet("Beach");
 			String nameofReport2   = "BENCH PROJECT REPORT";
 			//List <ExportApprovalReportModel>exportData2 = timeTrackApprovalRepository.getNonApprovalReportData(monthIndex,yearIndex);
-			projectExportService.exportBenchReport(workrbook,sheet2,colNames,nameofReport2,monthIndex,yearIndex,reportType);
+			projectExportService.exportBenchReport(workrbook,sheet2,colNames,nameofReport2,monthIndex,yearIndex,reportType,endDate);
 
 			response.setContentType("application/vnd.ms-excel");
 			response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");

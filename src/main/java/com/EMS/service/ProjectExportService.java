@@ -2,6 +2,7 @@ package com.EMS.service;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -21,7 +22,7 @@ public interface ProjectExportService {
 
 	public void exportAllReport(List <ExportApprovalReportModel> data,Workbook workbook,Sheet sheet, ArrayList<String> colNames, String reportName) throws FileNotFoundException;
 
-	public void exportBenchReport(Workbook workbook,Sheet sheet, ArrayList<String> colNames, String reportName,Integer monthIndex,Integer yearIndex,String reportType) throws FileNotFoundException;
+	public void exportBenchReport(Workbook workbook, Sheet sheet, ArrayList<String> colNames, String reportName, Integer monthIndex, Integer yearIndex, String reportType, Date endDate) throws FileNotFoundException;
 
 
 }
