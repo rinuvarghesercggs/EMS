@@ -24,5 +24,6 @@ public interface ProjectExportService {
 
 	public void exportBenchReport(Workbook workbook, Sheet sheet, ArrayList<String> colNames, String reportName, Integer monthIndex, Integer yearIndex, String reportType, Date endDate) throws FileNotFoundException;
 
+	public void exportSummaryReport(Workbook workbook, Sheet sheet, ArrayList<String> colNames, String reportName, Integer monthIndex, Integer yearIndex, String reportType, Date startDate, Date endDate) throws Exception;
 
 }
