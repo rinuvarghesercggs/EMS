@@ -881,7 +881,7 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 	}
 
 	@Override
-	public void exportBenchReport(Workbook workbook,Sheet sheet,ArrayList<String> colNames,String reportName,Integer monthIndex,Integer yearIndex,String reportType,Date endDate) throws FileNotFoundException {
+	public void exportBenchReport(Workbook workbook,Sheet sheet,ArrayList<String> colNames,String reportName,Integer monthIndex,Integer yearIndex,String reportType,Date startDate, Date endDate) throws FileNotFoundException {
 
 		String[] headers = new String[3];
 		//headers[0] = "User Id";
@@ -901,7 +901,7 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 		int totalHours = workingDays*8;
 		double totalWorkingHours = totalHours;
 		double benchHour = 0.0;
-		List<Object[]> userList = userRepository.getUserList(endDate);
+		List<Object[]> userList = userRepository.getUserList(startDate,endDate);
 		List<Object[]> Listdata = new ArrayList<>();
 
 		for(Object[] item : userList) {
@@ -1055,7 +1055,7 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 		double nonBillableHour   = 0.0;
 		double overtimeHour      = 0.0;
 
-		List<Object[]> userList = userRepository.getUserList(endDate);
+		List<Object[]> userList = userRepository.getUserList(startDate,endDate);
 		List<Object[]> Listdata = new ArrayList<>();
 
 		for(Object[] item : userList) {

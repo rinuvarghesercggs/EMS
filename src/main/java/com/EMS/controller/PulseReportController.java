@@ -248,19 +248,6 @@ public class PulseReportController {
 			for(int i=1;i<=maxDay;i++) {
 				colNames.add(yearIndex+"-"+month+"-"+(i<10? "0"+i : i));
 			}
-			/*List<Object[]> userList = userRepository.getUserList();
-
-			System.out.println(userList.size());
-
-			//List <ExportApprovalReportModel>exportData2 = timeTrackApprovalRepository.getAllReportData(monthIndex,yearIndex);
-
-			for(Object[] item : userList) {
-				Long id = ((BigInteger) item[0]).longValue();
-				System.out.println(id);
-				List<Object[]> loggedData = timeTrackApprovalJPARepository.getTimeTrackApprovalDataByUserId(monthIndex,yearIndex,id);
-
-			}*/
-
 
 			Workbook workrbook = new XSSFWorkbook();
 
@@ -282,7 +269,7 @@ public class PulseReportController {
 			Sheet sheet3 = workrbook.createSheet("Beach");
 			String nameofReport3   = "BENCH PROJECT REPORT";
 			//List <ExportApprovalReportModel>exportData2 = timeTrackApprovalRepository.getNonApprovalReportData(monthIndex,yearIndex);
-			projectExportService.exportBenchReport(workrbook,sheet3,colNames,nameofReport3,monthIndex,yearIndex,reportType,endDate);
+			projectExportService.exportBenchReport(workrbook,sheet3,colNames,nameofReport3,monthIndex,yearIndex,reportType,startDate,endDate);
 
 			response.setContentType("application/vnd.ms-excel");
 			response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
@@ -342,7 +329,7 @@ public class PulseReportController {
 			Sheet sheet3 = workrbook.createSheet("Beach");
 			String nameofReport3   = "BENCH PROJECT REPORT";
 			//List <ExportApprovalReportModel>exportData2 = timeTrackApprovalRepository.getNonApprovalReportData(monthIndex,yearIndex);
-			projectExportService.exportBenchReport(workrbook,sheet3,colNames,nameofReport3,monthIndex,yearIndex,reportType,endDate);
+			projectExportService.exportBenchReport(workrbook,sheet3,colNames,nameofReport3,monthIndex,yearIndex,reportType,startDate,endDate);
 
 			response.setContentType("application/vnd.ms-excel");
 			response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
