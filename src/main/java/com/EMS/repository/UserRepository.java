@@ -69,7 +69,7 @@ public interface UserRepository extends JpaRepository<UserModel, Long>{
 //	@Query("select u from UserModel u where u.userName = ?1")
 	Optional<UserModel> findByUserName(String username);
 
-	@Query(value = "SELECT user_id,first_name,last_name FROM user where role_role_id in('2','3','5') and  department_department_id in('1','2','3','4','8') and (termination_date >= ?1 or termination_date IS NULL) and joining_date<=?2",nativeQuery = true)
+	@Query(value = "SELECT user_id,first_name,last_name,joining_date,termination_date FROM user where role_role_id in('2','3','5') and  department_department_id in('1','2','3','4','8') and (termination_date >= ?1 or termination_date IS NULL) and joining_date<=?2 order by first_name",nativeQuery = true)
 	List<Object[]> getUserList(Date startDate, Date endDate);
 
 }

@@ -39,6 +39,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import com.EMS.repository.UserRepository;
 import com.EMS.repository.TimeTrackApprovalJPARepository;
 import com.EMS.repository.TasktrackRepository;
+import com.EMS.repository.HolidayRepository;
 
 @Service
 public class ProjectExportServiceImpl implements ProjectExportService {
@@ -51,6 +52,9 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 
 	@Autowired
 	TasktrackRepository tasktrackRepository;
+
+	@Autowired
+	HolidayRepository holidayRepository;
 
 
 	@Override
@@ -299,7 +303,8 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 		//Removing grids
 		sheet.setDisplayGridlines(false);
 		//Freezing columns and rows from scrooling
-		sheet.createFreezePane(0,3);
+		sheet.createFreezePane(3,3);
+
 
 		//Bordered Cell Style
 		CellStyle borderedCellStyle = workbook.createCellStyle();
@@ -566,7 +571,7 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 		//Removing grids
 		sheet.setDisplayGridlines(false);
 		//Freezing columns and rows from scrooling
-		sheet.createFreezePane(0,3);
+		sheet.createFreezePane(3,3);
 
 		//Bordered Cell Style
 		CellStyle borderedCellStyle = workbook.createCellStyle();
@@ -889,32 +894,82 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 		headers[1] = "First Name";
 		headers[2] = "Bench Hour";
 		int dayCount = colNames.size();
-		int weekDays = 0;
+
+		//int weekDays = 0;
+		int working_days =0;
+		int holidays =0;
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar c = Calendar.getInstance();
+		c.setTime(startDate);
+		c.add(Calendar.DATE, 14);  // number of days to add
+		Date end_date = c.getTime();
 		if(reportType == "monthly") {
-			 weekDays = countWeekendDays(yearIndex, monthIndex);
+			// weekDays = countWeekendDays(yearIndex, monthIndex);
+			working_days = calculateWorkingDays(startDate,endDate);
+			holidays = holidayRepository.getNationalHolidayListsByMonth(startDate,endDate);
 		}
 		else
 		{
-			weekDays = countMidWeekendDays(yearIndex, monthIndex);
+			//System.out.println("start date "+ startDate);
+			//weekDays = countMidWeekendDays(yearIndex, monthIndex);
+			working_days = calculateWorkingDays(startDate,end_date);
+			holidays = holidayRepository.getNationalHolidayListsByMonth(startDate,end_date);
 		}
-		int workingDays = dayCount - weekDays;
-		int totalHours = workingDays*8;
-		double totalWorkingHours = totalHours;
+
+
+		//int workingDays = dayCount - weekDays;
+		//System.out.println("workingDays "+workingDays);
+		//int totalHours = workingDays*8;
+		int totalHours = (working_days-holidays)*8;
 		double benchHour = 0.0;
+		double total_hours =0.0;
 		List<Object[]> userList = userRepository.getUserList(startDate,endDate);
 		List<Object[]> Listdata = new ArrayList<>();
 
 		for(Object[] item : userList) {
-			Long id = ((BigInteger) item[0]).longValue();
-			String firstName = (String)item[1];
-			String lastName = (String) item[2];
+			Long id                  = ((BigInteger) item[0]).longValue();
+			String firstName         = (String)item[1];
+			String lastName          = (String) item[2];
+			Date joiningDate         = (Date) item[3];
+			Date terminationDate     = (Date) item[4];
+			double totalWorkingHours = totalHours;
+
 			List<Object[]> loggedData;
+
 			if(reportType == "monthly") {
 				loggedData = timeTrackApprovalJPARepository.getTimeTrackApprovalDataByUserId(monthIndex, yearIndex, id);
+				if((startDate.compareTo(joiningDate) < 0)){
+					working_days = calculateWorkingDays(joiningDate,endDate);
+					holidays = holidayRepository.getNationalHolidayListsByMonth(joiningDate,endDate);
+					total_hours = (working_days-holidays)*8;
+					totalWorkingHours = total_hours;
+				}
+				if(terminationDate !=null){
+					if((terminationDate.compareTo(endDate) < 0)){
+						working_days = calculateWorkingDays(startDate,terminationDate);
+						holidays = holidayRepository.getNationalHolidayListsByMonth(startDate,terminationDate);
+						total_hours = (working_days-holidays)*8;
+						totalWorkingHours = total_hours;
+					}
+				}
 			}
 			else {
 				 loggedData = timeTrackApprovalJPARepository.getTimeTrackApprovalDataByUserIdMidMonth(monthIndex, yearIndex, id);
+				if((startDate.compareTo(joiningDate) < 0)){
+					working_days = calculateWorkingDays(joiningDate,end_date);
+					holidays = holidayRepository.getNationalHolidayListsByMonth(joiningDate,end_date);
+					total_hours = (working_days-holidays)*8;
+					totalWorkingHours = total_hours;
+				}
+				if(terminationDate !=null){
+					if((terminationDate.compareTo(end_date) < 0)){
+						working_days = calculateWorkingDays(startDate,terminationDate);
+						holidays = holidayRepository.getNationalHolidayListsByMonth(startDate,terminationDate);
+						total_hours = (working_days-holidays)*8;
+						totalWorkingHours = total_hours;
 
+					}
+				}
 			}
 			for(Object[] items : loggedData) {
 
@@ -1037,32 +1092,48 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 		headers[5] = "Beach";
 		headers[6] = "Total";
 		int dayCount = colNames.size();
-		int weekDays = 0;
+		//int weekDays = 0;
+		int working_days = 0;
+		int holidays =0;
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar c = Calendar.getInstance();
+		c.setTime(startDate);
+		c.add(Calendar.DATE, 14);  // number of days to add
+		Date end_date = c.getTime();
+
 		if(reportType == "monthly") {
-			weekDays = countWeekendDays(yearIndex, monthIndex);
+			//weekDays = countWeekendDays(yearIndex, monthIndex);
+			working_days = calculateWorkingDays(startDate,endDate);
+			holidays = holidayRepository.getNationalHolidayListsByMonth(startDate,endDate);
 		}
 		else
 		{
-			weekDays = countMidWeekendDays(yearIndex, monthIndex);
+			//weekDays = countMidWeekendDays(yearIndex, monthIndex);
+			working_days = calculateWorkingDays(startDate,end_date);
+			holidays = holidayRepository.getNationalHolidayListsByMonth(startDate,end_date);
 		}
-		int workingDays          = dayCount - weekDays;
-		int totalHours           = workingDays*8;
-		double totalWorkingHours = totalHours;
+		//int workingDays          = dayCount - weekDays;
+		//int totalHours           = workingDays*8;
+		int totalHours           = (working_days-holidays)*8;
 		double benchHour         = 0.0;
 		double totalHour         = 0.0;
 		double billableHour      = 0.0;
 		double recbillableHour   = 0.0;
 		double nonBillableHour   = 0.0;
 		double overtimeHour      = 0.0;
+		double total_hours       = 0.0;
 
 		List<Object[]> userList = userRepository.getUserList(startDate,endDate);
 		List<Object[]> Listdata = new ArrayList<>();
 
 		for(Object[] item : userList) {
-			Long id = ((BigInteger) item[0]).longValue();
-			String firstName = (String)item[1];
-			String lastName = (String) item[2];
-			String projectName = "";
+			Long id                  = ((BigInteger) item[0]).longValue();
+			String firstName         = (String)item[1];
+			String lastName          = (String) item[2];
+			Date joiningDate         = (Date) item[3];
+			Date terminationDate     = (Date) item[4];
+			double totalWorkingHours = totalHours;
+			//String projectName = "";
 			List<Object[]> loggedData;
 			List<Object[]> billable;
 			List<Object[]> nonBillable;
@@ -1088,6 +1159,21 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 				billable    = timeTrackApprovalJPARepository.getBillableDataByUserId(monthIndex, yearIndex, id);
 				nonBillable = timeTrackApprovalJPARepository.getNonBillableDataByUserId(monthIndex, yearIndex, id);
 				overtime    = timeTrackApprovalJPARepository.getOvertimeDataByUserId(monthIndex, yearIndex, id);
+				if((startDate.compareTo(joiningDate) < 0)){
+					working_days = calculateWorkingDays(joiningDate,endDate);
+					holidays = holidayRepository.getNationalHolidayListsByMonth(joiningDate,endDate);
+					total_hours = (working_days-holidays)*8;
+					totalWorkingHours = total_hours;
+				}
+				if(terminationDate !=null){
+					if((terminationDate.compareTo(endDate) < 0)){
+						working_days = calculateWorkingDays(startDate,terminationDate);
+						holidays = holidayRepository.getNationalHolidayListsByMonth(startDate,terminationDate);
+						total_hours = (working_days-holidays)*8;
+						totalWorkingHours = total_hours;
+					}
+				}
+
 
 
 			}
@@ -1096,7 +1182,21 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 				billable    = timeTrackApprovalJPARepository.getBillableDataByUserIdMidMonth(monthIndex, yearIndex, id);
 				nonBillable = timeTrackApprovalJPARepository.getNonBillableDataByUserIdMidMonth(monthIndex, yearIndex, id);
 				overtime    = timeTrackApprovalJPARepository.getOvertimeDataByUserIdMidMonth(monthIndex, yearIndex, id);
+				if((startDate.compareTo(joiningDate) < 0)){
+					working_days = calculateWorkingDays(joiningDate,end_date);
+					holidays = holidayRepository.getNationalHolidayListsByMonth(joiningDate,end_date);
+					total_hours = (working_days-holidays)*8;
+					totalWorkingHours = total_hours;
+				}
+				if(terminationDate !=null){
+					if((terminationDate.compareTo(end_date) < 0)){
+						working_days = calculateWorkingDays(startDate,terminationDate);
+						holidays = holidayRepository.getNationalHolidayListsByMonth(startDate,terminationDate);
+						total_hours = (working_days-holidays)*8;
+						totalWorkingHours = total_hours;
 
+					}
+				}
 			}
 
 			for(Object[] items : loggedData) {
@@ -1270,7 +1370,7 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 
 	}
 
-	private int countWeekendDays(int year, int month) {
+	/*private int countWeekendDays(int year, int month) {
 		Calendar calendar = Calendar.getInstance();
 		// Note that month is 0-based in calendar, bizarrely.
 		calendar.set(year, month - 1, 1);
@@ -1304,6 +1404,34 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 			}
 		}
 		return count;
+	}*/
+
+	private int calculateWorkingDays(Date startDate,Date endDate){
+
+		int workingDays = 0;
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		try
+		{
+			Calendar start = Calendar.getInstance();
+			start.setTime(startDate);
+			Calendar end = Calendar.getInstance();
+			end.setTime(endDate);
+
+			while(!start.after(end))
+			{
+				int day = start.get(Calendar.DAY_OF_WEEK);
+				if ((day != Calendar.SATURDAY) && (day != Calendar.SUNDAY))
+					workingDays++;
+				start.add(Calendar.DATE, 1);
+			}
+			//System.out.println(workingDays);
+
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return workingDays;
 	}
 
 }
