@@ -4,10 +4,7 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
-import com.EMS.model.HolidayModel;
-import com.EMS.model.LeaveBalanceModel;
-import com.EMS.model.LeaveModel;
-import com.EMS.model.UserModel;
+import com.EMS.model.*;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public interface AttendanceService {
@@ -51,5 +48,17 @@ public interface AttendanceService {
 
 
 	public List<LeaveModel> getLeavelist(Date startDate1, Date endDate1, String leaveType);
+
+	public long addUserLeaveSummary(UserLeaveSummary userLeaveSummary);
+
+	public Boolean isExist(Long leaveSummaryId);
+
+	public List<UserLeaveSummary> getUserLeaveSummaryList(long userId);
+
+	public UserLeaveSummary getLeaveDetailsById(long userLeaveSummaryId);
+
+	public void removeUserLeaveSummary(UserLeaveSummary userLeaveData);
+
+	public Boolean isUserExist(Long userId);
 
 }

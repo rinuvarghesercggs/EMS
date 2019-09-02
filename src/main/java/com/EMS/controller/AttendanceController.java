@@ -14,6 +14,7 @@ import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.EMS.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,10 +24,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.EMS.model.HolidayModel;
-import com.EMS.model.LeaveBalanceModel;
-import com.EMS.model.LeaveModel;
-import com.EMS.model.UserModel;
 import com.EMS.service.AttendanceService;
 import com.EMS.service.UserService;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -955,5 +952,118 @@ public class AttendanceController {
 		}
 
 		return responseData;
+	}
+
+	@PostMapping(value = "/adduserleavesummary")
+	public JsonNode adduser(@RequestBody ObjectNode requestdata, HttpServletResponse servletresponse) {
+
+		ObjectNode responsedata = objectMapper.createObjectNode();
+		int responseflag = 0;
+		// setting values to usermodel
+		UserLeaveSummary userLeaveSummary = new UserLeaveSummary();
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			long leaveSummaryId = 0;
+			long userId = requestdata.get("userId").asLong();
+			long userLeaveSummaryId = requestdata.get("userLeaveSummaryId").asLong();
+			if(!requestdata.get("leaveDate").asText().isEmpty()) {
+				userLeaveSummary.setLeaveDate(df.parse(requestdata.get("leaveDate").asText()));
+			}
+			if(!requestdata.get("leaveType").asText().isEmpty()) {
+				userLeaveSummary.setLeaveType(requestdata.get("leaveType").asText());
+			}
+			UserModel newuser  = userservice.getUserDetailsById(userId);
+			userLeaveSummary.setUser(newuser);
+            boolean isExist = attendanceService.isExist(userLeaveSummaryId);
+            if(isExist)
+			{
+				UserLeaveSummary userLeaveData = attendanceService.getLeaveDetailsById(userLeaveSummaryId);
+				if(requestdata.get("leaveDate").asText().isEmpty() && requestdata.get("leaveType").asText().isEmpty()){
+
+					attendanceService.removeUserLeaveSummary(userLeaveData);
+					responsedata.put("status", "success");
+					responsedata.put("message", "record deleted succesfully");
+					responsedata.put("leaveSummaryId", userLeaveSummaryId);
+
+				}
+				else
+				{
+
+					userLeaveData.setLeaveType(requestdata.get("leaveType").asText());
+					userLeaveData.setLeaveDate(df.parse(requestdata.get("leaveDate").asText()));
+					attendanceService.addUserLeaveSummary(userLeaveData);
+					responsedata.put("status", "success");
+					responsedata.put("message", "record updated succesfully");
+					responsedata.put("leaveSummaryId", userLeaveSummaryId);
+
+				}
+			}
+            else {
+			 leaveSummaryId	= attendanceService.addUserLeaveSummary(userLeaveSummary);
+				responsedata.put("status", "success");
+				responsedata.put("message", "record insertion completed");
+				responsedata.put("leaveSummaryId", leaveSummaryId);
+			}
+
+
+			responsedata.put("code", servletresponse.getStatus());
+
+
+		} catch (Exception e) {
+			responsedata.put("status", "Failed");
+			responsedata.put("message", "Exception : " + e);
+			responsedata.put("code", servletresponse.getStatus());
+		}
+
+		return responsedata;
+	}
+
+
+	@PostMapping(value = "/getUserLeaveSummaryList")
+	public ObjectNode getUserLeaveSummaryList(@RequestBody ObjectNode requestData,HttpServletResponse httpstatus) {
+
+		long userId = requestData.get("userId").asLong();
+		ArrayNode jsonArray = objectMapper.createArrayNode();
+		ObjectNode jsonData = objectMapper.createObjectNode();
+		ObjectNode jsonDataRes = objectMapper.createObjectNode();
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+
+
+		try {
+
+			boolean isUserExist = attendanceService.isUserExist(userId);
+			if(isUserExist) {
+				List<UserLeaveSummary> userLeaveSummary = attendanceService.getUserLeaveSummaryList(userId);
+				String userName = "";
+
+				for (UserLeaveSummary item : userLeaveSummary) {
+
+
+					ObjectNode jsonObject = objectMapper.createObjectNode();
+					userName = item.getUser().getFirstName() + " " + item.getUser().getLastName();
+					jsonObject.put("userLeaveSummaryId", item.getLeaveSummaryId());
+					//jsonObject.put("userName",item.getUser().getFirstName()+" "+item.getUser().getLastName());
+					//System.out.println(item.getLeaveDate());
+					jsonObject.put("leaveDate", df.format(item.getLeaveDate()).toString());
+					jsonObject.put("leaveType", item.getLeaveType());
+					jsonArray.add(jsonObject);
+				}
+				jsonData.put("userId",userId);
+				jsonData.put("userName", userName);
+				jsonData.set("leaveSummaryList", jsonArray);
+
+			}
+			jsonDataRes.put("status", "success");
+			jsonDataRes.put("code", httpstatus.getStatus());
+			jsonDataRes.put("message", "success ");
+			jsonDataRes.set("data", jsonData);
+
+		} catch (Exception e) {
+			jsonDataRes.put("status", "failure");
+			jsonDataRes.put("code", httpstatus.getStatus());
+			jsonDataRes.put("message", "failed. " + e);
+		}
+		return jsonDataRes;
+
 	}
 }

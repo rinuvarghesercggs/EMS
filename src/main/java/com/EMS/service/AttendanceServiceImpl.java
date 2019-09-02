@@ -1,20 +1,17 @@
 package com.EMS.service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.EMS.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.EMS.model.HolidayModel;
-import com.EMS.model.LeaveBalanceModel;
-import com.EMS.model.LeaveModel;
-import com.EMS.model.UserModel;
 import com.EMS.repository.HolidayRepository;
 import com.EMS.repository.LeaveBalanceRepository;
 import com.EMS.repository.LeaveRepository;
+import com.EMS.repository.UserLeaveSummaryRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -32,6 +29,10 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	@Autowired
 	LeaveBalanceRepository leaveBalanceRepository;
+
+	@Autowired
+	UserLeaveSummaryRepository userLeaveSummaryRepository;
+
 	@Override
 	public List<Object[]> getHolidayList() {
 		List<Object[]> list = holidayRepository.getHolidayLists();
@@ -200,5 +201,52 @@ public class AttendanceServiceImpl implements AttendanceService {
 	public List<LeaveModel> getLeavelist(Date startDate1, Date endDate1, String leaveType) {
 		List<LeaveModel> list=leaveRepository.getleavelist(startDate1,endDate1,leaveType);
 		return list;
-	}	
+	}
+
+	@Override
+	public long addUserLeaveSummary(UserLeaveSummary userLeaveSummary) {
+		UserLeaveSummary userLeave = userLeaveSummaryRepository.save(userLeaveSummary);
+		return userLeave.getLeaveSummaryId();
+
+	}
+
+	@Override
+	public Boolean isExist(Long leaveSummaryId) {
+		int result = 0;
+		result = userLeaveSummaryRepository.isExist(leaveSummaryId);
+
+		if(result>0)
+			return true;
+		else
+			return false;
+	}
+
+	@Override
+	public List<UserLeaveSummary> getUserLeaveSummaryList(long userId){
+		List<UserLeaveSummary> userLeaveSummary = userLeaveSummaryRepository.getUserLeaveSummaryList(userId);
+		return userLeaveSummary;
+	}
+
+	@Override
+	public UserLeaveSummary getLeaveDetailsById(long userLeaveSummaryId){
+		UserLeaveSummary userLeaveSummary = userLeaveSummaryRepository.getLeaveDetailsById(userLeaveSummaryId);
+		return userLeaveSummary;
+	}
+
+	@Override
+	public void removeUserLeaveSummary(UserLeaveSummary userLeaveData){
+		userLeaveSummaryRepository.delete(userLeaveData);
+
+	}
+
+	@Override
+	public Boolean isUserExist(Long userId){
+		int result = 0;
+		result = userLeaveSummaryRepository.isUserExist(userId);
+
+		if(result>0)
+			return true;
+		else
+			return false;
+	}
 }
