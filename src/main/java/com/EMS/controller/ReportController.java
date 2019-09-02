@@ -81,10 +81,10 @@ public class ReportController {
 	public JsonNode getBenchProjectReport(@RequestBody Taskdetails requestdata) {
 
 		ArrayNode benchProjectReport = null;System.out.println("requestdata.getuId()="+requestdata.getuId());
-		if(requestdata.getuId()!=null) {System.out.println("if");
+		if(requestdata.getuId()!=null) { //System.out.println("if");
 			benchProjectReport = reportServiceImpl.getBenchProjectReportDetails(requestdata.getuId(),requestdata.getFromDate(),requestdata.getToDate());
 		}
-		else {System.out.println("else");
+		else { //System.out.println("else");
 			benchProjectReport = reportServiceImpl.getBenchProjectReportDetails(requestdata.getFromDate(),requestdata.getToDate());
 		}
 		ObjectNode dataNode = objectMapper.createObjectNode();
@@ -569,5 +569,99 @@ public class ReportController {
 			return node;
 		}
 		
+	}
+
+	@PostMapping("/getAllocationofTechnology")
+	public ObjectNode getAllocationofTechnology(@RequestBody JSONObject requestData) {
+		ObjectNode jsonData = objectMapper.createObjectNode();
+		ObjectNode jsonDataRes = objectMapper.createObjectNode();
+		try {
+
+			Long techId = Long.valueOf(requestData.get("techId").toString());
+			String date1 = requestData.get("fromDate").toString();
+			String date2 =  requestData.get("toDate").toString();
+
+			SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
+			Date fromDate = null, toDate = null;
+			if (!date1.isEmpty()) {
+				fromDate = outputFormat.parse(date1);
+			}
+			if (!date2.isEmpty()) {
+				toDate = outputFormat.parse(date2);
+			}
+
+			List<Object[]> allocReport = reportServiceImpl.getAllocationDetailsTechWise(techId, fromDate, toDate);
+			ArrayNode jsonArray = objectMapper.createArrayNode();
+			for(Object[] item : allocReport){
+				Long userId = Long.valueOf((String.valueOf(item[0])));
+				ObjectNode jsonObject = objectMapper.createObjectNode();
+				jsonObject.put("userId", userId);
+				jsonObject.put("userName",(String)item[1]);
+				jsonObject.put("techName",(String)item[2]);
+
+				ArrayNode projectarray=objectMapper.createArrayNode();
+				List<Object[]> projectList = reportServiceImpl.getAllocatedProjectByUserId(userId, fromDate, toDate);
+
+				Date minStartDate = null;
+				Date maxEndDate   = null;
+				Date startDate;
+				Date endDate;
+				String projectNames = "";
+				SimpleDateFormat outputFormats = new SimpleDateFormat("dd-MMM-yyyy");
+				int projectCount = projectList.size();
+				for(Object[] projects : projectList) {
+					startDate = (Date) projects[2];
+					endDate   = (Date) projects[3];
+					if(minStartDate == null){
+						minStartDate = startDate;
+					}
+					else
+					{
+						if((startDate.compareTo(minStartDate) < 0))
+						{
+							minStartDate = startDate;
+						}
+					}
+					if(maxEndDate == null){
+						maxEndDate = endDate;
+					}
+					else
+					{
+						if((endDate.compareTo(maxEndDate) > 0))
+						{
+							maxEndDate = endDate;
+						}
+					}
+
+					projectNames +=  projects[4] + " " + outputFormats.format(projects[2]) + "-" + outputFormats.format(projects[3]) + " | ";
+
+					ObjectNode responseData=objectMapper.createObjectNode();
+					responseData.put("projectName", (String)projects[4]);
+					responseData.put("allocPercent", (double)projects[1]);
+					responseData.put("billable", (boolean)projects[0]);
+					responseData.put("startDate",(String.valueOf(projects[2])) );
+					responseData.put("endDate", (String.valueOf(projects[3])));
+					projectarray.add(responseData);
+
+				}
+				jsonObject.set("projectList", projectarray);
+				jsonObject.put("projectData",projectNames);
+				jsonObject.put("startDate", String.valueOf(minStartDate));
+				jsonObject.put("endDate", String.valueOf(maxEndDate));
+				jsonArray.add(jsonObject);
+
+
+			}
+
+			jsonDataRes.set("data", jsonArray);
+			jsonDataRes.put("status", "success");
+			jsonDataRes.put("message", "success");
+		}
+		catch (Exception e) {
+			jsonDataRes.put("status", "failure");
+			jsonDataRes.put("message", "failed. " + e);
+
+		}
+		return jsonDataRes;
 	}
 }

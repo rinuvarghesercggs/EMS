@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.EMS.model.ApprovalTimeTrackReportModel;
 import com.EMS.repository.ProjectReportsRepository;
+import com.EMS.repository.ProjectRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
@@ -18,6 +19,9 @@ public class ReportServiceImpl implements ReportService {
 
 	@Autowired
 	ProjectReportsRepository projectReportsRepository;
+
+	@Autowired
+	ProjectRepository projectRepository;
 
 	@Autowired
 	ObjectMapper objectMapper;
@@ -78,5 +82,23 @@ public class ReportServiceImpl implements ReportService {
 			exc.printStackTrace();
 		}
 		return list;
+	}
+
+
+
+	public List<Object[]> getAllocationDetailsTechWise(long techId, Date fromDate, Date toDate) throws Exception {
+
+		List<Object[]> result  = projectRepository.getAllocationDetailsTechWise(techId,fromDate,toDate);
+
+
+		return result;
+	}
+
+	public List<Object[]> getAllocatedProjectByUserId(long userId, Date fromDate, Date toDate) throws Exception {
+
+		List<Object[]> result  = projectRepository.getAllocatedProjectByUserId(userId,fromDate,toDate);
+
+
+		return result;
 	}
 }
