@@ -40,6 +40,7 @@ import com.EMS.repository.UserRepository;
 import com.EMS.repository.TimeTrackApprovalJPARepository;
 import com.EMS.repository.TasktrackRepository;
 import com.EMS.repository.HolidayRepository;
+import com.EMS.repository.UserLeaveSummaryRepository;
 
 @Service
 public class ProjectExportServiceImpl implements ProjectExportService {
@@ -55,6 +56,9 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 
 	@Autowired
 	HolidayRepository holidayRepository;
+
+	@Autowired
+	UserLeaveSummaryRepository userLeaveSummaryRepository;
 
 
 	@Override
@@ -895,32 +899,20 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 		headers[2] = "Bench Hour";
 		int dayCount = colNames.size();
 
-		//int weekDays = 0;
 		int working_days =0;
 		int holidays =0;
+		int fullDayLeaveDays =0;
+		int halfDayLeaveDays =0;
+		double totalWorkingHours =0.0;
+		double totalWorkedHours =0.0;
+		double leaveHours =0.0;
+
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar c = Calendar.getInstance();
 		c.setTime(startDate);
 		c.add(Calendar.DATE, 14);  // number of days to add
 		Date end_date = c.getTime();
-		if(reportType == "monthly") {
-			// weekDays = countWeekendDays(yearIndex, monthIndex);
-			working_days = calculateWorkingDays(startDate,endDate);
-			holidays = holidayRepository.getNationalHolidayListsByMonth(startDate,endDate);
-		}
-		else
-		{
-			//System.out.println("start date "+ startDate);
-			//weekDays = countMidWeekendDays(yearIndex, monthIndex);
-			working_days = calculateWorkingDays(startDate,end_date);
-			holidays = holidayRepository.getNationalHolidayListsByMonth(startDate,end_date);
-		}
 
-
-		//int workingDays = dayCount - weekDays;
-		//System.out.println("workingDays "+workingDays);
-		//int totalHours = workingDays*8;
-		int totalHours = (working_days-holidays)*8;
 		double benchHour = 0.0;
 		double total_hours =0.0;
 		List<Object[]> userList = userRepository.getUserList(startDate,endDate);
@@ -932,51 +924,66 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 			String lastName          = (String) item[2];
 			Date joiningDate         = (Date) item[3];
 			Date terminationDate     = (Date) item[4];
-			double totalWorkingHours = totalHours;
+
 
 			List<Object[]> loggedData;
 
 			if(reportType == "monthly") {
+
 				loggedData = timeTrackApprovalJPARepository.getTimeTrackApprovalDataByUserId(monthIndex, yearIndex, id);
+				working_days = calculateWorkingDays(startDate,endDate);
+				holidays = holidayRepository.getNationalHolidayListsByMonth(startDate,endDate);
+				fullDayLeaveDays = userLeaveSummaryRepository.getFullDayLeaveDays(id,startDate,endDate);
+				halfDayLeaveDays = userLeaveSummaryRepository.getHalfDayLeaveDays(id,startDate,endDate);
 				if((startDate.compareTo(joiningDate) < 0)){
 					working_days = calculateWorkingDays(joiningDate,endDate);
 					holidays = holidayRepository.getNationalHolidayListsByMonth(joiningDate,endDate);
-					total_hours = (working_days-holidays)*8;
-					totalWorkingHours = total_hours;
+					fullDayLeaveDays = userLeaveSummaryRepository.getFullDayLeaveDays(id,joiningDate,endDate);
+					halfDayLeaveDays = userLeaveSummaryRepository.getHalfDayLeaveDays(id,joiningDate,endDate);
 				}
 				if(terminationDate !=null){
 					if((terminationDate.compareTo(endDate) < 0)){
 						working_days = calculateWorkingDays(startDate,terminationDate);
 						holidays = holidayRepository.getNationalHolidayListsByMonth(startDate,terminationDate);
-						total_hours = (working_days-holidays)*8;
-						totalWorkingHours = total_hours;
+						fullDayLeaveDays = userLeaveSummaryRepository.getFullDayLeaveDays(id,startDate,terminationDate);
+						halfDayLeaveDays = userLeaveSummaryRepository.getHalfDayLeaveDays(id,startDate,terminationDate);
 					}
 				}
+
 			}
 			else {
 				 loggedData = timeTrackApprovalJPARepository.getTimeTrackApprovalDataByUserIdMidMonth(monthIndex, yearIndex, id);
+				working_days = calculateWorkingDays(startDate,end_date);
+				holidays = holidayRepository.getNationalHolidayListsByMonth(startDate,end_date);
+				fullDayLeaveDays = userLeaveSummaryRepository.getFullDayLeaveDays(id,startDate,end_date);
+				halfDayLeaveDays = userLeaveSummaryRepository.getHalfDayLeaveDays(id,startDate,end_date);
 				if((startDate.compareTo(joiningDate) < 0)){
 					working_days = calculateWorkingDays(joiningDate,end_date);
 					holidays = holidayRepository.getNationalHolidayListsByMonth(joiningDate,end_date);
-					total_hours = (working_days-holidays)*8;
-					totalWorkingHours = total_hours;
+					fullDayLeaveDays = userLeaveSummaryRepository.getFullDayLeaveDays(id,joiningDate,end_date);
+					halfDayLeaveDays = userLeaveSummaryRepository.getHalfDayLeaveDays(id,joiningDate,end_date);
 				}
 				if(terminationDate !=null){
 					if((terminationDate.compareTo(end_date) < 0)){
 						working_days = calculateWorkingDays(startDate,terminationDate);
 						holidays = holidayRepository.getNationalHolidayListsByMonth(startDate,terminationDate);
-						total_hours = (working_days-holidays)*8;
-						totalWorkingHours = total_hours;
-
+						fullDayLeaveDays = userLeaveSummaryRepository.getFullDayLeaveDays(id,startDate,terminationDate);
+						halfDayLeaveDays = userLeaveSummaryRepository.getHalfDayLeaveDays(id,startDate,terminationDate);
 					}
 				}
 			}
+
+			totalWorkingHours = (working_days-holidays)*8;
+			leaveHours = (fullDayLeaveDays*8)+(halfDayLeaveDays*4);
+			totalWorkedHours = totalWorkingHours -leaveHours;
+
+
 			for(Object[] items : loggedData) {
 
 				if(items[1] != null)
 				{
 					double userHour = (double)items[1];
-					 benchHour = totalWorkingHours-userHour;
+					 benchHour = totalWorkedHours-userHour;
 					 if(benchHour<0.0) {
 						 benchHour = 0.0;
 					 }
@@ -984,7 +991,7 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 				}
 				else
 				{
-					 benchHour = totalWorkingHours;
+					 benchHour = totalWorkedHours;
 
 				}
 
@@ -1093,35 +1100,26 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 		headers[6] = "Total";
 		int dayCount = colNames.size();
 		//int weekDays = 0;
-		int working_days = 0;
+		int working_days =0;
 		int holidays =0;
+		int fullDayLeaveDays =0;
+		int halfDayLeaveDays =0;
+		double totalWorkingHours =0.0;
+		double totalWorkedHours =0.0;
+		double leaveHours =0.0;
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar c = Calendar.getInstance();
 		c.setTime(startDate);
 		c.add(Calendar.DATE, 14);  // number of days to add
 		Date end_date = c.getTime();
 
-		if(reportType == "monthly") {
-			//weekDays = countWeekendDays(yearIndex, monthIndex);
-			working_days = calculateWorkingDays(startDate,endDate);
-			holidays = holidayRepository.getNationalHolidayListsByMonth(startDate,endDate);
-		}
-		else
-		{
-			//weekDays = countMidWeekendDays(yearIndex, monthIndex);
-			working_days = calculateWorkingDays(startDate,end_date);
-			holidays = holidayRepository.getNationalHolidayListsByMonth(startDate,end_date);
-		}
-		//int workingDays          = dayCount - weekDays;
-		//int totalHours           = workingDays*8;
-		int totalHours           = (working_days-holidays)*8;
+
 		double benchHour         = 0.0;
 		double totalHour         = 0.0;
 		double billableHour      = 0.0;
 		double recbillableHour   = 0.0;
 		double nonBillableHour   = 0.0;
 		double overtimeHour      = 0.0;
-		double total_hours       = 0.0;
 
 		List<Object[]> userList = userRepository.getUserList(startDate,endDate);
 		List<Object[]> Listdata = new ArrayList<>();
@@ -1132,7 +1130,6 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 			String lastName          = (String) item[2];
 			Date joiningDate         = (Date) item[3];
 			Date terminationDate     = (Date) item[4];
-			double totalWorkingHours = totalHours;
 			//String projectName = "";
 			List<Object[]> loggedData;
 			List<Object[]> billable;
@@ -1159,18 +1156,22 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 				billable    = timeTrackApprovalJPARepository.getBillableDataByUserId(monthIndex, yearIndex, id);
 				nonBillable = timeTrackApprovalJPARepository.getNonBillableDataByUserId(monthIndex, yearIndex, id);
 				overtime    = timeTrackApprovalJPARepository.getOvertimeDataByUserId(monthIndex, yearIndex, id);
+				working_days = calculateWorkingDays(startDate,endDate);
+				holidays = holidayRepository.getNationalHolidayListsByMonth(startDate,endDate);
+				fullDayLeaveDays = userLeaveSummaryRepository.getFullDayLeaveDays(id,startDate,endDate);
+				halfDayLeaveDays = userLeaveSummaryRepository.getHalfDayLeaveDays(id,startDate,endDate);
 				if((startDate.compareTo(joiningDate) < 0)){
 					working_days = calculateWorkingDays(joiningDate,endDate);
 					holidays = holidayRepository.getNationalHolidayListsByMonth(joiningDate,endDate);
-					total_hours = (working_days-holidays)*8;
-					totalWorkingHours = total_hours;
+					fullDayLeaveDays = userLeaveSummaryRepository.getFullDayLeaveDays(id,joiningDate,endDate);
+					halfDayLeaveDays = userLeaveSummaryRepository.getHalfDayLeaveDays(id,joiningDate,endDate);
 				}
 				if(terminationDate !=null){
 					if((terminationDate.compareTo(endDate) < 0)){
 						working_days = calculateWorkingDays(startDate,terminationDate);
 						holidays = holidayRepository.getNationalHolidayListsByMonth(startDate,terminationDate);
-						total_hours = (working_days-holidays)*8;
-						totalWorkingHours = total_hours;
+						fullDayLeaveDays = userLeaveSummaryRepository.getFullDayLeaveDays(id,startDate,terminationDate);
+						halfDayLeaveDays = userLeaveSummaryRepository.getHalfDayLeaveDays(id,startDate,terminationDate);
 					}
 				}
 
@@ -1182,29 +1183,36 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 				billable    = timeTrackApprovalJPARepository.getBillableDataByUserIdMidMonth(monthIndex, yearIndex, id);
 				nonBillable = timeTrackApprovalJPARepository.getNonBillableDataByUserIdMidMonth(monthIndex, yearIndex, id);
 				overtime    = timeTrackApprovalJPARepository.getOvertimeDataByUserIdMidMonth(monthIndex, yearIndex, id);
+				working_days = calculateWorkingDays(startDate,endDate);
+				holidays = holidayRepository.getNationalHolidayListsByMonth(startDate,end_date);
+				fullDayLeaveDays = userLeaveSummaryRepository.getFullDayLeaveDays(id,startDate,end_date);
+				halfDayLeaveDays = userLeaveSummaryRepository.getHalfDayLeaveDays(id,startDate,end_date);
 				if((startDate.compareTo(joiningDate) < 0)){
 					working_days = calculateWorkingDays(joiningDate,end_date);
 					holidays = holidayRepository.getNationalHolidayListsByMonth(joiningDate,end_date);
-					total_hours = (working_days-holidays)*8;
-					totalWorkingHours = total_hours;
+					fullDayLeaveDays = userLeaveSummaryRepository.getFullDayLeaveDays(id,joiningDate,end_date);
+					halfDayLeaveDays = userLeaveSummaryRepository.getHalfDayLeaveDays(id,joiningDate,end_date);
 				}
 				if(terminationDate !=null){
 					if((terminationDate.compareTo(end_date) < 0)){
 						working_days = calculateWorkingDays(startDate,terminationDate);
 						holidays = holidayRepository.getNationalHolidayListsByMonth(startDate,terminationDate);
-						total_hours = (working_days-holidays)*8;
-						totalWorkingHours = total_hours;
+						fullDayLeaveDays = userLeaveSummaryRepository.getFullDayLeaveDays(id,startDate,terminationDate);
+						halfDayLeaveDays = userLeaveSummaryRepository.getHalfDayLeaveDays(id,startDate,terminationDate);
 
 					}
 				}
 			}
 
+			totalWorkingHours = (working_days-holidays)*8;
+			leaveHours = (fullDayLeaveDays*8)+(halfDayLeaveDays*4);
+			totalWorkedHours = totalWorkingHours -leaveHours;
 			for(Object[] items : loggedData) {
 
 				if(items[1] != null)
 				{
 					double userHour = (double)items[1];
-					benchHour = totalWorkingHours-userHour;
+					benchHour = totalWorkedHours-userHour;
 					if(benchHour<0.0) {
 						benchHour = 0.0;
 					}
@@ -1212,7 +1220,7 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 				}
 				else
 				{
-					benchHour = totalWorkingHours;
+					benchHour = totalWorkedHours;
 
 				}
 
@@ -1223,9 +1231,9 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 				if(bill[1] != null)
 				{
 					recbillableHour = (double)bill[1];
-					if(recbillableHour > totalWorkingHours)
+					if(recbillableHour > totalWorkedHours)
 					{
-						billableHour = totalWorkingHours;
+						billableHour = totalWorkedHours;
 					}
 					else{
 
@@ -1250,8 +1258,8 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 			for(Object[] over : overtime) {
 				if(over[1] != null)
 				{
-					if(recbillableHour > totalWorkingHours) {
-						overtimeHour = (recbillableHour - totalWorkingHours)+(double) over[1];
+					if(recbillableHour > totalWorkedHours) {
+						overtimeHour = (recbillableHour - totalWorkedHours)+(double) over[1];
 					}
 					else{
 						overtimeHour = (double) over[1];
