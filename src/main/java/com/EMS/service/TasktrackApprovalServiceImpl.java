@@ -1208,7 +1208,9 @@ public class TasktrackApprovalServiceImpl implements TasktrackApprovalService {
 		List<TaskTrackApprovalLevel2> approvedData = timeTrackApprovalLevel2.getApprovedData(userId,monthIndex,yearIndex,projectId);
 		JSONObject userListObject = new JSONObject();
 
-		
+		if(approvedData != null) {
+			System.out.println("Datas Available");
+		}
 		
 		int diffInDays = (int) ((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
 		String status = "";
@@ -1230,8 +1232,9 @@ public class TasktrackApprovalServiceImpl implements TasktrackApprovalService {
 		
 			if (approvedData != null && approvedData.size() > 0) {
 				
-				
+				System.out.println("inside____________1"+approvedData.size());
 				for (TaskTrackApprovalLevel2 item : approvedData) {
+					System.out.println("inside____________2");
 					TaskTrackApprovalFinance finance = new TaskTrackApprovalFinance();
 					TaskTrackApprovalLevel2 level2 = tasktrackApprovalService.findById2(item.getId());
 					level2.setForwarded_date(yesterday);
@@ -1241,6 +1244,7 @@ public class TasktrackApprovalServiceImpl implements TasktrackApprovalService {
 					finance.setProjectType(item.getProjectType());
 					finance.setApprover_level2(level2);
 					finance.setStatus(status);
+					
 					for (int i = 0; i < diffInDays; i++) {
 						if(i==0)
 					finance.setDay1(item.getDay1());
@@ -1307,7 +1311,7 @@ public class TasktrackApprovalServiceImpl implements TasktrackApprovalService {
 					}
 					finance.setUser(user);
 					cal.setTime(startDate);
-					
+					taskTrackFinanceRepository.save(finance);
 				}					
 			}
 			
@@ -1424,7 +1428,7 @@ public class TasktrackApprovalServiceImpl implements TasktrackApprovalService {
 				}
 				finance.setUser(user);
 				cal.setTime(startDate);
-				
+				taskTrackFinanceRepository.save(finance);
 			}					
 		}
 		
@@ -1659,15 +1663,15 @@ return userListObject;
 	}
 
 	@Override
-	public ArrayList<TaskTrackApproval> getForwardedDate(Long projectId, Long userId, int intMonth) {
+	public List<Object> getForwardedDate(Long projectId, Long userId, int intMonth,int years) {
 		// TODO Auto-generated method stub
-		return timeTrackApprovalJPARepository.getForwardedDate(projectId,userId,intMonth);
+		return timeTrackApprovalJPARepository.getForwardedDate(projectId,userId,intMonth,years);
 	}
 
 	@Override
-	public ArrayList<TaskTrackApprovalLevel2> getForwardedDateLevel2(Long projectId, Long userId, int intMonth) {
+	public List<Object> getForwardedDateLevel2(Long projectId, Long userId, int intMonth,int year) {
 		// TODO Auto-generated method stub
-		return timeTrackApprovalLevel2.getForwardedDateLevel2(projectId,userId, intMonth);
+		return timeTrackApprovalLevel2.getForwardedDateLevel2(projectId,userId,intMonth,year);
 	}
 
 	//@Override

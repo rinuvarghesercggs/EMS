@@ -658,12 +658,12 @@ public class TasktrackController {
 			ProjectModel projectdetails = null;
 			
 			if(projectId != null) {
-				System.out.println("Here____________________________");
+				//System.out.println("Here____________________________");
 				 projectdetails = getProjectDetails(projectId);
 				}
 			if(projectdetails != null) {
 		
-				System.out.println("Here____________________________");
+				//System.out.println("Here____________________________");
 				if(projectdetails.getProjectOwner() != null)
 				jsonDataProjectDetails.put("approver_level_1",projectdetails.getProjectOwner().getUserId());
 				
@@ -674,8 +674,48 @@ public class TasktrackController {
 					jsonDataProjectDetails.put("approver_level_2","");	
 				//timeTrackJSONData.add(jsonDataProjectDetails);		
 				//TaskTrackApprovalLevel2 forwardeddate = taskTrackApprovalLevel2Repository.getForwardedDate(projectId,userId,intMonth);
-				jsonDataProjectDetails.put("forwarded_date","2019-09-16");
-				jsonDataProjectDetails.put("forwarded_date_finance","2019-09-16");
+				int yearIndex = cal.get(Calendar.YEAR);
+				System.out.println("Month"+intMonth+"Year"+yearIndex);
+				String frowardedDate = "";
+				String frowardedDateLevel2 = "";
+				 String pattern = "yyyy-MM-dd"; 
+				 DateFormat df = new SimpleDateFormat(pattern);
+				
+				 List<Object> level2 = tasktrackApprovalService.getForwardedDateLevel2(projectId,userId,intMonth,yearIndex);
+				  
+				  if(!level2.isEmpty()) {
+				  
+					 // System.out.println("forwarded_date"+level2.get(0));
+					  if(level2.get(0) != null) {
+						  
+						  Date fdate = (Date) level2.get(0);
+						  frowardedDateLevel2 = df.format(fdate);
+					  }
+					  else {
+						
+						 frowardedDateLevel2 = ""; 
+					  }
+				 }
+				 
+					
+				  List<Object> level1 = tasktrackApprovalService.getForwardedDate(projectId,userId,intMonth,yearIndex);
+				  if(!level2.isEmpty()) {
+					  
+					 // System.out.println("forwarded_date"+level1.get(0));
+					  if(level1.get(0) != null) {
+						  
+						  Date fdate = (Date) level1.get(0);
+						  frowardedDate = df.format(fdate);
+						 //System.out.println("frowardedDate___________"+frowardedDate);
+					  }
+					  else {
+						
+						  frowardedDate = ""; 
+					  }
+				 }
+				
+				jsonDataProjectDetails.put("forwarded_date",frowardedDate);
+				jsonDataProjectDetails.put("forwarded_date_finance",frowardedDateLevel2);
 			}
 			
 			List<Object[]> userIdList = null;
@@ -2207,7 +2247,7 @@ public class TasktrackController {
 				TaskTrackApproval beach = null; 
 					if(beachId != null)
 					{
-						System.out.println("updated______________________");
+						//System.out.println("updated______________________");
 						beach = tasktrackApprovalService.findById(beachId);
 						beach.setForwarded_date(yesterday);
 					}
@@ -2545,14 +2585,18 @@ public class TasktrackController {
 			
 				int intMonth = 0,intday = 0;
 				intMonth = (cal.get(Calendar.MONTH) + 1);
+				int yearIndex = cal.get(Calendar.YEAR);
+				System.out.println("Month"+intMonth+"Year"+yearIndex);
 				String frowardedDate = "";
 				String frowardedDateLevel2 = "";
+				 String pattern = "yyyy-MM-dd"; 
+				 DateFormat df = new SimpleDateFormat(pattern);
 				/*
 				 * ArrayList<TaskTrackApproval> level1 =
 				 * tasktrackApprovalService.getForwardedDate(projectId,userId,intMonth);
 				 * 
-				 * String pattern = "yyyy-MM-dd"; DateFormat df = new SimpleDateFormat(pattern);
-				 * Date fDate = new Date(); Date f2Date = new Date(); if(!level1.isEmpty()) {
+				 * 
+				 * if(!level1.isEmpty()) {
 				 * for(TaskTrackApproval item : level1) { if(item.getForwarded_date()!= null)
 				 * fDate = item.getForwarded_date();
 				 * System.out.println("ForwardedDates_________"+item.getForwarded_date()); }
@@ -2561,21 +2605,41 @@ public class TasktrackController {
 				 * System.out.println("ForwardedDates_ String ________"+frowardedDate); }
 				 * System.out.println("ForwardedDates_________"+level1);
 				 */
-				/*
-				 * ArrayList<TaskTrackApprovalLevel2> level2 =
-				 * tasktrackApprovalService.getForwardedDateLevel2(projectId,userId,intMonth);
-				 * 
-				 * if(!level2.isEmpty()) {
-				 * 
-				 * for(TaskTrackApprovalLevel2 item : level2) { if(item.getForwarded_date()!=
-				 * null) f2Date = item.getForwarded_date();
-				 * 
-				 * if(item.getForwarded_date()!= null) frowardedDateLevel2 = df.format(f2Date);
-				 * } }
-				 */
+				
+				  List<Object> level2 = tasktrackApprovalService.getForwardedDateLevel2(projectId,userId,intMonth,yearIndex);
+				  
+				  if(!level2.isEmpty()) {
+				  
+					 // System.out.println("forwarded_date"+level2.get(0));
+					  if(level2.get(0) != null) {
+						  
+						  Date fdate = (Date) level2.get(0);
+						  frowardedDateLevel2 = df.format(fdate);
+					  }
+					  else {
+						
+						 frowardedDateLevel2 = ""; 
+					  }
+				 }
+				 
 					
-				jsonDataProjectDetails.put("forwarded_date","2019-09-16");
-				jsonDataProjectDetails.put("forwarded_date_finance","2019-09-16");
+				  List<Object> level1 = tasktrackApprovalService.getForwardedDate(projectId,userId,intMonth,yearIndex);
+				  if(!level2.isEmpty()) {
+					  
+					 // System.out.println("forwarded_date"+level1.get(0));
+					  if(level1.get(0) != null) {
+						  
+						  Date fdate = (Date) level1.get(0);
+						  frowardedDate = df.format(fdate);
+						 //System.out.println("frowardedDate___________"+frowardedDate);
+					  }
+					  else {
+						
+						  frowardedDate = ""; 
+					  }
+				 }
+				jsonDataProjectDetails.put("forwarded_date",frowardedDate);
+				jsonDataProjectDetails.put("forwarded_date_finance",frowardedDateLevel2);
 			}
 			
 			List<Object[]> userIdList = null;
