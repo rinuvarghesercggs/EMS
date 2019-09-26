@@ -606,8 +606,8 @@ public class TasktrackController {
 
 			projectId = ((BigInteger) projectItem[0]).longValue();
 			projectName = (String)projectItem[1];
-			System.out.println(projectId);
-			System.out.println(projectName);
+			//System.out.println(projectId);
+			//System.out.println(projectName);
 			List<Object[]> projectList = null;
 			Boolean isExist = tasktrackApprovalService.checkIsUserExists(userId);
 			//Data From Time track
@@ -1841,15 +1841,15 @@ public class TasktrackController {
 		else {
 			List<Object[]> projectList = null;
 			if(user.getRole().getroleName().equals("APPROVER_LEVEL_2")) {
-				System.out.println("_________________________________________APPROVER_LEVEL_2 " +uId );
+				//System.out.println("_________________________________________APPROVER_LEVEL_2 " +uId );
 				projectList = tasktrackRepository.getProjectNamesForApprovalLevel2(uId);
 			}
 			else if (user.getRole().getroleName().equals("LEAD")) {
-				System.out.println("_________________________________________APPROVER_LEVEL_1 "+uId);
+				//System.out.println("_________________________________________APPROVER_LEVEL_1 "+uId);
 				projectList = tasktrackRepository.getProjectNamesForApprovalLevel1(uId);
 			}
 			else {
-				System.out.println("_________________________________________Other"+uId);
+				//System.out.println("_________________________________________Other"+uId);
 				projectList = tasktrackRepository.getProjectNamesForApprovalnew(uId);
 			}
 			
@@ -1873,7 +1873,7 @@ public class TasktrackController {
 	}
 	private ProjectModel getProjectDetails(Long projectId) {
 		// TODO Auto-generated method stub
-		System.out.println("Here____________________________");
+		//System.out.println("Here____________________________");
 		return projectService.getProjectDetails(projectId);
 	}
 	/**
@@ -1965,7 +1965,7 @@ public class TasktrackController {
 				TaskTrackApproval billable = null;
 					if(billableId != null)
 					{
-						System.out.println("updated______________________");
+						//System.out.println("updated______________________");
 						 billable = tasktrackApprovalService.findById(billableId);
 						billable.setForwarded_date(yesterday);
 					}
@@ -2105,7 +2105,7 @@ public class TasktrackController {
 				TaskTrackApproval nonbillable = null;
 					if(nonbillableId != null)
 					{
-						System.out.println("updated______________________");
+						//System.out.println("updated______________________");
 						nonbillable = tasktrackApprovalService.findById(nonbillableId);
 						nonbillable.setForwarded_date(yesterday);
 					}
@@ -2385,7 +2385,7 @@ public class TasktrackController {
 				TaskTrackApproval overtime = null;
 					if(overtimeId != null)
 					{
-						System.out.println("updated______________________");
+						//System.out.println("updated______________________");
 						overtime  = tasktrackApprovalService.findById(overtimeId);
 						overtime.setForwarded_date(yesterday);
 					}
@@ -2586,7 +2586,7 @@ public class TasktrackController {
 				int intMonth = 0,intday = 0;
 				intMonth = (cal.get(Calendar.MONTH) + 1);
 				int yearIndex = cal.get(Calendar.YEAR);
-				System.out.println("Month"+intMonth+"Year"+yearIndex);
+				//System.out.println("Month"+intMonth+"Year"+yearIndex);
 				String frowardedDate = "";
 				String frowardedDateLevel2 = "";
 				 String pattern = "yyyy-MM-dd"; 

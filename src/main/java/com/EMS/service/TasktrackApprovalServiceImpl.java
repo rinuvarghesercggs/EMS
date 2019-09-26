@@ -80,7 +80,7 @@ public class TasktrackApprovalServiceImpl implements TasktrackApprovalService {
 			JSONObject userListObject = new JSONObject();
             
     		userList =getUserListByProject(id, startDate, endDate,projectId);
-			System.out.println("userList  : "+userList);
+			//System.out.println("userList  : "+userList);
     		loggedJsonArray = new ArrayList<>();
 
 			String name = null;
@@ -1207,7 +1207,7 @@ public class TasktrackApprovalServiceImpl implements TasktrackApprovalService {
 		JSONObject userListObject = new JSONObject();
 
 		if(approvedData != null) {
-			System.out.println("Datas Available");
+			//System.out.println("Datas Available");
 		}
 		
 		int diffInDays = (int) ((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
@@ -1230,9 +1230,9 @@ public class TasktrackApprovalServiceImpl implements TasktrackApprovalService {
 		
 			if (approvedData != null && approvedData.size() > 0) {
 				
-				System.out.println("inside____________1"+approvedData.size());
+				
 				for (TaskTrackApprovalLevel2 item : approvedData) {
-					System.out.println("inside____________2");
+					
 					TaskTrackApprovalFinance finance = new TaskTrackApprovalFinance();
 					TaskTrackApprovalLevel2 level2 = tasktrackApprovalService.findById2(item.getId());
 					level2.setForwarded_date(yesterday);
@@ -1242,7 +1242,8 @@ public class TasktrackApprovalServiceImpl implements TasktrackApprovalService {
 					finance.setProjectType(item.getProjectType());
 					finance.setApprover_level2(level2);
 					finance.setStatus(status);
-					
+					finance.setMonth(monthIndex);
+					finance.setYear(yearIndex);
 					for (int i = 0; i < diffInDays; i++) {
 						if(i==0)
 					finance.setDay1(item.getDay1());
@@ -1360,6 +1361,8 @@ public class TasktrackApprovalServiceImpl implements TasktrackApprovalService {
 				finance.setProjectType(item.getProjectType());
 				finance.setApprover_level1(level1);
 				finance.setStatus(status);
+				finance.setMonth(monthIndex);
+				finance.setYear(yearIndex);
 				for (int i = 0; i < diffInDays; i++) {
 					if(i==0)
 				finance.setDay1(item.getDay1());
@@ -1444,7 +1447,7 @@ return userListObject;
 			JSONObject userListObject = new JSONObject();
             
     		userList =getUserListByProject(id, startDate, endDate,projectId);
-			System.out.println("userList  : "+userList);
+			
     		loggedJsonArray = new ArrayList<>();
 
 			String name = null;
