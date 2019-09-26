@@ -41,7 +41,16 @@ public class TaskTrackApproval  {
 	private String firstName,lastName;
 	
 	private Date forwarded_date;
-		
+	
+	private Date approved_date;
+	
+	
+	public Date getApproved_date() {
+		return approved_date;
+	}
+	public void setApproved_date(Date approved_date) {
+		this.approved_date = approved_date;
+	}
 	public long getId() {
 		return id;
 	}
