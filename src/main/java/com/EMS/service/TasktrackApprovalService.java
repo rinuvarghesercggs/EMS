@@ -61,6 +61,8 @@ public interface TasktrackApprovalService {
 
 	List<Object> getForwardedDateLevel2(Long projectId, Long userId, int intMonth,int year);
 
+	TaskTrackApprovalLevel2 saveLevel2FromLevel1(Long projectId, Long userId, Date startDate, Date endDate);
+
 
 	/*
 	 * JSONObject getApprovedUserTaskDetailsForLevel2(Long userId, Date startDate,
