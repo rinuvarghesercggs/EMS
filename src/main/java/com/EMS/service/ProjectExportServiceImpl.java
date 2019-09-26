@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.EMS.model.*;
+import com.EMS.repository.*;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,12 +38,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.EMS.repository.UserRepository;
-import com.EMS.repository.TimeTrackApprovalJPARepository;
-import com.EMS.repository.TasktrackRepository;
-import com.EMS.repository.HolidayRepository;
-import com.EMS.repository.UserLeaveSummaryRepository;
-
 @Service
 public class ProjectExportServiceImpl implements ProjectExportService {
 
@@ -60,6 +55,9 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 
 	@Autowired
 	UserLeaveSummaryRepository userLeaveSummaryRepository;
+
+	@Autowired
+	TaskTrackFinanceRepository taskTrackFinanceRepository;
 
 
 	@Override
@@ -1477,7 +1475,7 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 		}
 		headers[dayCount+2] ="Total Hours";
 
-		List<Object[]> financeData = timeTrackApprovalJPARepository.getFinanceDataByProject(month, year, projectId);
+		List<Object[]> financeData = taskTrackFinanceRepository.getFinanceDataByProject(month, year, projectId);
 
 		//Removing grids
 		sheet.setDisplayGridlines(false);
@@ -1598,7 +1596,7 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 			headers[i + 1] = year+"-"+intmonth+"-"+j;
 		}
 		headers[dayCount+2]="Total Hours";
-		List<Object[]> financeData = timeTrackApprovalJPARepository.getFinanceDataByUser(month, year, userId);
+		List<Object[]> financeData = taskTrackFinanceRepository.getFinanceDataByUser(month, year, userId);
 
 		//Removing grids
 		sheet.setDisplayGridlines(false);
@@ -1718,7 +1716,7 @@ public class ProjectExportServiceImpl implements ProjectExportService {
 			headers[i + 1] = year+"-"+intmonth+"-"+j;
 		}
 		headers[dayCount+2] = "Total Hours";
-		List<Object[]> financeData = timeTrackApprovalJPARepository.getFinanceDataByUserAndProject(month, year, userId,projectId);
+		List<Object[]> financeData = taskTrackFinanceRepository.getFinanceDataByUserAndProject(month, year, userId,projectId);
 
 		//Removing grids
 		sheet.setDisplayGridlines(false);

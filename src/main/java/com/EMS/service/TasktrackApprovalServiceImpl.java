@@ -34,6 +34,7 @@ import com.EMS.repository.TaskTrackApprovalLevel2Repository;
 import com.EMS.repository.TaskTrackFinanceRepository;
 import com.EMS.repository.TimeTrackApprovalRepository;
 import com.EMS.repository.UserRepository;
+import com.EMS.repository.TaskTrackFinanceRepository;
 
 @Service
 public class TasktrackApprovalServiceImpl implements TasktrackApprovalService {
@@ -68,6 +69,7 @@ public class TasktrackApprovalServiceImpl implements TasktrackApprovalService {
 	
 	@Autowired
 	ProjectService projectService;
+
 	
 	@Override
 	public Boolean checkIsUserExists(Long id) {
@@ -1893,7 +1895,7 @@ return userListObject;
 		YearMonth yearMonthObject = YearMonth.of(year, month);
 		int daysInMonth = yearMonthObject.lengthOfMonth();
 		ArrayList<JSONObject> resultData = new ArrayList<JSONObject>();
-		List<Object[]> financeData = timeTrackApprovalJPARepository.getFinanceDataByProject(month, year, projectId);
+		List<Object[]> financeData = taskTrackFinanceRepository.getFinanceDataByProject(month, year, projectId);
 		String intmonth;
 		if(month<10){
 			intmonth ="0"+month;
@@ -1935,7 +1937,7 @@ return userListObject;
 		YearMonth yearMonthObject = YearMonth.of(year, month);
 		int daysInMonth = yearMonthObject.lengthOfMonth();
 		ArrayList<JSONObject> resultData = new ArrayList<JSONObject>();
-		List<Object[]> financeData = timeTrackApprovalJPARepository.getFinanceDataByUser(month, year, userId);
+		List<Object[]> financeData = taskTrackFinanceRepository.getFinanceDataByUser(month, year, userId);
 		String intmonth;
 		if(month<10){
 			intmonth ="0"+month;
@@ -1974,7 +1976,7 @@ return userListObject;
 		YearMonth yearMonthObject = YearMonth.of(year, month);
 		int daysInMonth = yearMonthObject.lengthOfMonth();
 		ArrayList<JSONObject> resultData = new ArrayList<JSONObject>();
-		List<Object[]> financeData = timeTrackApprovalJPARepository.getFinanceDataByUserAndProject(month, year, userId, projectId);
+		List<Object[]> financeData = taskTrackFinanceRepository.getFinanceDataByUserAndProject(month, year, userId, projectId);
 		String intmonth;
 		if(month<10){
 			intmonth ="0"+month;
