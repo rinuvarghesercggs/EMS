@@ -57,9 +57,9 @@ public interface TasktrackApprovalService {
 			List<JSONObject> loggedJsonArray, List<JSONObject> billableJsonArray, List<JSONObject> timeTrackJSONData,
 			Boolean isExist, Long projectId);
 
-	ArrayList<TaskTrackApproval> getForwardedDate(Long projectId, Long userId, int intMonth);
+	List<Object> getForwardedDate(Long projectId, Long userId, int intMonth,int year);
 
-	ArrayList<TaskTrackApprovalLevel2> getForwardedDateLevel2(Long projectId, Long userId, int intMonth);
+	List<Object> getForwardedDateLevel2(Long projectId, Long userId, int intMonth,int year);
 
 
 	/*

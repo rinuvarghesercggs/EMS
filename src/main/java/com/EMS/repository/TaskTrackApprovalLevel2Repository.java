@@ -17,8 +17,8 @@ public interface TaskTrackApprovalLevel2Repository extends JpaRepository<TaskTra
 	@Query("SELECT a FROM TaskTrackApprovalLevel2 a where a.user.userId = ?1 and a.month = ?3 and a.year = ?4 and a.project.projectId = ?2 ")
 	List<TaskTrackApprovalLevel2> getUserListForApproval(Long id, Long projectId, Integer monthIndex, Integer yearIndex);
 
-	@Query("SELECT s FROM TaskTrackApprovalLevel2 s WHERE s.project.projectId =?1 and s.user.userId = ?2 and s.month = ?3")
-	ArrayList<TaskTrackApprovalLevel2> getForwardedDateLevel2(Long projectId, Long userId, int intMonth);
+	@Query(value = "SELECT s.forwarded_date FROM tasktrack_approval_level2 s WHERE s.month = ?3 and s.year = ?4 and s.project_project_id = ?1 and s.user_user_id = ?2 LIMIT 1", nativeQuery = true)
+	List<Object> getForwardedDateLevel2(Long projectId, Long userId, int intMonth,int year);
 
 	/*
 	 * @Query("select DISTINCT(s.forwarded_date) FROM TaskTrackApprovalLevel2 s where s.user.user_id = ?2 and s.project.project_id = ?1 and s.month=?3"

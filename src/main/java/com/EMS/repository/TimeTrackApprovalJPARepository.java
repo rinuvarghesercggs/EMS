@@ -83,7 +83,7 @@ public interface TimeTrackApprovalJPARepository extends JpaRepository<TaskTrackA
             "sum(COALESCE(day15,0))) as billablehour FROM tasktrack_approval where user_user_id=?3 and month=?1 and year=?2 and project_type in('Overtime')",nativeQuery = true)
     List<Object[]> getOvertimeDataByUserIdMidMonth(Integer monthIndex,Integer yearIndex,Long id);
 
-    @Query("SELECT DISTINCT(s) FROM TaskTrackApproval s  WHERE s.user.userId = ?2 AND s.project.projectId = ?1 AND s.month = ?3 ")
-	ArrayList<TaskTrackApproval> getForwardedDate(Long projectId, Long userId, int intMonth);
+    @Query(value = "SELECT s.forwarded_date FROM tasktrack_approval s WHERE s.month = ?3 and s.year = ?4 and s.project_project_id = ?1 and s.user_user_id = ?2 LIMIT 1 ", nativeQuery = true)
+    List<Object> getForwardedDate(Long projectId, Long userId, int intMonth,int year);
 
 }
