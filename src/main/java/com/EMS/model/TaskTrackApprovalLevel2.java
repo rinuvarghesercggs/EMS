@@ -14,8 +14,8 @@ import javax.persistence.Transient;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "TASKTRACK_APPROVAL")
-public class TaskTrackApproval  {
+@Table(name = "tasktrack_approval_level2")
+public class TaskTrackApprovalLevel2  {
 
 	@Id
 	@Column(name = "id")
@@ -41,7 +41,25 @@ public class TaskTrackApproval  {
 	private String firstName,lastName;
 	
 	private Date forwarded_date;
+	
+	@ManyToOne
+	private TaskTrackApproval tasktrack_level1_Id;
+	
+	
+	
 		
+	public Date getForwarded_date() {
+		return forwarded_date;
+	}
+	public void setForwarded_date(Date forwarded_date) {
+		this.forwarded_date = forwarded_date;
+	}
+	public TaskTrackApproval getTasktrack_level1_Id() {
+		return tasktrack_level1_Id;
+	}
+	public void setTasktrack_level1_Id(TaskTrackApproval tasktrack_level1_Id) {
+		this.tasktrack_level1_Id = tasktrack_level1_Id;
+	}
 	public long getId() {
 		return id;
 	}
@@ -281,12 +299,6 @@ public class TaskTrackApproval  {
 	}
 	public void setProject(ProjectModel project) {
 		this.project = project;
-	}
-	public Date getForwarded_date() {
-		return forwarded_date;
-	}
-	public void setForwarded_date(Date forwarded_date) {
-		this.forwarded_date = forwarded_date;
 	}
 	
 

@@ -81,8 +81,18 @@ public class ProjectController {
 			project.setProjectCode(requestdata.get("projectCode").asText());
 			project.setprojectStatus(requestdata.get("projectStatus").asInt());
 			project.setisPOC(requestdata.get("isPOC").asInt());
-			Long userid = requestdata.get("projectOwner").asLong();
+			Long userid = requestdata.get("approver_level_1").asLong();
 			UserModel pro_owner = new UserModel();
+			Long onsite_lead = requestdata.get("approver_level_2").asLong();
+			System.out.println("onsite_lead"+onsite_lead);
+			UserModel pro_onsite_lead = new UserModel();
+			if(onsite_lead != null) {
+				pro_onsite_lead = userservice.getUserDetailsById(onsite_lead);
+			}
+			if(pro_onsite_lead != null) {
+				project.setOnsite_lead(pro_onsite_lead);
+			}
+			
 
 			// method for getting userdetails using ID
 			if (userid != null)
@@ -228,6 +238,7 @@ public class ProjectController {
 		ObjectNode responsedata = objectMapper.createObjectNode();
 
 		// Json array for storing filtered data from two tables
+		ArrayNode onsitelead_array = objectMapper.createArrayNode();
 		ArrayNode userarray = objectMapper.createArrayNode();
 		ArrayNode contract_array = objectMapper.createArrayNode();
 		ArrayNode department_array = objectMapper.createArrayNode();
@@ -293,33 +304,57 @@ public class ProjectController {
 			}
 
 			// Method invocation for getting users with role as owner
-			List<UserModel> users_owner = userservice.getprojectOwner();
+						List<UserModel> users_owner = userservice.getprojectOwner();
 
-			if (users_owner.isEmpty())
-				array.set("user_owner", userarray);
-			else {
+						if (users_owner.isEmpty())
+							array.set("approver_level_1", userarray);
+						else {
 
-				Iterator<UserModel> itr = users_owner.listIterator();
-				// Looping for storing data on json array
-				while (itr.hasNext()) {
+							Iterator<UserModel> itr = users_owner.listIterator();
+							// Looping for storing data on json array
+							while (itr.hasNext()) {
 
-					// json object for storing single record
-					ObjectNode object = objectMapper.createObjectNode();
+								// json object for storing single record
+								ObjectNode object = objectMapper.createObjectNode();
 
-					// adding records to json object
-					UserModel user = itr.next();
-					object.put("firstName", user.getFirstName());
-					object.put("id", user.getUserId());
-					object.put("lastName", user.getLastName());
-					object.put("role", user.getRole().getroleId());
-					// adding records object to json array
-					userarray.add(object);
-				}
+								// adding records to json object
+								UserModel user = itr.next();
+								object.put("firstName", user.getFirstName());
+								object.put("id", user.getUserId());
+								object.put("lastName", user.getLastName());
+								object.put("role", user.getRole().getroleId());
+								// adding records object to json array
+								userarray.add(object);
+							}
 
-				// storing records array to json object
-				array.set("user_owner", userarray);
+							// storing records array to json object
+							array.set("approver_level_1", userarray);
 
-			}
+						}
+
+						//Method invocation for getting users with  role as onsite lead
+						List<UserModel> onsite_lead = userservice.getOnsiteLead();
+						if (onsite_lead.isEmpty())
+							array.set("approver_level_2", onsitelead_array);
+						else {
+							Iterator<UserModel> itr = onsite_lead.listIterator();
+							while (itr.hasNext()) {
+
+								// json object for storing single record
+								ObjectNode object = objectMapper.createObjectNode();
+
+								// adding records to json object
+								UserModel user = itr.next();
+								object.put("firstName", user.getFirstName());
+								object.put("id", user.getUserId());
+								object.put("lastName", user.getLastName());
+								object.put("role", user.getRole().getroleId());
+								// adding records object to json array
+								onsitelead_array.add(object);
+							}
+							array.set("approver_level_2", onsitelead_array);
+						}
+						
 
 			// Method invocation for getting users with role as owner
 			List<DepartmentModel> department = projectservice.getdepartment();
@@ -430,7 +465,7 @@ public class ProjectController {
 						userobj.put("userId", userdata.getUserId());
 
 					}
-					jsonobj.set("projectOwner", userobj);
+					jsonobj.set("approver_level_1", userobj);
 
 					projectArray.add(jsonobj);
 				}
@@ -483,7 +518,7 @@ public class ProjectController {
 			project.setprojectStatus(requestdata.get("projectStatus").asInt());
 			project.setisPOC(requestdata.get("isPOC").asInt());
 
-			Long userid = requestdata.get("projectOwner").asLong();
+			Long userid = requestdata.get("approver_level_1").asLong();
 			UserModel pro_owner = new UserModel();
 
 			// method for getting userdetails using ID
@@ -496,6 +531,21 @@ public class ProjectController {
 			if (contractModel != null)
 				project.setContract(contractModel);
 
+			
+			Long approverlevel2 = requestdata.get("approver_level_2").asLong();
+			UserModel pro_approver_2 = null;
+			
+			if(approverlevel2 == 0)
+				project.setOnsite_lead(null);
+			
+			if (approverlevel2 != 0)
+				pro_approver_2 = userservice.getUserDetailsById(approverlevel2);
+		
+			
+			if (pro_approver_2 != null)
+				project.setOnsite_lead(pro_approver_2);
+			
+			
 			project.setEstimatedHours(requestdata.get("estimatedHours").asInt());
 			String startdate = requestdata.get("startDate").asText();
 			String enddate = requestdata.get("endDate").asText();
@@ -692,7 +742,30 @@ public class ProjectController {
 
 				}
 				System.out.println("sec 4");
-				responseData.set("projectOwner", userobj);
+				responseData.set("approver_level_1", userobj);
+				ObjectNode onsite_leads = objectMapper.createObjectNode();
+				if(project.getOnsite_lead() != null) {
+				Long onsite_lead = project.getOnsite_lead().getUserId();
+				UserModel lead_data = null;
+				
+				// storing user values in jsonobject
+				if(onsite_lead != null) {
+					lead_data = userservice.getUserDetailsById(onsite_lead);
+				}
+				
+				if (lead_data == null)
+					onsite_leads = null;
+				else {
+					onsite_leads.put("firstName", lead_data.getFirstName());
+					onsite_leads.put("lastName", lead_data.getLastName());
+					onsite_leads.put("role", lead_data.getRole().getroleId());
+					onsite_leads.put("userId", lead_data.getUserId());
+
+				}
+				System.out.println("sec 4");
+				
+				}
+				responseData.set("approver_level_2", onsite_leads);
 				// getting list of resources based on project
 				List<Resources> resourcelist = projectservice.getResourceList(project.getProjectId());
 				ArrayNode resourceArray = objectMapper.createArrayNode();

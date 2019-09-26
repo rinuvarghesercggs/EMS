@@ -204,4 +204,13 @@ public class UserServiceImpl implements UserService {
 		node = objectMapper.convertValue(userRepository.getAllUsers(), JsonNode.class);
 		return node;
 	}
+	
+	@Override
+	public List<UserModel> getOnsiteLead() {
+		// TODO Auto-generated method stub
+		List<UserModel> onsite_lead = new ArrayList<UserModel>();
+		onsite_lead = userRepository.getOnsiteLeads();
+		return onsite_lead;
+
+	}
 }

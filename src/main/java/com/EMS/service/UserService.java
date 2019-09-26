@@ -56,4 +56,6 @@ public interface UserService {
 	UserModel getUserByUserName(String userName);
 
 	JsonNode getAllUserList();
+	
+	List<UserModel> getOnsiteLead();
 }

@@ -35,11 +35,13 @@ public class ProjectModel {
 	private ClientModel clientName;
 	
 	@ManyToOne
-	private UserModel projectOwner;
+	private UserModel projectOwner; // approver_level_1
 	
 	@ManyToOne
 	private ContractModel contract;
 
+	@ManyToOne
+	private UserModel onsite_lead; // approver_level_2
 	
 
 	public ProjectModel(long projectId, String projectName, String projectDetails, int estimatedHours, Date startDate,
@@ -199,6 +201,20 @@ public class ProjectModel {
 
 	public void setContract(ContractModel contract) {
 		this.contract = contract;
+	}
+
+
+
+
+	public UserModel getOnsite_lead() {
+		return onsite_lead;
+	}
+
+
+
+
+	public void setOnsite_lead(UserModel onsite_lead) {
+		this.onsite_lead = onsite_lead;
 	}
 	
 

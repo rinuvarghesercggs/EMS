@@ -31,4 +31,7 @@ public interface ProjectRepository extends JpaRepository<ProjectModel, Long> {
 	@Query(value ="SELECT  a.is_billable, a.allocated_perce, a.start_date, a.end_date, p.project_name FROM allocation a LEFT JOIN project p ON p.project_id = a.project_project_id  WHERE a.user_user_id =?1 AND a.start_date <= ?3 AND a.end_date  >= ?2",nativeQuery = true)
 	public List<Object[]> getAllocatedProjectByUserId(Long userId, Date fromDate, Date toDate) throws Exception;
 
+	@Query("SELECT s FROM ProjectModel s WHERE s.projectId = ?1")
+	public ProjectModel getProjectDetails(Long projectId);
+
 }

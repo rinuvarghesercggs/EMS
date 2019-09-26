@@ -182,6 +182,12 @@ public class ProjectServiceImpl implements ProjectService {
 		return location;
 	}
 
+	@Override
+	public ProjectModel getProjectDetails(Long projectId) {
+		// TODO Auto-generated method stub
+		ProjectModel model = project_repositary.getProjectDetails(projectId);
+		return model;
+	}
 
 
 

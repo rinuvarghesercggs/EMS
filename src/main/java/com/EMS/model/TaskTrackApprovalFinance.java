@@ -1,3 +1,4 @@
+
 package com.EMS.model;
 
 import java.util.Date;
@@ -14,8 +15,8 @@ import javax.persistence.Transient;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "TASKTRACK_APPROVAL")
-public class TaskTrackApproval  {
+@Table(name = "tasktrack_approval_finance")
+public class TaskTrackApprovalFinance  {
 
 	@Id
 	@Column(name = "id")
@@ -40,8 +41,36 @@ public class TaskTrackApproval  {
 	@Transient
 	private String firstName,lastName;
 	
-	private Date forwarded_date;
-		
+	@ManyToOne
+	private TaskTrackApprovalLevel2 approver_level2;
+	
+	
+	@ManyToOne
+	private TaskTrackApproval approver_level1;
+	
+	
+	private String status;
+	
+	
+	
+	public TaskTrackApproval getApprover_level1() {
+		return approver_level1;
+	}
+	public void setApprover_level1(TaskTrackApproval approver_level1) {
+		this.approver_level1 = approver_level1;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public TaskTrackApprovalLevel2 getApprover_level2() {
+		return approver_level2;
+	}
+	public void setApprover_level2(TaskTrackApprovalLevel2 approver_level2) {
+		this.approver_level2 = approver_level2;
+	}
 	public long getId() {
 		return id;
 	}
@@ -281,12 +310,6 @@ public class TaskTrackApproval  {
 	}
 	public void setProject(ProjectModel project) {
 		this.project = project;
-	}
-	public Date getForwarded_date() {
-		return forwarded_date;
-	}
-	public void setForwarded_date(Date forwarded_date) {
-		this.forwarded_date = forwarded_date;
 	}
 	
 

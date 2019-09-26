@@ -1,5 +1,6 @@
 package com.EMS.repository;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -81,5 +82,8 @@ public interface TimeTrackApprovalJPARepository extends JpaRepository<TaskTrackA
             "sum(COALESCE(day8,0))+sum(COALESCE(day9,0))+sum(COALESCE(day10,0))+sum(COALESCE(day11,0))+sum(COALESCE(day12,0))+sum(COALESCE(day13,0))+sum(COALESCE(day14,0))+" +
             "sum(COALESCE(day15,0))) as billablehour FROM tasktrack_approval where user_user_id=?3 and month=?1 and year=?2 and project_type in('Overtime')",nativeQuery = true)
     List<Object[]> getOvertimeDataByUserIdMidMonth(Integer monthIndex,Integer yearIndex,Long id);
+
+    @Query("SELECT DISTINCT(s) FROM TaskTrackApproval s  WHERE s.user.userId = ?2 AND s.project.projectId = ?1 AND s.month = ?3 ")
+	ArrayList<TaskTrackApproval> getForwardedDate(Long projectId, Long userId, int intMonth);
 
 }

@@ -65,6 +65,8 @@ public interface ProjectService {
 
 		List<String> getclientLocation();
 
+		ProjectModel getProjectDetails(Long projectId);
+
 
 
 
