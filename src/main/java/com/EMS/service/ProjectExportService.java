@@ -26,4 +26,10 @@ public interface ProjectExportService {
 
 	public void exportSummaryReport(Workbook workbook, Sheet sheet, ArrayList<String> colNames, String reportName, Integer monthIndex, Integer yearIndex, String reportType, Date startDate, Date endDate) throws Exception;
 
+    public void exportFinanceDataByProject(Workbook workbook,Sheet sheet,String reportName,Integer month,Integer year,Long projectId,String projectName) throws Exception;
+
+    public void exportFinanceDataByUser(Workbook workbook,Sheet sheet,String reportName,Integer month,Integer year,Long userId,String userName) throws Exception;
+
+    public void exportFinanceDataByUserAndProject(Workbook workbook,Sheet sheet,String reportName,Integer month,Integer year,Long userId,Long projectId) throws Exception;
+
 }

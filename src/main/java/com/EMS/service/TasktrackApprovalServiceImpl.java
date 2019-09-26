@@ -4,11 +4,13 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.time.YearMonth;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import jdk.nashorn.internal.ir.ObjectNode;
 import org.json.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1881,4 +1883,126 @@ return userListObject;
 		}
 		return userListObject;
 	}*/
+
+	public ArrayList<JSONObject>  getFinanceDataByProject(int month, int year, Long projectId) {
+
+		YearMonth yearMonthObject = YearMonth.of(year, month);
+		int daysInMonth = yearMonthObject.lengthOfMonth();
+		ArrayList<JSONObject> resultData = new ArrayList<JSONObject>();
+		List<Object[]> financeData = timeTrackApprovalJPARepository.getFinanceDataByProject(month, year, projectId);
+		String intmonth;
+		if(month<10){
+			intmonth ="0"+month;
+		}
+		else{
+			intmonth =String.valueOf(month);
+		}
+		for(Object[] item : financeData) {
+			JSONObject node = new JSONObject();
+			List<JSONObject> billableArray = new ArrayList<>();
+			List<JSONObject> userArray = new ArrayList<>();
+
+			node.put("userId",item[0]);
+			node.put("firstName",item[1]);
+			node.put("lastName",item[2]);
+			for(int i=1;i<=daysInMonth;i++)
+			{
+				String j;
+				if(i<10){
+					j ="0"+i;
+				}
+				else{
+					j =String.valueOf(i);
+				}
+				JSONObject billableNode = new JSONObject();
+				billableNode.put(year+"-"+intmonth+"-"+j,item[i+2]);
+				billableArray.add(billableNode);
+			}
+			node.put("billable",billableArray);
+			resultData.add(node);
+		}
+
+		return resultData;
+	}
+
+	public ArrayList<JSONObject>  getFinanceDataByUser(int month, int year, Long userId) {
+
+
+		YearMonth yearMonthObject = YearMonth.of(year, month);
+		int daysInMonth = yearMonthObject.lengthOfMonth();
+		ArrayList<JSONObject> resultData = new ArrayList<JSONObject>();
+		List<Object[]> financeData = timeTrackApprovalJPARepository.getFinanceDataByUser(month, year, userId);
+		String intmonth;
+		if(month<10){
+			intmonth ="0"+month;
+		}
+		else{
+			intmonth =String.valueOf(month);
+		}
+		for(Object[] item : financeData) {
+			JSONObject node = new JSONObject();
+			List<JSONObject> billableArray = new ArrayList<>();
+			node.put("projectId",item[0]);
+			node.put("projectName",item[1]);
+			for(int i=1;i<=daysInMonth;i++)
+			{
+				String j;
+				if(i<10){
+					j ="0"+i;
+				}
+				else{
+					j =String.valueOf(i);
+				}
+				JSONObject billableNode = new JSONObject();
+				billableNode.put(year+"-"+intmonth+"-"+j,item[i+1]);
+				billableArray.add(billableNode);
+			}
+			node.put("billable",billableArray);
+			resultData.add(node);
+		}
+
+		return resultData;
+	}
+
+	public ArrayList<JSONObject>  getFinanceDataByUserAndProject(int month, int year, Long userId, Long projectId) {
+
+
+		YearMonth yearMonthObject = YearMonth.of(year, month);
+		int daysInMonth = yearMonthObject.lengthOfMonth();
+		ArrayList<JSONObject> resultData = new ArrayList<JSONObject>();
+		List<Object[]> financeData = timeTrackApprovalJPARepository.getFinanceDataByUserAndProject(month, year, userId, projectId);
+		String intmonth;
+		if(month<10){
+			intmonth ="0"+month;
+		}
+		else{
+			intmonth =String.valueOf(month);
+		}
+		for(Object[] item : financeData) {
+			JSONObject node = new JSONObject();
+			List<JSONObject> billableArray = new ArrayList<>();
+			node.put("projectId",item[0]);
+			node.put("projectName",item[1]);
+			node.put("userId",item[2]);
+			node.put("firstName",item[3]);
+			node.put("lastName",item[4]);
+			for(int i=1;i<=daysInMonth;i++)
+			{
+				String j;
+				if(i<10){
+					j ="0"+i;
+				}
+				else{
+					j =String.valueOf(i);
+				}
+				JSONObject billableNode = new JSONObject();
+				billableNode.put(year+"-"+intmonth+"-"+j,item[i+4]);
+				billableArray.add(billableNode);
+			}
+			node.put("billable",billableArray);
+			resultData.add(node);
+		}
+
+		return resultData;
+	}
 }

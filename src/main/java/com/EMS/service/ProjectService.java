@@ -67,6 +67,8 @@ public interface ProjectService {
 
 		ProjectModel getProjectDetails(Long projectId);
 
+		String getProjectName(Long projectId);
+
 
 
 

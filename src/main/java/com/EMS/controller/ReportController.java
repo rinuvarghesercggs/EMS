@@ -3,6 +3,7 @@ package com.EMS.controller;
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -13,6 +14,9 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +37,7 @@ import com.EMS.service.ReportService;
 import com.EMS.service.ReportServiceImpl;
 import com.EMS.service.TasktrackService;
 import com.EMS.service.UserService;
+import com.EMS.service.ProjectService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -47,28 +52,31 @@ public class ReportController {
 	ReportService reportService;
 	@Autowired
 	ReportServiceImpl reportServiceImpl;
-	
+
 	@Autowired
 	TasktrackService taskTrackService;
-	
+
 	@Autowired
 	UserService userService;
-	
+
 	@Autowired
 	ProjectAllocationService projectAllocationService;
-	
+
 	@Autowired
 	private ObjectMapper objectMapper;
-	
+
 	@Autowired
 	ProjectExportService projectExportService;
-	
+
+	@Autowired
+	ProjectService projectService;
+
 
 	@PostMapping("/getProjectReport")
 	public JsonNode getProjectReport(@RequestBody Taskdetails requestdata) {
-		
+
 		ArrayNode projectReport = reportServiceImpl.getProjectReportDetails(requestdata.getProjectId(),requestdata.getFromDate(),requestdata.getToDate());
-		
+
 		ObjectNode dataNode = objectMapper.createObjectNode();
 		dataNode.set("projectReport", projectReport);
 
@@ -95,12 +103,12 @@ public class ReportController {
 		node.set("data", dataNode);
 		return node;
 	}
-	
 
-	
-	
-	
-	
+
+
+
+
+
 
 
 
@@ -114,7 +122,7 @@ public class ReportController {
 		Long userId = null, projectId = null;
 //		Long pageSize = 50L;
 //		Long pageIndex = null;
-		
+
 
 		try {
 			if (requestdata.get("userId") != null && requestdata.get("userId").asText() != "") {
@@ -322,17 +330,17 @@ public class ReportController {
 		}
 	}
 
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
 	@PostMapping("/getUserTaskReport")
 	public ObjectNode getUserTaskReport(@RequestBody JsonNode requestdata, HttpServletResponse httpstatus)
 			throws ParseException {
-		
+
 		Long projectId = null;
 		List<Object[]> userIdList = null;
 		Long pageSize = 50L;
@@ -357,12 +365,12 @@ public class ReportController {
 			if (!date2.isEmpty()) {
 				endDate = outputFormat.parse(date2);
 			}
-			
+
 //			if (requestdata.get("pageIndex") != null && requestdata.get("pageIndex").asText() != "") {
 //				pageIndex = requestdata.get("pageIndex").asLong();
 //			}
 //			Long startingIndex = (pageSize*pageIndex)+1;
-			
+
 //			Long count = projectAllocationService.getUserCount(projectId);
 
 //			userIdList = projectAllocationService.getUserIdByProject(projectId,pageSize,startingIndex);
@@ -370,10 +378,10 @@ public class ReportController {
 			userIdList = projectAllocationService.getUserIdByProjectAndDate(projectId,startDate,endDate);
 
 			System.out.println("userIdList size : "+userIdList.size());
-			
+
 			List<Object[]> taskList = taskTrackService.getTaskList();
 			System.out.println("taskList size : "+taskList.size());
-			
+
 			for(Object userItem : userIdList) {
 				String billable = null;
 				Boolean isBillable = false;
@@ -389,11 +397,11 @@ public class ReportController {
 
 				List<Object[]> userList = null;
 				Boolean isExist = taskTrackService.checkIsUserExists(id);
-				
+
 				if(isExist) {
 					userList = taskTrackService.getUserTaskList(id,startDate,endDate,projectId);
 				}
-				
+
 				if(userList != null && userList.size() > 0) {
 					for(Object[] listItem : userList) {
 						ObjectNode taskItemObject = objectMapper.createObjectNode();
@@ -401,7 +409,7 @@ public class ReportController {
 						String name = (String) listItem[2];
 						Double totalHours = (Double) listItem[0];
 						String taskName = (String) listItem[3];
-						
+
 						taskItemObject.put("User",name);
 						taskItemObject.put("Billable",billable);
 						taskItemObject.put("Hours",totalHours);
@@ -411,7 +419,7 @@ public class ReportController {
 
 					}
 				}
-				
+
 
 			}
 
@@ -428,10 +436,10 @@ public class ReportController {
 		}
 
 		return jsonDataRes;
-		
+
 	}
-	
-	
+
+
 	@PostMapping(value = "/exportProjctTaskRpt")
 	public ResponseEntity exportProjctAllocationRpt(@RequestBody JSONObject requestData,HttpServletResponse response) {
 		ObjectNode jsonData = objectMapper.createObjectNode();
@@ -462,7 +470,7 @@ public class ReportController {
 		}
 		return new ResponseEntity( HttpStatus.OK);
 	}
-	
+
 	@PostMapping("/getApprovalTimeLogReport")
 	public JSONObject getApprovalTimeLogReport(@RequestBody JSONObject requestData) {
 		JSONArray approvalReport = new JSONArray();
@@ -483,45 +491,45 @@ public class ReportController {
 			int startdateIndex = cal.get(Calendar.DAY_OF_MONTH);
 			int startmonthIndex = (cal.get(Calendar.MONTH) + 1);
 			int startyearIndex = cal.get(Calendar.YEAR);
-			
+
 			cal.setTime(endDate);
 			int enddateIndex = cal.get(Calendar.DAY_OF_MONTH);
 			int endmonthIndex = (cal.get(Calendar.MONTH) + 1);
 			int endyearIndex = cal.get(Calendar.YEAR);
-			
+
 			int startDateOfMonth=startdateIndex;
 			int endDateOfMonth=enddateIndex;
 			int month=startmonthIndex-1;
 			int endMonth=endmonthIndex;
-			
+
 			Map billableHourMap = new HashMap();
 			List projectList = new ArrayList();
 			for(int i=startmonthIndex;i<=endmonthIndex;i++) {
 
-			if(endmonthIndex>i) {//Multiple Month
-				System.out.println("Multiple Month");
-				if(i==startmonthIndex)
-					startDateOfMonth = startdateIndex;
-				else
-					startDateOfMonth = 1;
-				endDateOfMonth = 31;
-				month++;
-			}
-			else {
-				if(i==startmonthIndex) {//Within One Month
-					System.out.println("Within One Month");
-					startDateOfMonth=startdateIndex; 
-					endDateOfMonth=enddateIndex;
-					month = startmonthIndex;
+				if(endmonthIndex>i) {//Multiple Month
+					System.out.println("Multiple Month");
+					if(i==startmonthIndex)
+						startDateOfMonth = startdateIndex;
+					else
+						startDateOfMonth = 1;
+					endDateOfMonth = 31;
+					month++;
 				}
-				else {//Multiple Month - Last Month
-					System.out.println("Multiple Month -Last Month");
-					startDateOfMonth=1; 
-					endDateOfMonth=enddateIndex;
-					month = endMonth;
+				else {
+					if(i==startmonthIndex) {//Within One Month
+						System.out.println("Within One Month");
+						startDateOfMonth=startdateIndex;
+						endDateOfMonth=enddateIndex;
+						month = startmonthIndex;
+					}
+					else {//Multiple Month - Last Month
+						System.out.println("Multiple Month -Last Month");
+						startDateOfMonth=1;
+						endDateOfMonth=enddateIndex;
+						month = endMonth;
+					}
 				}
-			}
-			
+
 				List<ApprovalTimeTrackReportModel> data = reportServiceImpl.getApprovalStatusReport(startDate,endDate,
 						startDateOfMonth,endDateOfMonth,month,startyearIndex);
 				JSONObject jsonData = new JSONObject();
@@ -531,13 +539,13 @@ public class ReportController {
 						for(int k = 0; k < approvalReport.size(); k++)
 						{
 							JSONObject objects = (JSONObject) approvalReport.get(k);
-							
-				     		if(objects.get("projectName").equals(obj.getProjectName())) {
-									double hr = (double) objects.get("BillableHours");
-									hr += obj.getBillableHours();
-									objects.remove("BillableHours");
-									objects.put("BillableHours", hr);
-								}			
+
+							if(objects.get("projectName").equals(obj.getProjectName())) {
+								double hr = (double) objects.get("BillableHours");
+								hr += obj.getBillableHours();
+								objects.remove("BillableHours");
+								objects.put("BillableHours", hr);
+							}
 						}
 					}
 					else {
@@ -545,14 +553,14 @@ public class ReportController {
 						billableHourMap.put(obj.getProjectName(),obj.getBillableHours()!=null ? obj.getBillableHours() : 0);
 						if(!projectList.contains(obj.getProjectName()))
 							projectList.add(obj.getProjectName());
-						
+
 						jsonData.put("projectName", obj.getProjectName());
 						jsonData.put("BillableHours", obj.getBillableHours()!=null ? obj.getBillableHours() : 0);
 						jsonData.put("LoggedHours", obj.getLoggedHours()!=null ? obj.getLoggedHours() : 0);
 						approvalReport.add(jsonData);
 					}
 				}
-			}		
+			}
 			JSONObject dataNode = new JSONObject();
 			dataNode.put("approvalReport", approvalReport);
 
@@ -568,7 +576,7 @@ public class ReportController {
 			node.put("message",  "failed. " + e);
 			return node;
 		}
-		
+
 	}
 
 	@PostMapping("/getAllocationofTechnology")
@@ -663,5 +671,79 @@ public class ReportController {
 
 		}
 		return jsonDataRes;
+	}
+
+	@PostMapping(value = "/exportFinanceData")
+	public ResponseEntity exportFinanceData(@RequestBody JsonNode requestdata, HttpServletResponse response) {
+		ObjectNode jsonData = objectMapper.createObjectNode();
+		ObjectNode jsonDataRes = objectMapper.createObjectNode();
+		Date fromDate=null,toDate=null;
+		SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+		Long projectId = null;
+		Long userId = null;
+		int month = 0;
+		int year =0;
+
+		try {
+			if (requestdata.get("projectId") != null && requestdata.get("projectId").asText() != "") {
+				projectId = requestdata.get("projectId").asLong();
+			}
+
+			if (requestdata.get("userId") != null && requestdata.get("userId").asText() != "") {
+				userId = requestdata.get("userId").asLong();
+			}
+
+			ArrayNode range = (ArrayNode) requestdata.get("range");
+			int i=0;
+			Workbook workrbook = new XSSFWorkbook();
+			for (JsonNode rangenode : range) {
+				JSONObject node = new JSONObject();
+				month = Integer.parseInt(rangenode.get("month").toString());
+				year = Integer.parseInt(rangenode.get("year").toString());
+				String monthName = Month.of(month).name();
+
+				if (month != 0 && year != 0 && projectId != null && userId == null) {
+
+					String projectName = projectService.getProjectName(projectId);
+					Sheet sheet = workrbook.createSheet(monthName+"-"+year);
+					String nameofReport   = "Report Of project "+projectName;
+					projectExportService.exportFinanceDataByProject(workrbook,sheet,nameofReport,month,year,projectId,projectName);
+
+
+
+				}
+				else if (month != 0 && year != 0 && projectId == null && userId != null) {
+
+					String name = userService.getUserName(userId);
+					String userName = String.valueOf(name).replace(",", " ");
+					Sheet sheet = workrbook.createSheet(monthName+"-"+year);
+					String nameofReport   = "Report Of user "+userName;
+					projectExportService.exportFinanceDataByUser(workrbook,sheet,nameofReport,month,year,userId,userName);
+
+				} else if (month != 0 && year != 0 && projectId != null && userId != null) {
+
+					String name = userService.getUserName(userId);
+					String userName = String.valueOf(name).replace(",", " ");
+					String projectName = projectService.getProjectName(projectId);
+					Sheet sheet = workrbook.createSheet(monthName+"-"+year);
+					String nameofReport   = "Report Of user "+userName+" of"+" project "+projectName;
+					projectExportService.exportFinanceDataByUserAndProject(workrbook,sheet,nameofReport,month,year,userId,projectId);
+
+				}
+				//outputdata.put(i, node);
+				//i = i + 1;
+
+			}
+			response.setContentType("application/vnd.ms-excel");
+			response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
+			response.setHeader("Content-Disposition", "filename=\"" + "FinanceData.xlsx" + "\"");
+			workrbook.write(response.getOutputStream());
+			workrbook.close();
+
+
+		} catch (Exception e) {
+			return new ResponseEntity( HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity( HttpStatus.OK);
 	}
 }

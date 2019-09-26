@@ -189,6 +189,12 @@ public class ProjectServiceImpl implements ProjectService {
 		return model;
 	}
 
+	@Override
+	public String getProjectName(Long projectId) {
+		String projectName = project_repositary.getProjectName(projectId);
+		return projectName;
+	}
+
 
 
 

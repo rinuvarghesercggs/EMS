@@ -67,6 +67,12 @@ public interface TasktrackApprovalService {
 	 * Date endDate, List<TaskTrackApproval> userList, List<JSONObject> jsonArray,
 	 * List<JSONObject> approvalJSONData, Boolean isExist, Long projectId);
 	 */
-	
+	public ArrayList<JSONObject> getFinanceDataByProject( int month, int year, Long projectId);
+
+	public ArrayList<JSONObject> getFinanceDataByUser( int month, int year, Long userId);
+
+	public ArrayList<JSONObject> getFinanceDataByUserAndProject(int month, int year,Long userId, Long projectId);
+
+
 }
 

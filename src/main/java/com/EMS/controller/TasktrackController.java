@@ -3404,4 +3404,77 @@ public class TasktrackController {
 		}
 		
 	}
+
+	@PostMapping("/getFinanceData")
+	public JSONObject getFinanceData(@RequestBody JsonNode requestdata, HttpServletResponse httpstatus) throws ParseException {
+
+		JSONObject jsonDataRes = new JSONObject();
+		Long projectId = null;
+		Long userId = null;
+		int month = 0;
+		int year =0;
+
+		try {
+
+			if (requestdata.get("projectId") != null && requestdata.get("projectId").asText() != "") {
+				projectId = requestdata.get("projectId").asLong();
+			}
+
+			if (requestdata.get("userId") != null && requestdata.get("userId").asText() != "") {
+				userId = requestdata.get("userId").asLong();
+			}
+
+			ArrayNode range = (ArrayNode) requestdata.get("range");
+
+			JSONObject outputdata = new JSONObject();
+
+			ArrayList<JSONObject> resultData = new ArrayList<JSONObject>();
+			ArrayList<JSONObject> node1 = new ArrayList<JSONObject>();
+
+			for (JsonNode rangenode : range) {
+				JSONObject node = new JSONObject();
+				month = Integer.parseInt(rangenode.get("month").toString());
+				year = Integer.parseInt(rangenode.get("year").toString());
+				if (month!= 0 && year!= 0 && projectId != null && userId == null) {
+
+					resultData = tasktrackApprovalService.getFinanceDataByProject(month, year, projectId);
+					node.put("timeTracks", resultData);
+					node.put("month", month);
+					node.put("year", year);
+					node1.add(node);
+
+				}
+				else if (month!= 0 && year!= 0 && projectId == null && userId != null) {
+
+					resultData  = tasktrackApprovalService.getFinanceDataByUser(month, year, userId);
+					node.put("timeTracks",resultData);
+					node.put("month",month);
+					node.put("year",year);
+					node1.add(node);
+				}
+				else if (month!= 0 && year!= 0 && projectId != null && userId != null) {
+
+					resultData  = tasktrackApprovalService.getFinanceDataByUserAndProject(month, year, userId, projectId);
+					node.put("timeTracks",resultData);
+					node.put("month",month);
+					node.put("year",year);
+					node1.add(node);
+
+				}
+
+			}
+
+
+			jsonDataRes.put("data", node1);
+			jsonDataRes.put("status", "success");
+			jsonDataRes.put("message", "success. ");
+			jsonDataRes.put("code", httpstatus.getStatus());
+		} catch (Exception e) {
+			jsonDataRes.put("status", "failure");
+			jsonDataRes.put("code", httpstatus.getStatus());
+			jsonDataRes.put("message", "failed. " + e);
+		}
+
+		return jsonDataRes;
+	}
 }
